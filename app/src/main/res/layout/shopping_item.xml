@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="6dip"
+
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight" >
+    <!--
+        We've set the layout_height to the preferred list item height, as this is what
+        this file is for!
+
+        We have used a RelativeLayout here, so that we can get the boxes alongside each other.
+    -->
+
+    <!-- Edit Item // Removed for now, can be designed in a nicer fashion.
+    <Button android:id="@+id/shopping_edit_btn"
+
+        android:text="Edit"
+
+        android:layout_toLeftOf="@id/shopping_del_btn"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+    -->
+
+    <!-- Remove Item -->
+    <Button android:id="@+id/shopping_del_btn"
+
+        android:text="Delete"
+
+        android:layout_alignParentRight="true"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+
+    <!-- Shopping Item Name -->
+    <TextView android:id="@+id/shopping_title"
+
+        android:divider="@color/white"
+        android:dividerHeight="4px"
+        android:textSize="15sp"
+
+        android:text="@string/test_shopping_title"
+
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:layout_toStartOf="@+id/shopping_edit_btn" />
+
+    <!-- Quantity -->
+    <TextView android:id="@+id/shopping_quantity"
+
+        android:layout_below="@id/shopping_title"
+
+        android:text="@string/test_shopping_quantity"
+        android:textSize="15sp"
+
+        android:layout_margin="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Measurement -->
+    <TextView android:id="@+id/shopping_measurement"
+
+        android:text="@string/test_shopping_measure"
+        android:textSize="15sp"
+
+        android:layout_below="@id/shopping_title"
+        android:layout_toRightOf="@id/shopping_quantity"
+
+        android:layout_margin="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

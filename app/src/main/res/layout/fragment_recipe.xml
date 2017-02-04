@@ -1,0 +1,27 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="sammobewick.pocketkitchen.core.RecipeFragment">
+
+    <ListView
+        android:id="@+id/recipe_list"
+
+        android:divider="@color/white"
+        android:dividerHeight="4px"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/empty_recipe"
+        android:text="No recipes loaded"
+
+        android:textSize="30sp"
+        android:textStyle="italic"
+        android:gravity="center"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>

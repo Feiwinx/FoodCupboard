@@ -1,0 +1,20 @@
+package sammobewick.pocketkitchen.core;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
+public class SplashActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // TODO: Here we will likely load what we need! To be researched.
+        // TODO: Possibly direct this activity to a login activity?
+
+        Intent intent = new Intent(this, TabbedActivity.class);
+        startActivity(intent);
+        finish();
+    }
+}

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="6dip"
+
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeightLarge" >
+    <!--
+        We've set the layout_height to the preferred list item height, as this is what
+        this file is for!
+
+        We have used a RelativeLayout here, so that we can get the boxes alongside each other.
+    -->
+    <ImageView
+        android:id="@+id/recipe_image"
+        android:src="@drawable/test_recipe_image"
+        android:adjustViewBounds="true"
+
+        android:paddingBottom="0px"
+        android:paddingTop="0px"
+        android:layout_width="?android:attr/listPreferredItemHeight"
+        android:layout_height="match_parent"
+        android:cropToPadding="false" />
+
+    <TextView android:id="@+id/recipe_title"
+
+        android:textSize="18sp"
+        android:textStyle="bold"
+
+        android:text="@string/test_recipe_title"
+
+        android:layout_toRightOf="@id/recipe_image"
+        android:layout_margin="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/recipe_dietary_image"
+
+        android:layout_below="@id/recipe_title"
+        android:layout_alignParentRight="true"
+
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
+    <TextView android:id="@+id/recipe_descr"
+
+        android:textSize="15sp"
+        android:textStyle="italic"
+
+        android:text="@string/test_recipe_desc"
+
+        android:layout_toRightOf="@id/recipe_image"
+
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recipe_title"
+        android:layout_toLeftOf="@id/recipe_dietary_image"
+        android:layout_alignParentBottom="true" />
+
+
+</RelativeLayout>
