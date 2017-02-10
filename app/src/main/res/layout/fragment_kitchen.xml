@@ -15,11 +15,12 @@
 
     <TextView
         android:id="@+id/empty_kitchen"
-        android:text="No items in Kitchen"
+        android:text="@string/empty_kitchen"
 
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:textStyle="italic"
         android:gravity="center"
+        android:layout_margin="10dp"
 
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

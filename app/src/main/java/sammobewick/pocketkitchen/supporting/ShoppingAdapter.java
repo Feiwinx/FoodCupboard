@@ -6,15 +6,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.List;
+
 import sammobewick.pocketkitchen.R;
 
 /**
  * Created by Sam on 31/01/2017.
  */
 
-// TODO: Have this class utilise an object / array details!
-
 public class ShoppingAdapter extends BaseAdapter {
+
+    private List<ListItem> data;
 
     // Here we use this inner class to hold our views for this item:
     private class ViewHolder {
@@ -23,19 +25,29 @@ public class ShoppingAdapter extends BaseAdapter {
         TextView shoppingMeasurement;
     }
 
+    public ShoppingAdapter(List<ListItem> data) {
+        this.data = data;
+    }
+
+    public ShoppingAdapter() { /* empty */ }
+
     @Override
     public int getCount() {
-        return 3;
+        if (data != null) {
+            return data.size();
+        } else {
+            return 0; // TODO: Remove this value when done with testing.
+        }
     }
 
     @Override
-    public Object getItem(int position) {
-        return position;
+    public ListItem getItem(int position) {
+        return data.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return data.get(position).getId();
     }
 
     @Override
@@ -61,11 +73,27 @@ public class ShoppingAdapter extends BaseAdapter {
             vh = (ViewHolder) v.getTag();
         }
 
-        // TODO; Here I think I will need to get the object representing the recipe!
+        // Here we get the object representing the list item:
+        ListItem item = getItem(position);
 
-        // TODO: Then, we use the object data to populate / set our vh attributes.
-        // e.g. vh.txt_field.setText(object.getValue());
+        // Then, we use the object data to populate / set our vh attributes.
+        vh.shoppingQuantity.setText(String.valueOf(item.getAmount()));
+        vh.shoppingMeasurement.setText(item.getUnit());
+        vh.shoppingTitle.setText(item.getName());
 
         return v;
+    }
+
+    // ****************************************************************************************** //
+    //                                      SETTER + GETTER :                                     //
+    // ****************************************************************************************** //
+
+    public List<ListItem> getData() {
+        return data;
+    }
+
+    public void setData(List<ListItem> data) {
+        this.data = data;
+        this.notifyDataSetChanged();
     }
 }

@@ -1,5 +1,6 @@
 package sammobewick.pocketkitchen.core;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,8 +15,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.mashape.p.spoonacularrecipefoodnutritionv1.SpoonacularAPIClient;
+import com.mashape.p.spoonacularrecipefoodnutritionv1.controllers.APIController;
 
 import sammobewick.pocketkitchen.R;
+import sammobewick.pocketkitchen.supporting.Recipe_Full;
 
 public class TabbedActivity extends AppCompatActivity implements
         KitchenFragment.OnFragmentInteractionListener, RecipeFragment.OnFragmentInteractionListener, ShoppingListFragment.OnFragmentInteractionListener
@@ -36,9 +44,7 @@ public class TabbedActivity extends AppCompatActivity implements
      */
     private ViewPager mViewPager;
 
-    private String apiKey = "89uaBM1DYFmshbBN98rIAI62xuB2p1ZF3rfjsnWxuvaM0RPHpi";
-
-    // TODO: Specify arrays for storing the objects (i.e. recipe info, kitchen info, etc.)
+    private APIController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +64,18 @@ public class TabbedActivity extends AppCompatActivity implements
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        // API key is stored in application context:
+        com.mashape.p.spoonacularrecipefoodnutritionv1.Configuration.initialize(this.getBaseContext());
+
+        SpoonacularAPIClient api_client = new SpoonacularAPIClient();
+        controller = api_client.getClient();
+
         // TODO: Correct the floating action button so it can be used on all screens.
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //testGetData();
+                // TODO: Logic here for FAB.
             }
         });
     }
@@ -92,29 +104,123 @@ public class TabbedActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-        @Override
-        public void onKitchenFragmentInteraction(int kitchenID) {
-            // TODO: This should prompt for editing the item in the kitchen to update stock.
-            // TODO: This can also show information about when the item was last purchased or the like.
-            Snackbar.make(findViewById(R.id.main_content), "Kitchen Action: " + kitchenID, Snackbar.LENGTH_SHORT)
-                    .setAction("Action", null).show();
-        }
+    @Override
+    public void onKitchenFragmentInteraction(int kitchenID) {
+        // TODO: This should prompt for editing the item in the kitchen to update stock.
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.ingredient_edit);
+        dialog.setTitle("Edit Ingredient");
+        dialog.show();
 
-        @Override
-        public void onRecipeFragmentInteraction(int recipeID) {
-            // TODO: This should load the recipe in full.
-            Snackbar.make(findViewById(R.id.main_content), "Recipe Action: " + recipeID, Snackbar.LENGTH_SHORT)
-                    .setAction("Action", null).show();
-        }
+        // Establish the dialog views we need to use:
+        final TextView  txt_ing_name     = (TextView) dialog.findViewById(R.id.txt_ingredient_name);
+        //txt_ing_name.setText();
 
-        @Override
-        public void onShoppingFragmentInteraction(int shoppingID) {
-            // TODO: This should show the edit dialog for the shopping item selected!
-            Snackbar.make(findViewById(R.id.main_content), "Shopping Action: " + shoppingID, Snackbar.LENGTH_SHORT)
-                    .setAction("Action", null).show();
-        }
+        final TextView  txt_ing_qty_name = (TextView) dialog.findViewById(R.id.txt_ingredient_qty_name);
+        //txt_ing_qty_name.setText();
 
-        /**
+        final EditText  edit_ing_qty     = (EditText) dialog.findViewById(R.id.edit_ingredient_qty);
+        final Button    btn_save         = (Button)   dialog.findViewById(R.id.btn_save_ing);
+        final Button    btn_discard      = (Button)   dialog.findViewById(R.id.btn_discard_ing);
+        final Button    btn_remove       = (Button)   dialog.findViewById(R.id.btn_remove_ing);
+
+        // TODO: This might be able to show additional information if the middleware supports it.
+
+        // Set on click listeners:
+        btn_discard.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btn_remove.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // TODO: Program the removal of this item from the data.
+                dialog.dismiss();
+            }
+        });
+
+        btn_discard.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // TODO: Program the updating of this item in the data.
+                dialog.dismiss();
+            }
+        });
+
+        ///* DEBUG:
+        Snackbar.make(findViewById(R.id.main_content), "Kitchen Action: " + kitchenID, Snackbar.LENGTH_SHORT)
+                .setAction("Action", null).show();
+        ///* END-DEBUG
+    }
+
+    @Override
+    public void onRecipeFragmentInteraction(int recipeID) {
+        // TODO: Query Spoonacular for full recipe information:
+
+        //controller ...
+
+        // TODO: Call intent on whatever it is that will display this recipe in full!
+
+        //Intent intent ...
+
+        ///* DEBUG:
+        Snackbar.make(findViewById(R.id.main_content), "Recipe: " + recipeID, Snackbar.LENGTH_SHORT)
+                .setAction("Action", null).show();
+        ///* END-DEBUG
+    }
+
+    @Override
+    public void onShoppingFragmentInteraction(int shoppingID) {
+        // TODO: This should prompt for editing the item in the shopping list.
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.ingredient_edit);
+        dialog.setTitle("Edit Item");
+        dialog.show();
+
+        // Establish the dialog views we need to use:
+        final TextView  txt_itm_qty_name    = (TextView) dialog.findViewById(R.id.txt_item_qty_name);
+        final EditText  edit_itm_name       = (EditText) dialog.findViewById(R.id.edit_shopping_item);
+        final EditText  edit_itm_qty        = (EditText) dialog.findViewById(R.id.measurements_editText);
+        final Button    btn_save            = (Button)   dialog.findViewById(R.id.btn_save_itm);
+        final Button    btn_discard         = (Button)   dialog.findViewById(R.id.btn_discard_itm);
+        final Button    btn_remove          = (Button)   dialog.findViewById(R.id.btn_remove_itm);
+
+        // TODO: This might be able to show additional information if the middleware supports it.
+
+        // Set on click listeners:
+        btn_discard.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btn_remove.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // TODO: Program the removal of this item from the data.
+                dialog.dismiss();
+            }
+        });
+
+        btn_discard.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // TODO: Program the updating of this item in the data.
+                dialog.dismiss();
+            }
+        });
+
+        ///* DEBUG:
+        Snackbar.make(findViewById(R.id.main_content), "Shopping Action: " + shoppingID, Snackbar.LENGTH_SHORT)
+                .setAction("Action", null).show();
+        ///* END-DEBUG
+    }
+
+    /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */

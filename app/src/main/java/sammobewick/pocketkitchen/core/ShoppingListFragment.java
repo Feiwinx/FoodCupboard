@@ -21,14 +21,11 @@ import sammobewick.pocketkitchen.supporting.ShoppingAdapter;
  * create an instance of this fragment.
  */
 public class ShoppingListFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    // Generated argument code (unsure if to be used yet):
+    //private static final String ARG_PARAM1 = "param1";
+    //private static final String ARG_PARAM2 = "param2";
+    //private String mParam1;
+    //private String mParam2;
 
     private AbsListView mListView;
     private ListAdapter mAdapter;
@@ -50,10 +47,13 @@ public class ShoppingListFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static ShoppingListFragment newInstance(String param1, String param2) {
         ShoppingListFragment fragment = new ShoppingListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+
+        // Generated argument code (unsure if to be used yet):
+        //Bundle args = new Bundle();
+        //args.putString(ARG_PARAM1, param1);
+        //args.putString(ARG_PARAM2, param2);
+
+        //fragment.setArguments(args);
         return fragment;
     }
 
@@ -61,8 +61,9 @@ public class ShoppingListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // Generated argument code (unsure if to be used yet):
+            //mParam1 = getArguments().getString(ARG_PARAM1);
+            //mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
         mAdapter = new ShoppingAdapter();
@@ -74,12 +75,10 @@ public class ShoppingListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
 
-        // Handle list:
+        // Prepare out ListView:
         mListView = (AbsListView) view.findViewById(R.id.shopping_list);
         mListView.setAdapter(mAdapter);
-
         mListView.setEmptyView(view.findViewById(R.id.empty_shopping));
-
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -108,11 +107,6 @@ public class ShoppingListFragment extends Fragment {
         mListener = null;
     }
 
-
-    private void editItem() {
-        // TODO: Make the dialog show itself, and then allow the user to edit the selected item.
-    }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -124,7 +118,6 @@ public class ShoppingListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onShoppingFragmentInteraction(int shoppingID);
     }
 }

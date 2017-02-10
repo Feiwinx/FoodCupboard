@@ -7,15 +7,18 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import sammobewick.pocketkitchen.R;
+import sammobewick.pocketkitchen.communication.DownloadImageAsync;
 
 /**
  * Created by Sam on 31/01/2017.
  */
 
-// TODO: Have this class utilise an object / array details!
+public class RecipeShortAdapter extends BaseAdapter {
 
-public class RecipeAdapter extends BaseAdapter {
+    private List<Recipe_Short> data;
 
     // Here we use this inner class to hold our views for this item:
     private class ViewHolder {
@@ -25,19 +28,29 @@ public class RecipeAdapter extends BaseAdapter {
         TextView    recipeDesc;
     }
 
+    public RecipeShortAdapter(List<Recipe_Short> data) {
+        this.data = data;
+    }
+
+    public RecipeShortAdapter() { /* empty */ }
+
     @Override
     public int getCount() {
-        return 3;
+        if (data != null) {
+            return data.size();
+        } else {
+            return 0;
+        }
     }
 
     @Override
-    public Object getItem(int position) {
-        return position;
+    public Recipe_Short getItem(int position) {
+        return data.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return data.get(position).getId();
     }
 
     @Override
@@ -64,11 +77,31 @@ public class RecipeAdapter extends BaseAdapter {
             vh = (ViewHolder) v.getTag();
         }
 
-        // TODO; Here I think I will need to get the object representing the recipe!
+        // Here we need to get the object representing the recipe:
+        Recipe_Short recipe = getItem(position);
 
-        // TODO: Then, we use the object data to populate / set our vh attributes.
-        // e.g. vh.txt_field.setText(object.getValue());
+        vh.recipeTitle.setText(recipe.getTitle());
+
+        String desc = "This tasty recipe can be made in " + recipe.getReadyInMinutes() + " minutes!";
+        vh.recipeDesc.setText(desc);
+
+        // Causes the listview to freeze!
+        //String url  = recipe.getImage() + ".jpg";
+        //new DownloadImageAsync(vh.recipeImg).execute(url);
 
         return v;
+    }
+
+    // ****************************************************************************************** //
+    //                                      SETTER + GETTER :                                     //
+    // ****************************************************************************************** //
+
+    public List<Recipe_Short> getData() {
+        return data;
+    }
+
+    public void setData(List<Recipe_Short> data) {
+        this.data = data;
+        this.notifyDataSetChanged();
     }
 }

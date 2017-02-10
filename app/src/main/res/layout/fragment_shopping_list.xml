@@ -15,11 +15,12 @@
 
     <TextView
         android:id="@+id/empty_shopping"
-        android:text="No items in Shopping List"
+        android:text="@string/empty_list"
 
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:textStyle="italic"
         android:gravity="center"
+        android:layout_margin="10dp"
 
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

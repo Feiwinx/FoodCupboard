@@ -7,15 +7,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import sammobewick.pocketkitchen.R;
 
 /**
  * Created by Sam on 31/01/2017.
  */
 
-// TODO: Have this class utilise an object / array details!
-
 public class KitchenAdapter extends BaseAdapter {
+
+    private List<Ingredient> data;
 
     private class ViewHolder{
         ImageView   kitchenImage;
@@ -24,19 +26,29 @@ public class KitchenAdapter extends BaseAdapter {
         TextView    kitchenMeasurement;
     }
 
+    public KitchenAdapter(List<Ingredient> data) {
+        this.data = data;
+    }
+
+    public KitchenAdapter() { /* empty */ }
+
     @Override
     public int getCount() {
-        return 3;
+        if (data != null) {
+            return data.size();
+        } else {
+            return 0; // TODO: Remove this value when testing is done.
+        }
     }
 
     @Override
-    public Object getItem(int position) {
-        return position;
+    public Ingredient getItem(int position) {
+        return data.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return data.get(position).getId();
     }
 
     @Override
@@ -63,11 +75,28 @@ public class KitchenAdapter extends BaseAdapter {
             vh = (ViewHolder) v.getTag();
         }
 
-        // TODO; Here I think I will need to get the object representing the recipe!
+        // Here we get the object representing the ingredient!
+        Ingredient ingredient = getItem(position);
 
-        // TODO: Then, we use the object data to populate / set our vh attributes.
-        // e.g. vh.txt_field.setText(object.getValue());
+        // Then, we use the object data to populate / set our vh attributes.
+        vh.kitchenImage.setImageBitmap(null); // TODO: depends on what the attribute is.
+        vh.kitchenMeasurement.setText(ingredient.getUnit());
+        vh.kitchenQuantity.setText(String.valueOf(ingredient.getAmount()));
+        vh.kitchenTitle.setText(ingredient.getName());
 
         return v;
+    }
+
+    // ****************************************************************************************** //
+    //                                      SETTER + GETTER :                                     //
+    // ****************************************************************************************** //
+
+    public List<Ingredient> getData() {
+        return data;
+    }
+
+    public void setData(List<Ingredient> data) {
+        this.data = data;
+        this.notifyDataSetChanged();
     }
 }
