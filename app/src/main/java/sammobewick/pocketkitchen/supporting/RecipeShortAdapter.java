@@ -1,5 +1,8 @@
 package sammobewick.pocketkitchen.supporting;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,7 @@ import sammobewick.pocketkitchen.communication.DownloadImageAsync;
 public class RecipeShortAdapter extends BaseAdapter {
 
     private List<Recipe_Short> data;
+    private String             urlStart;
 
     // Here we use this inner class to hold our views for this item:
     private class ViewHolder {
@@ -28,11 +32,14 @@ public class RecipeShortAdapter extends BaseAdapter {
         TextView    recipeDesc;
     }
 
-    public RecipeShortAdapter(List<Recipe_Short> data) {
+    public RecipeShortAdapter(String urlStart, List<Recipe_Short> data) {
         this.data = data;
+        this.urlStart = urlStart;
     }
 
-    public RecipeShortAdapter() { /* empty */ }
+    public RecipeShortAdapter(String urlStart) {
+        this.urlStart = urlStart;
+    }
 
     @Override
     public int getCount() {
@@ -85,9 +92,10 @@ public class RecipeShortAdapter extends BaseAdapter {
         String desc = "This tasty recipe can be made in " + recipe.getReadyInMinutes() + " minutes!";
         vh.recipeDesc.setText(desc);
 
-        // Causes the listview to freeze!
-        //String url  = recipe.getImage() + ".jpg";
-        //new DownloadImageAsync(vh.recipeImg).execute(url);
+        // Load the images using aSync task:
+        String url  = urlStart + recipe.getImage();
+        System.out.println("URL: " + url);
+        new DownloadImageAsync(vh.recipeImg).execute(url);
 
         return v;
     }
@@ -103,5 +111,9 @@ public class RecipeShortAdapter extends BaseAdapter {
     public void setData(List<Recipe_Short> data) {
         this.data = data;
         this.notifyDataSetChanged();
+
+        for(Recipe_Short r : data) {
+            System.out.println("DATA: " + r.getTitle());
+        }
     }
 }

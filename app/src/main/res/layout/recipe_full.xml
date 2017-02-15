@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:focusable="false"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Button Layout -->
+    <LinearLayout android:id="@+id/ll_recipe_f"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- This should handle both inputs in RecipeActivity: -->
+        <Button android:id="@+id/btn_do_recipe_f"
+
+            android:text="@string/lbl_btn_add_recipe"
+            android:hint="@string/hint_btn_add_recipe"
+            style="@style/Widget.AppCompat.Button.Colored"
+
+            android:layout_weight="1"
+
+            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <!-- Scrollable Recipe Layout -->
+    <ScrollView
+        android:layout_above="@id/ll_recipe_f"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:isScrollContainer="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Recipe Title -->
+            <TextView android:id="@+id/recipe_title_f"
+                android:text="INSERT TITLE HERE"
+                android:textStyle="bold|italic"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Master Image -->
+            <ImageView android:id="@+id/recipe_image_f"
+                android:layout_below="@id/recipe_title_f"
+                android:layout_margin="5dp"
+                android:adjustViewBounds="true"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!-- Dietary Images -->
+
+            <ImageView android:id="@+id/dietary_veg_f"
+                android:layout_toRightOf="@id/recipe_image_f"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView android:id="@+id/dietary_vegan_f"
+                android:layout_toRightOf="@id/recipe_image_f"
+                android:layout_below="@id/dietary_veg_f"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView android:id="@+id/dietary_gluten_f"
+                android:layout_toRightOf="@id/recipe_image_f"
+                android:layout_below="@id/dietary_vegan_f"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView android:id="@+id/dietary_dairy_f"
+                android:layout_toRightOf="@id/recipe_image_f"
+                android:layout_below="@id/dietary_gluten_f"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView android:id="@+id/dietary_healthy_f"
+                android:layout_toRightOf="@id/recipe_image_f"
+                android:layout_below="@id/dietary_dairy_f"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView android:id="@+id/dietary_cheap_f"
+                android:layout_toRightOf="@id/recipe_image_f"
+                android:layout_below="@id/dietary_healthy_f"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!-- Recipe Information -->
+
+            <ImageView android:id="@+id/recipe_time_img_f"
+                android:layout_below="@id/recipe_image_f"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView android:id="@+id/recipe_time_f"
+                android:text="15m"
+                android:textStyle="italic"
+                android:layout_below="@id/recipe_image_f"
+                android:layout_toRightOf="@id/recipe_time_img_f"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView android:id="@+id/recipe_serves_img_f"
+                android:layout_below="@id/recipe_image_f"
+                android:layout_toRightOf="@id/recipe_time_f"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView android:id="@+id/recipe_serves_f"
+                android:text="4 plates"
+                android:textStyle="italic"
+                android:layout_below="@id/recipe_image_f"
+                android:layout_toRightOf="@id/recipe_serves_img_f"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView android:id="@+id/recipe_popular_img_f"
+                android:layout_below="@id/recipe_image_f"
+                android:layout_toRightOf="@id/recipe_serves_f"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView android:id="@+id/recipe_popular_f"
+                android:text="@string/lbl_recipe_popular_f"
+                android:textStyle="italic"
+                android:layout_below="@id/recipe_image_f"
+                android:layout_toRightOf="@id/recipe_popular_img_f"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!-- Ingredient Information -->
+
+            <TextView android:id="@+id/recipe_ing_title_f"
+                android:layout_below="@id/recipe_time_img_f"
+                android:text="@string/lbl_recipe_ing_title_f"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center"
+
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+
+                android:focusable="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView android:id="@+id/recipe_ing_f"
+                android:layout_below="@id/recipe_ing_title_f"
+                android:focusable="true"
+
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Instruction Information -->
+
+            <TextView android:id="@+id/recipe_ins_title_f"
+                android:layout_below="@id/recipe_ing_f"
+                android:text="@string/lbl_recipe_ins_title_f"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center"
+
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+
+                android:focusable="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView android:id="@+id/recipe_ins_f"
+                android:layout_below="@id/recipe_ins_title_f"
+                android:focusable="true"
+
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

@@ -45,24 +45,6 @@ public class HTTP_RecipeShort {
         this.totalResults = handler.getTotalResults();
     }
 
-    public static void ReadHTTPResponse(DynamicResponse response) {
-        try {
-            System.out.println("API-parse: " + response.parseAsString());
-
-            Gson gson = new Gson();
-            HTTP_RecipeShort handler = new HTTP_RecipeShort(response.parseAsString());
-
-            System.out.println(handler.toString());
-
-            // Test extraction of results:
-            System.out.println(handler.getResults());
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-    }
-
     public String getBaseUri() {
         return baseUri;
     }

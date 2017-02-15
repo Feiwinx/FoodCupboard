@@ -2,12 +2,13 @@ package sammobewick.pocketkitchen.supporting;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Sam on 09/02/2017.
  */
-public class Recipe_Short {
+public class Recipe_Short implements Serializable {
     // Matches: Search > GET Search Recipes
     // Usage: represents the brief amount of information gotten from text searches. This is what
     // can be displayed in the listview.

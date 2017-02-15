@@ -2,13 +2,14 @@ package sammobewick.pocketkitchen.supporting;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Sam on 01/02/2017.
  */
-public class Ingredient {
+public class Ingredient implements Serializable {
     // Matches: Data > GET Get Recipe Information
     // Usage: represents an ingredient from a recipe.
     private int     id;

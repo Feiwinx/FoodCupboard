@@ -11,10 +11,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Using the comment shown below, this should allow for images to be loaded Asynchronously.
- * Does not appear to be working though!
+ * Using the comment shown below, this class allows for images to be loaded Asynchronously, so the
+ * UI thread is not blocked!
  * http://stackoverflow.com/a/10868126
- *
  * Created by Sam on 09/02/2017.
  */
 public final class DownloadImageAsync extends AsyncTask<String, Void, Bitmap> {

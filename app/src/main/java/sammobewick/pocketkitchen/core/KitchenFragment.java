@@ -22,49 +22,37 @@ import sammobewick.pocketkitchen.supporting.KitchenAdapter;
  * create an instance of this fragment.
  */
 public class KitchenFragment extends Fragment {
-    // Generated argument code (unsure if to be used yet):
-    //private static final String ARG_PARAM1 = "param1";
-    //private static final String ARG_PARAM2 = "param2";
-    //private String mParam1;
-    //private String mParam2;
+    //********************************************************************************************//
+    //  VARIABLES / HANDLERS FOR THIS FRAGMENT:                                                   //
+    //********************************************************************************************//
 
-    // ListView/ListAdapter:
     private AbsListView mListView;
     private ListAdapter mAdapter;
-
     private OnFragmentInteractionListener mListener;
 
-    public KitchenFragment() { /* Empty constructor */}
+    // ****************************************************************************************** //
+    //                                 CONSTRUCTORS + SET-UP:                                     //
+    // ****************************************************************************************** //
+
+    public KitchenFragment() { /* Empty constructor */ }
 
     /**
      * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * this fragment.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment KitchenFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static KitchenFragment newInstance(String param1, String param2) {
+    public static KitchenFragment newInstance() {
         KitchenFragment fragment = new KitchenFragment();
-
-        // Generated argument code (unsure if to be used yet):
-        //Bundle args = new Bundle();
-        //args.putString(ARG_PARAM1, param1);
-        //args.putString(ARG_PARAM2, param2);
-        //fragment.setArguments(args);
-
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            // Generated argument code (unsure if to be used yet):
-            //mParam1 = getArguments().getString(ARG_PARAM1);
-            // = getArguments().getString(ARG_PARAM2);
-        }
+
+        // Prepare our adapter:
+        String urlStart = getArguments().getString("recipe_image_url");
         mAdapter = new KitchenAdapter();
     }
 
@@ -111,10 +99,6 @@ public class KitchenFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         void onKitchenFragmentInteraction(int kitchenID);

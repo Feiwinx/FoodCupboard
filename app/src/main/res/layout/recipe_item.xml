@@ -12,9 +12,8 @@
     -->
     <ImageView
         android:id="@+id/recipe_image"
-        android:src="@drawable/test_recipe_image"
         android:adjustViewBounds="true"
-
+        android:layout_centerVertical="true"
         android:paddingBottom="0px"
         android:paddingTop="0px"
         android:layout_width="?android:attr/listPreferredItemHeight"
@@ -25,8 +24,6 @@
 
         android:textSize="18sp"
         android:textStyle="bold"
-
-        android:text="@string/test_recipe_title"
 
         android:layout_toRightOf="@id/recipe_image"
         android:layout_margin="5dp"

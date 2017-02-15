@@ -1,11 +1,14 @@
 package sammobewick.pocketkitchen.core;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import sammobewick.pocketkitchen.R;
@@ -16,27 +19,33 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Confirm WiFi is connected:
-        ConnectivityManager connMngr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo actNetwork = connMngr.getActiveNetworkInfo();
+        Intent intent = new Intent(this, TabbedActivity.class);
 
-        boolean isConnected = actNetwork != null && actNetwork.isConnectedOrConnecting();
+        // TODO: Instead of main, direct this to the login activity:
+        // Launch activity + exit this one:
+        startActivity(intent);
+        finish();
 
-        if (isConnected) {
-            // TODO: Direct to login activity:
-            Intent intent = new Intent(this, TabbedActivity.class);
-
-            //intent.putExtra("data","null"); // TODO: This is how to share data!
-
-            // Launch activity + exit this one:
-            startActivity(intent);
-            finish();
-        } else {
-            // TODO: Prompt to turn on WiFi:
-            // can use:
-            // startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-
-            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.snackbar_wifi_warning, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+        /* EXAMPLE DIALOG:
+            new AlertDialog.Builder(this.getBaseContext())
+                    .setTitle("No Network Connection")
+                    .setMessage(R.string.wifi_warning)
+                    .setPositiveButton("Take Me There", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Nevermind!", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
+        */
     }
 }

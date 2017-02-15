@@ -2,6 +2,8 @@ package sammobewick.pocketkitchen.core;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,32 +21,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.mashape.p.spoonacularrecipefoodnutritionv1.SpoonacularAPIClient;
 import com.mashape.p.spoonacularrecipefoodnutritionv1.controllers.APIController;
+import com.mashape.p.spoonacularrecipefoodnutritionv1.http.client.APICallBack;
+import com.mashape.p.spoonacularrecipefoodnutritionv1.http.client.HttpContext;
+import com.mashape.p.spoonacularrecipefoodnutritionv1.models.DynamicResponse;
+
+import java.text.ParseException;
 
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.supporting.Recipe_Full;
+import sammobewick.pocketkitchen.supporting.Recipe_Short;
 
 public class TabbedActivity extends AppCompatActivity implements
         KitchenFragment.OnFragmentInteractionListener, RecipeFragment.OnFragmentInteractionListener, ShoppingListFragment.OnFragmentInteractionListener
 {
+    //********************************************************************************************//
+    //  VARIABLES / HANDLERS FOR THIS ACTIVITY:                                                   //
+    //********************************************************************************************//
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private SectionsPagerAdapter    mSectionsPagerAdapter;
+    private ViewPager               mViewPager;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
-
-    private APIController controller;
+    // API Controller for calls to Spoonacular:
+    private APIController           controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +91,6 @@ public class TabbedActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         // Here we check what option menu item was selected using resources:
@@ -157,19 +155,47 @@ public class TabbedActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onRecipeFragmentInteraction(int recipeID) {
+    public void onRecipeFragmentInteraction(final Recipe_Short recipe_short) {
         // TODO: Query Spoonacular for full recipe information:
+        controller.getRecipeInformationAsync(recipe_short.getId(), new APICallBack<DynamicResponse>() {
+            @Override
+            public void onSuccess(HttpContext context, DynamicResponse response) {
+                System.out.println("RESPONSE-HEADERS: " + response.getHeaders());
+                try {
+                    System.out.println("RESPONSE-STRING: " + response.parseAsString());
 
-        //controller ...
+                    Gson gson = new Gson();
+                    Recipe_Full recipe_full = gson.fromJson(response.parseAsString(), Recipe_Full.class);
 
-        // TODO: Call intent on whatever it is that will display this recipe in full!
+                    /* DEBUG: TEST GSON:
+                     * System.out.println("RESPONSE-GSON: " + recipe_full.getTitle());
+                     */
 
-        //Intent intent ...
+                    // Call method which handles this data:
+                    viewRecipe(recipe_short, recipe_full);
 
-        ///* DEBUG:
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(HttpContext context, Throwable error) {
+                System.out.println("API-ERROR: " + error.getMessage());
+            }
+        });
+        /* DEBUG:
         Snackbar.make(findViewById(R.id.main_content), "Recipe: " + recipeID, Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
-        ///* END-DEBUG
+        /* END-DEBUG */
+    }
+
+    private void viewRecipe(Recipe_Short r_short, Recipe_Full r_full) {
+        // Call our intent, including the recipe details in it!
+        Intent intent = new Intent(this, RecipeActivity.class);
+        intent.putExtra("recipe_full", r_full);
+        intent.putExtra("recipe_short", r_short);
+        startActivity(intent);
     }
 
     @Override
@@ -234,30 +260,40 @@ public class TabbedActivity extends AppCompatActivity implements
         public Fragment getItem(int position) {
             Fragment fragment;
 
-            // TODO: Match the parameters for new instance here! Likely pass arrays!
             switch (position){
                 case 0:
-                    fragment = KitchenFragment.newInstance("","");
+                    fragment = KitchenFragment.newInstance();
                     break;
 
                 case 1:
-                    fragment = ShoppingListFragment.newInstance("", "");
+                    fragment = ShoppingListFragment.newInstance();
                     break;
 
                 case 2:
-                    fragment = RecipeFragment.newInstance("", "");
+                    fragment = RecipeFragment.newInstance();
                     break;
 
                 default:
-                    fragment = KitchenFragment.newInstance("","");
+                    fragment = KitchenFragment.newInstance();
                     break;
             }
+
+            // Passing metadata information to the fragments:
+            try {
+                ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+                Bundle bundle = ai.metaData;
+                fragment.setArguments(bundle);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                // TODO: Proper error handling here.
+            }
+
             return fragment;
         }
 
         @Override
         /**
-         * Will always return 3. Generated by Android Studio.
+         * Will always return 3 (our number of fragments). Generated by Android Studio.
          */
         public int getCount() {
             return 3;

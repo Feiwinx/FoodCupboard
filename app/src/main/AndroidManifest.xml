@@ -19,7 +19,6 @@
         <meta-data
             android:name="xmashapekey"
             android:value="89uaBM1DYFmshbBN98rIAI62xuB2p1ZF3rfjsnWxuvaM0RPHpi" />
-
         <meta-data
             android:name="recipe_image_url"
             android:value="https://spoonacular.com/recipeImages/" />
@@ -41,10 +40,14 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".core.SettingsActivity"
-            android:label="@string/title_activity_settings" />
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".core.TabbedActivity"/>
         <activity
             android:name=".core.LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+            android:label="@string/title_activity_login" />
+        <activity
+            android:name=".core.RecipeActivity"
+            android:parentActivityName=".core.TabbedActivity"/>
     </application>
 
 </manifest>

@@ -2,12 +2,14 @@ package sammobewick.pocketkitchen.supporting;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
+ * Here we implement Serializable so we can pass this object between activities!
  * Created by Sam on 01/02/2017.
  */
-public class Recipe_Full {
+public class Recipe_Full implements Serializable {
     // Matches: Data > GET Get Recipe Information
     // Usage: Represents a full recipe, used in the process of viewing more info on a recipe.
     private boolean vegetarian;
@@ -17,16 +19,16 @@ public class Recipe_Full {
     private boolean veryHealthy;
     private boolean cheap;
     private boolean veryPopular;
-    private boolean sustainable;
-    private int     weightWatcherSmartPoints;
-    private String  gaps;
-    private boolean lowFodmap;
-    private boolean ketogenic;
-    private boolean whole30;
+    //private boolean sustainable;              // Left out
+    //private int     weightWatcherSmartPoints; // Left out
+    //private String  gaps;                     // Left out
+    private boolean lowFodmap;                  // Leave out?
+    private boolean ketogenic;                  // Leave out?
+    private boolean whole30;                    // Leave out?
     private int     servings;
-    // private String sourceUrl;    // Left out as hopefully not needed!
+    // private String sourceUrl;                // Left out
     private String  spoonacularSourceUrl;
-    // private String creditText;   // left out as hopefully not needed!
+    // private String creditText;               // left out
     private List<Ingredient> extendedIngredients;
     private int     id;
     private String  title;
@@ -37,15 +39,14 @@ public class Recipe_Full {
     //                                      CONSTRUCTORS:                                         //
     // ****************************************************************************************** //
 
-    public Recipe_Full(boolean cheap, boolean dairyFree, List<Ingredient> extendedIngredients, String gaps,
+    public Recipe_Full(boolean cheap, boolean dairyFree, List<Ingredient> extendedIngredients,
                        boolean glutenFree, int id, String instructions, boolean ketogenic, boolean lowFodmap,
-                       int readyInMinutes, int servings, String spoonacularSourceUrl, boolean sustainable,
+                       int readyInMinutes, int servings, String spoonacularSourceUrl,
                        String title, boolean vegan, boolean vegetarian, boolean veryHealthy,
-                       boolean veryPopular, int weightWatcherSmartPoints, boolean whole30) {
+                       boolean veryPopular, boolean whole30) {
         this.cheap = cheap;
         this.dairyFree = dairyFree;
         this.extendedIngredients = extendedIngredients;
-        this.gaps = gaps;
         this.glutenFree = glutenFree;
         this.id = id;
         this.instructions = instructions;
@@ -54,13 +55,11 @@ public class Recipe_Full {
         this.readyInMinutes = readyInMinutes;
         this.servings = servings;
         this.spoonacularSourceUrl = spoonacularSourceUrl;
-        this.sustainable = sustainable;
         this.title = title;
         this.vegan = vegan;
         this.vegetarian = vegetarian;
         this.veryHealthy = veryHealthy;
         this.veryPopular = veryPopular;
-        this.weightWatcherSmartPoints = weightWatcherSmartPoints;
         this.whole30 = whole30;
     }
 
@@ -75,7 +74,6 @@ public class Recipe_Full {
         this.cheap                  = recipeFull.isCheap();
         this.dairyFree              = recipeFull.isDairyFree();
         this.extendedIngredients    = recipeFull.getExtendedIngredients();
-        this.gaps                   = recipeFull.getGaps();
         this.glutenFree             = recipeFull.isGlutenFree();
         this.id                     = recipeFull.getId();
         this.instructions           = recipeFull.getInstructions();
@@ -84,13 +82,11 @@ public class Recipe_Full {
         this.readyInMinutes         = recipeFull.getReadyInMinutes();
         this.servings               = recipeFull.getServings();
         this.spoonacularSourceUrl   = recipeFull.getSpoonacularSourceUrl();
-        this.sustainable            = recipeFull.isSustainable();
         this.title                  = recipeFull.getTitle();
         this.vegan                  = recipeFull.isVegan();
         this.vegetarian             = recipeFull.isVegetarian();
         this.veryHealthy            = recipeFull.isVeryHealthy();
         this.veryPopular            = recipeFull.isVeryPopular();
-        this.weightWatcherSmartPoints = recipeFull.getWeightWatcherSmartPoints();
         this.whole30                = recipeFull.isWhole30();
     }
 
@@ -113,10 +109,6 @@ public class Recipe_Full {
 
     public List<Ingredient> getExtendedIngredients() {
         return extendedIngredients;
-    }
-
-    public String getGaps() {
-        return gaps;
     }
 
     public boolean isGlutenFree() {
@@ -151,10 +143,6 @@ public class Recipe_Full {
         return spoonacularSourceUrl;
     }
 
-    public boolean isSustainable() {
-        return sustainable;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -173,10 +161,6 @@ public class Recipe_Full {
 
     public boolean isVeryPopular() {
         return veryPopular;
-    }
-
-    public int getWeightWatcherSmartPoints() {
-        return weightWatcherSmartPoints;
     }
 
     public boolean isWhole30() {
