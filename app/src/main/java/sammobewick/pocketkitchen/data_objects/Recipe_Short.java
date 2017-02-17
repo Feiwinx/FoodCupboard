@@ -1,4 +1,4 @@
-package sammobewick.pocketkitchen.supporting;
+package sammobewick.pocketkitchen.data_objects;
 
 import com.google.gson.Gson;
 

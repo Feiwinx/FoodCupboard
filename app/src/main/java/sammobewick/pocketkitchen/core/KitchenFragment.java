@@ -11,7 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import sammobewick.pocketkitchen.R;
 
-import sammobewick.pocketkitchen.supporting.KitchenAdapter;
+import sammobewick.pocketkitchen.data_objects.KitchenAdapter;
 
 /**
  * A simple {@link Fragment} subclass.

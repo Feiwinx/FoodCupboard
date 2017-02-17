@@ -1,4 +1,4 @@
-package sammobewick.pocketkitchen.supporting;
+package sammobewick.pocketkitchen.data_objects;
 
 /**
  * Created by Sam on 10/02/2017.

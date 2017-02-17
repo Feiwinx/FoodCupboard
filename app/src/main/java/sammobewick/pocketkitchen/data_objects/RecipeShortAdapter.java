@@ -1,8 +1,5 @@
-package sammobewick.pocketkitchen.supporting;
+package sammobewick.pocketkitchen.data_objects;
 
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

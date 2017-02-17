@@ -1,9 +1,8 @@
-package sammobewick.pocketkitchen.supporting;
+package sammobewick.pocketkitchen.data_objects;
 
 import com.google.gson.Gson;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

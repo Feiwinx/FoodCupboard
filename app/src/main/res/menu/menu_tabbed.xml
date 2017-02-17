@@ -4,7 +4,15 @@
     tools:context="sammobewick.pocketkitchen.core.TabbedActivity">
     <item
         android:id="@+id/action_settings"
+        android:icon="@android:drawable/ic_menu_manage"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_account"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:orderInCategory="110"
+        android:title="@string/action_account"
+        app:showAsAction="ifRoom" />
 </menu>

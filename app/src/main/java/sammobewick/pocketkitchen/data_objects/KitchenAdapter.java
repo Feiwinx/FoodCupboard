@@ -1,9 +1,10 @@
-package sammobewick.pocketkitchen.supporting;
+package sammobewick.pocketkitchen.data_objects;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -14,34 +15,34 @@ import sammobewick.pocketkitchen.R;
  * Created by Sam on 31/01/2017.
  */
 
-public class ShoppingAdapter extends BaseAdapter {
+public class KitchenAdapter extends BaseAdapter {
 
-    private List<ListItem> data;
+    private List<Ingredient> data;
 
-    // Here we use this inner class to hold our views for this item:
-    private class ViewHolder {
-        TextView shoppingTitle;
-        TextView shoppingQuantity;
-        TextView shoppingMeasurement;
+    private class ViewHolder{
+        ImageView   kitchenImage;
+        TextView    kitchenTitle;
+        TextView    kitchenQuantity;
+        TextView    kitchenMeasurement;
     }
 
-    public ShoppingAdapter(List<ListItem> data) {
+    public KitchenAdapter(List<Ingredient> data) {
         this.data = data;
     }
 
-    public ShoppingAdapter() { /* empty */ }
+    public KitchenAdapter() { /* empty */ }
 
     @Override
     public int getCount() {
         if (data != null) {
             return data.size();
         } else {
-            return 0; // TODO: Remove this value when done with testing.
+            return 0; // TODO: Remove this value when testing is done.
         }
     }
 
     @Override
-    public ListItem getItem(int position) {
+    public Ingredient getItem(int position) {
         return data.get(position);
     }
 
@@ -59,12 +60,13 @@ public class ShoppingAdapter extends BaseAdapter {
         // If null, then we need to get the view and inflate it:
         if (v == null) {
             LayoutInflater vi = LayoutInflater.from(parent.getContext());
-            v = vi.inflate(R.layout.shopping_item, null);
+            v = vi.inflate(R.layout.kitchen_item, null);
 
             // Establish our holder information:
-            vh.shoppingMeasurement  = (TextView) v.findViewById(R.id.shopping_measurement);
-            vh.shoppingQuantity     = (TextView) v.findViewById(R.id.shopping_quantity);
-            vh.shoppingTitle        = (TextView) v.findViewById(R.id.shopping_quantity);
+            vh.kitchenImage         = (ImageView) v.findViewById(R.id.kitchen_image);
+            vh.kitchenMeasurement   = (TextView)  v.findViewById(R.id.kitchen_measurement);
+            vh.kitchenQuantity      = (TextView)  v.findViewById(R.id.kitchen_quantity);
+            vh.kitchenTitle         = (TextView)  v.findViewById(R.id.kitchen_title);
 
             // Save the holder as a tag on the view:
             v.setTag(vh);
@@ -73,13 +75,14 @@ public class ShoppingAdapter extends BaseAdapter {
             vh = (ViewHolder) v.getTag();
         }
 
-        // Here we get the object representing the list item:
-        ListItem item = getItem(position);
+        // Here we get the object representing the ingredient!
+        Ingredient ingredient = getItem(position);
 
         // Then, we use the object data to populate / set our vh attributes.
-        vh.shoppingQuantity.setText(String.valueOf(item.getAmount()));
-        vh.shoppingMeasurement.setText(item.getUnit());
-        vh.shoppingTitle.setText(item.getName());
+        vh.kitchenImage.setImageBitmap(null); // TODO: depends on what the attribute is.
+        vh.kitchenMeasurement.setText(ingredient.getUnit());
+        vh.kitchenQuantity.setText(String.valueOf(ingredient.getAmount()));
+        vh.kitchenTitle.setText(ingredient.getName());
 
         return v;
     }
@@ -88,11 +91,11 @@ public class ShoppingAdapter extends BaseAdapter {
     //                                      SETTER + GETTER :                                     //
     // ****************************************************************************************** //
 
-    public List<ListItem> getData() {
+    public List<Ingredient> getData() {
         return data;
     }
 
-    public void setData(List<ListItem> data) {
+    public void setData(List<Ingredient> data) {
         this.data = data;
         this.notifyDataSetChanged();
     }

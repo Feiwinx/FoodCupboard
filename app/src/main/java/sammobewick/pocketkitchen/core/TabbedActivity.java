@@ -31,8 +31,9 @@ import com.mashape.p.spoonacularrecipefoodnutritionv1.models.DynamicResponse;
 import java.text.ParseException;
 
 import sammobewick.pocketkitchen.R;
-import sammobewick.pocketkitchen.supporting.Recipe_Full;
-import sammobewick.pocketkitchen.supporting.Recipe_Short;
+import sammobewick.pocketkitchen.data_objects.Recipe_Full;
+import sammobewick.pocketkitchen.data_objects.Recipe_Short;
+import sammobewick.pocketkitchen.supporting.ActivityHelper;
 
 public class TabbedActivity extends AppCompatActivity implements
         KitchenFragment.OnFragmentInteractionListener, RecipeFragment.OnFragmentInteractionListener, ShoppingListFragment.OnFragmentInteractionListener
@@ -76,7 +77,8 @@ public class TabbedActivity extends AppCompatActivity implements
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Logic here for FAB.
+                Snackbar.make(findViewById(R.id.main_content), "Oops! This feature is not yet complete!", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
             }
         });
     }
@@ -91,12 +93,19 @@ public class TabbedActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         int id = item.getItemId();
 
         // Here we check what option menu item was selected using resources:
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
+        switch (id) {
+            case R.id.action_settings:
+                intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.action_account:
+                intent = new Intent(this, LoginActivity.class);
+                intent.putExtra("signedIn", true);
+                startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -157,33 +166,39 @@ public class TabbedActivity extends AppCompatActivity implements
     @Override
     public void onRecipeFragmentInteraction(final Recipe_Short recipe_short) {
         // TODO: Query Spoonacular for full recipe information:
-        controller.getRecipeInformationAsync(recipe_short.getId(), new APICallBack<DynamicResponse>() {
-            @Override
-            public void onSuccess(HttpContext context, DynamicResponse response) {
-                System.out.println("RESPONSE-HEADERS: " + response.getHeaders());
-                try {
-                    System.out.println("RESPONSE-STRING: " + response.parseAsString());
+        ActivityHelper helper = new ActivityHelper(this);
+        if (!helper.isConnected()) {
+            Snackbar.make(findViewById(R.id.main_content), R.string.wifi_warning_short, Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        } else {
+            controller.getRecipeInformationAsync(recipe_short.getId(), new APICallBack<DynamicResponse>() {
+                @Override
+                public void onSuccess(HttpContext context, DynamicResponse response) {
+                    System.out.println("RESPONSE-HEADERS: " + response.getHeaders());
+                    try {
+                        System.out.println("RESPONSE-STRING: " + response.parseAsString());
 
-                    Gson gson = new Gson();
-                    Recipe_Full recipe_full = gson.fromJson(response.parseAsString(), Recipe_Full.class);
+                        Gson gson = new Gson();
+                        Recipe_Full recipe_full = gson.fromJson(response.parseAsString(), Recipe_Full.class);
 
                     /* DEBUG: TEST GSON:
                      * System.out.println("RESPONSE-GSON: " + recipe_full.getTitle());
                      */
 
-                    // Call method which handles this data:
-                    viewRecipe(recipe_short, recipe_full);
+                        // Call method which handles this data:
+                        viewRecipe(recipe_short, recipe_full);
 
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(HttpContext context, Throwable error) {
-                System.out.println("API-ERROR: " + error.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(HttpContext context, Throwable error) {
+                    System.out.println("API-ERROR: " + error.getMessage());
+                }
+            });
+        }
         /* DEBUG:
         Snackbar.make(findViewById(R.id.main_content), "Recipe: " + recipeID, Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
@@ -244,6 +259,16 @@ public class TabbedActivity extends AppCompatActivity implements
         Snackbar.make(findViewById(R.id.main_content), "Shopping Action: " + shoppingID, Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
         ///* END-DEBUG
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        ActivityHelper helper = new ActivityHelper(this);
+        if (!helper.isConnected()) {
+            Snackbar.make(findViewById(R.id.main_content), R.string.wifi_warning_short, Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
     }
 
     /**

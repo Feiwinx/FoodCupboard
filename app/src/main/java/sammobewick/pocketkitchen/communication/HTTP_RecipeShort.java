@@ -1,11 +1,9 @@
 package sammobewick.pocketkitchen.communication;
 
 import com.google.gson.Gson;
-import com.mashape.p.spoonacularrecipefoodnutritionv1.models.DynamicResponse;
 
-import java.text.ParseException;
 import java.util.List;
-import sammobewick.pocketkitchen.supporting.Recipe_Short;
+import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 
 /**
  * Created by Sam on 09/02/2017.

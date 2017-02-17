@@ -30,7 +30,6 @@
             <!-- Here we are setting our launcher activity. -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -41,13 +40,15 @@
         <activity
             android:name=".core.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".core.TabbedActivity"/>
-        <activity
-            android:name=".core.LoginActivity"
-            android:label="@string/title_activity_login" />
+            android:parentActivityName=".core.TabbedActivity" />
         <activity
             android:name=".core.RecipeActivity"
-            android:parentActivityName=".core.TabbedActivity"/>
+            android:parentActivityName=".core.TabbedActivity" />
+        <activity android:name=".core.LoginActivity">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

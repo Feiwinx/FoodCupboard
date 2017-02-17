@@ -1,8 +1,6 @@
 package sammobewick.pocketkitchen.core;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,9 +21,8 @@ import java.text.ParseException;
 
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.communication.HTTP_RecipeShort;
-import sammobewick.pocketkitchen.supporting.Recipe_Full;
-import sammobewick.pocketkitchen.supporting.RecipeShortAdapter;
-import sammobewick.pocketkitchen.supporting.Recipe_Short;
+import sammobewick.pocketkitchen.data_objects.RecipeShortAdapter;
+import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -140,7 +137,6 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
                         //API_Response.ReadHTTPResponse(response);
                         try {
 
-                            Gson gson = new Gson();
                             HTTP_RecipeShort handler = new HTTP_RecipeShort(response.parseAsString());
                             mAdapter.setData(handler.getResults());
 

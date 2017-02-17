@@ -10,7 +10,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import sammobewick.pocketkitchen.R;
-import sammobewick.pocketkitchen.supporting.ShoppingAdapter;
+import sammobewick.pocketkitchen.data_objects.ShoppingAdapter;
 
 /**
  * A simple {@link Fragment} subclass.

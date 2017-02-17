@@ -10,15 +10,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.communication.DownloadImageAsync;
-import sammobewick.pocketkitchen.supporting.Ingredient;
-import sammobewick.pocketkitchen.supporting.Recipe_Full;
-import sammobewick.pocketkitchen.supporting.Recipe_Short;
+import sammobewick.pocketkitchen.data_objects.Ingredient;
+import sammobewick.pocketkitchen.data_objects.Recipe_Full;
+import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 
 public class RecipeActivity extends AppCompatActivity {
     // As we need to load images here, we need to save the meta-data for URL start:
@@ -85,7 +83,7 @@ public class RecipeActivity extends AppCompatActivity {
             this.findViewById(R.id.dietary_gluten_f).setVisibility(View.GONE);
         }
 
-        if (recipe_full.isDairyFree()) {
+        if (recipe_full.isDairyFree() & !recipe_full.isVegan()) {
             this.findViewById(R.id.dietary_dairy_f).setVisibility(View.VISIBLE);
         } else {
             this.findViewById(R.id.dietary_dairy_f).setVisibility(View.GONE);
@@ -121,8 +119,9 @@ public class RecipeActivity extends AppCompatActivity {
         recipe_serves.setText(recipe_full.getServings() + plates);
 
         if (recipe_full.isVeryPopular()) {
+            this.findViewById(R.id.recipe_popular_img_f).setVisibility(View.VISIBLE);
+        } else {
             this.findViewById(R.id.recipe_popular_img_f).setVisibility(View.GONE);
-            this.findViewById(R.id.recipe_popular_f).setVisibility(View.GONE);
         }
 
         TextView ingredients = (TextView) findViewById(R.id.recipe_ing_f);

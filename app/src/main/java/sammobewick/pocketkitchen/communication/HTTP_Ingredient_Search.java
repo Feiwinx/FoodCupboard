@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
-import sammobewick.pocketkitchen.supporting.Ingredient_Search;
+import sammobewick.pocketkitchen.data_objects.Ingredient_Search;
 
 /**
  * Created by Sam on 10/02/2017.

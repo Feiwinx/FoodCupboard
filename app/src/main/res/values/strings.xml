@@ -20,6 +20,9 @@
     <string name="lbl_btn_add_recipe">I want to cook this!</string>
     <string name="lbl_btn_rem_recipe">I no longer want to cook this!</string>
 
+    <string name="lbl_btn_sign_out">Sign Out of Google Account</string>
+    <string name="lbl_btn_disconnect">Revoke Google Account Access</string>
+
     <!-- Hints: -->
     <string name="hint_btn_save">Save your changes</string>
     <string name="hint_btn_cancel">Undo any changes made</string>
@@ -28,6 +31,8 @@
     <string name="hint_edit_quantity">Enter the amount</string>
     <string name="hint_btn_add_recipe">Add the recipe to your shopping &amp; cooking lists</string>
     <string name="hint_btn_rem_recipe">Remove the recipe from your shopping &amp; cooking lists</string>
+    <string name="hint_btn_sign_out">Sign out from Pocket Kitchen</string>
+    <string name="hint_btn_disconnect">Revoke Pocket Kitchen\'s access to your Google account</string>
 
     <string name="empty_recipes">You can use the search box to find yourself some tasty options!</string>
     <string name="empty_list">Success!\n\nYou don\'t have to go shopping!</string>
@@ -44,9 +49,11 @@
     <string name="test_shopping_measure">items</string>
 
     <string name="wifi_warning">Warning: No active network found. Go to Settings to enable one!</string>
+    <string name="wifi_warning_short">Oops! No network connection found!</string>
 
     <!-- Actions -->
     <string name="action_settings">Preferences</string>
+    <string name="action_account">My Account</string>
     <string name="action_save">Save</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_delete">Delete</string>
@@ -54,27 +61,9 @@
     <!-- TODO: Strings related to Settings (change these!) -->
 
     <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
+    <string name="pref_header_general">My Pocket Kitchen</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
-
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
+    <string name="pref_primary_colour">Primary Kitchen Colour</string>
 
     <!-- Settings for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>
@@ -132,4 +121,5 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_dummy_login">Sign in</string>
 </resources>

@@ -19,33 +19,10 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, TabbedActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
 
-        // TODO: Instead of main, direct this to the login activity:
         // Launch activity + exit this one:
         startActivity(intent);
         finish();
-
-        /* EXAMPLE DIALOG:
-            new AlertDialog.Builder(this.getBaseContext())
-                    .setTitle("No Network Connection")
-                    .setMessage(R.string.wifi_warning)
-                    .setPositiveButton("Take Me There", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                            finish();
-                        }
-                    })
-                    .setNegativeButton("Nevermind!", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-        }
-        */
     }
 }

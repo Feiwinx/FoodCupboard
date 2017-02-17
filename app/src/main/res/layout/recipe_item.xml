@@ -16,8 +16,10 @@
         android:layout_centerVertical="true"
         android:paddingBottom="0px"
         android:paddingTop="0px"
-        android:layout_width="?android:attr/listPreferredItemHeight"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxHeight="?android:attr/listPreferredItemHeight"
+        android:maxWidth="?android:attr/listPreferredItemHeight"
         android:cropToPadding="false" />
 
     <TextView android:id="@+id/recipe_title"
@@ -55,6 +57,5 @@
         android:layout_below="@+id/recipe_title"
         android:layout_toLeftOf="@id/recipe_dietary_image"
         android:layout_alignParentBottom="true" />
-
 
 </RelativeLayout>
