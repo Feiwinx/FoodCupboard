@@ -109,8 +109,9 @@ public class RecipeShortAdapter extends BaseAdapter {
         this.data = data;
         this.notifyDataSetChanged();
 
+        /* DEBUG
         for(Recipe_Short r : data) {
             System.out.println("DATA: " + r.getTitle());
-        }
+        } */
     }
 }

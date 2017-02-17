@@ -22,6 +22,7 @@
 
     <string name="lbl_btn_sign_out">Sign Out of Google Account</string>
     <string name="lbl_btn_disconnect">Revoke Google Account Access</string>
+    <string name="lbl_btn_proceed">Go To Pocket Kitchen</string>
 
     <!-- Hints: -->
     <string name="hint_btn_save">Save your changes</string>
@@ -33,10 +34,12 @@
     <string name="hint_btn_rem_recipe">Remove the recipe from your shopping &amp; cooking lists</string>
     <string name="hint_btn_sign_out">Sign out from Pocket Kitchen</string>
     <string name="hint_btn_disconnect">Revoke Pocket Kitchen\'s access to your Google account</string>
+    <string name="hint_btn_proceed">Click to proceed to the Pocket Kitchen application</string>
 
     <string name="empty_recipes">You can use the search box to find yourself some tasty options!</string>
     <string name="empty_list">Success!\n\nYou don\'t have to go shopping!</string>
     <string name="empty_kitchen">Oops!\n\nYour cupboards are looking empty, time to go get some shopping!</string>
+    <string name="no_results">Oh no! Your search returned no results!</string>
 
     <!-- Test String for XML Views: -->
     <string name="test_recipe_title">Tasty Cottage Pie</string>

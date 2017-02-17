@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.mashape.p.spoonacularrecipefoodnutritionv1.SpoonacularAPIClient;
@@ -18,6 +19,7 @@ import com.mashape.p.spoonacularrecipefoodnutritionv1.http.client.HttpContext;
 import com.mashape.p.spoonacularrecipefoodnutritionv1.models.DynamicResponse;
 
 import java.text.ParseException;
+import java.util.List;
 
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.communication.HTTP_RecipeShort;
@@ -138,7 +140,14 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
                         try {
 
                             HTTP_RecipeShort handler = new HTTP_RecipeShort(response.parseAsString());
-                            mAdapter.setData(handler.getResults());
+
+                            List<Recipe_Short> data = handler.getResults();
+                            mAdapter.setData(data);
+
+                            // Provides proper feedback when no results are returned:
+                            if (data.size() == 0) {
+                                ((TextView)mListView.getEmptyView()).setText(R.string.no_results);
+                            }
 
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -147,6 +156,7 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
 
                     @Override
                     public void onFailure(HttpContext context, Throwable error) {
+                        // TODO: Proper error handling.
                         System.out.println("API-ERROR: " + error.getMessage());
                     }
                 });

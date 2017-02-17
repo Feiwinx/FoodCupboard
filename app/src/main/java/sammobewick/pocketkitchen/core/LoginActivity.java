@@ -1,16 +1,9 @@
 package sammobewick.pocketkitchen.core;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -77,6 +70,9 @@ public class LoginActivity extends AppCompatActivity implements
 
         Button disconnectButton = (Button) findViewById(R.id.btn_google_disconnect);
         disconnectButton.setOnClickListener(this);
+
+        Button proceedButton = (Button) findViewById(R.id.btn_proceed);
+        proceedButton.setOnClickListener(this);
     }
 
     @Override
@@ -101,7 +97,17 @@ public class LoginActivity extends AppCompatActivity implements
             case R.id.btn_google_disconnect:
                 disconnectAccount();
                 break;
+            case R.id.btn_proceed:
+                proceed();
+                break;
         }
+    }
+
+    private void proceed() {
+        Intent intent = new Intent(this, TabbedActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     private void signIn() {
@@ -144,9 +150,6 @@ public class LoginActivity extends AppCompatActivity implements
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             updateUI(true);
-
-            Intent intent = new Intent(this, TabbedActivity.class);
-            startActivity(intent);
         } else {
             // Signed out, show unauthenticated UI.
             updateUI(false);
@@ -158,10 +161,12 @@ public class LoginActivity extends AppCompatActivity implements
             findViewById(R.id.btn_google_disconnect).setVisibility(View.VISIBLE);
             findViewById(R.id.btn_google_sign_out).setVisibility(View.VISIBLE);
             findViewById(R.id.btn_google_sign_in).setVisibility(View.GONE);
+            findViewById(R.id.btn_proceed).setVisibility(View.VISIBLE);
         } else {
             findViewById(R.id.btn_google_disconnect).setVisibility(View.GONE);
             findViewById(R.id.btn_google_sign_out).setVisibility(View.GONE);
             findViewById(R.id.btn_google_sign_in).setVisibility(View.VISIBLE);
+            findViewById(R.id.btn_proceed).setVisibility(View.GONE);
         }
     }
 
