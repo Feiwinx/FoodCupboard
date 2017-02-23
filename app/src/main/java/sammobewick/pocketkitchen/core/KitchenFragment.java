@@ -8,10 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
-import sammobewick.pocketkitchen.R;
+import android.widget.SearchView;
 
+import sammobewick.pocketkitchen.R;
+import sammobewick.pocketkitchen.data_objects.Ingredient_Search;
 import sammobewick.pocketkitchen.data_objects.KitchenAdapter;
+import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,13 +23,13 @@ import sammobewick.pocketkitchen.data_objects.KitchenAdapter;
  * Use the {@link KitchenFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class KitchenFragment extends Fragment {
+public class KitchenFragment extends Fragment implements SearchView.OnQueryTextListener {
     //********************************************************************************************//
     //  VARIABLES / HANDLERS FOR THIS FRAGMENT:                                                   //
     //********************************************************************************************//
 
     private AbsListView mListView;
-    private ListAdapter mAdapter;
+    private KitchenAdapter mAdapter;
     private OnFragmentInteractionListener mListener;
 
     // ****************************************************************************************** //
@@ -47,13 +49,50 @@ public class KitchenFragment extends Fragment {
         return fragment;
     }
 
+    public boolean addItemToData(Ingredient_Search item) {
+        PocketKitchenData pkData = PocketKitchenData.getInstance();
+        boolean result = pkData.addToIngredients(item);
+
+        if (result)
+            mAdapter.notifyDataSetChanged();
+
+        return result;
+    }
+
+    public boolean updateItemInData(Ingredient_Search old, Ingredient_Search item) {
+        PocketKitchenData pkData = PocketKitchenData.getInstance();
+        boolean result = pkData.updateInIngredients(old, item);
+
+        if (result)
+            mAdapter.notifyDataSetChanged();
+
+        return result;
+    }
+
+    public boolean removeItemInData(Ingredient_Search item) {
+        PocketKitchenData pkData = PocketKitchenData.getInstance();
+        boolean result = pkData.removeFromIngredients(item);
+
+        if (result)
+            mAdapter.notifyDataSetChanged();
+
+        return result;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Fetch our intent parameter - IT SHOULD NEVER BE NULL.
+        String urlStart = "";
+        if (getArguments() != null) {
+            if (getArguments().containsKey("recipe_image_url")) {
+                urlStart = getArguments().getString("recipe_image_url");
+            }
+        }
+
         // Prepare our adapter:
-        String urlStart = getArguments().getString("recipe_image_url");
-        mAdapter = new KitchenAdapter();
+        mAdapter = new KitchenAdapter(urlStart);
     }
 
     @Override
@@ -69,7 +108,7 @@ public class KitchenFragment extends Fragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    mListener.onKitchenFragmentInteraction(position);
+                    mListener.onKitchenFragmentInteraction(mAdapter.getItem(position));
                 }
             }
         );
@@ -94,6 +133,27 @@ public class KitchenFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (mListener != null) {
+            mListener.onKitchenFragmentSelected(isVisibleToUser);
+        }
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        if (mAdapter != null) {
+            mAdapter.setFilterText(query);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -101,6 +161,7 @@ public class KitchenFragment extends Fragment {
      * activity.
      */
     public interface OnFragmentInteractionListener {
-        void onKitchenFragmentInteraction(int kitchenID);
+        void onKitchenFragmentInteraction(final Ingredient_Search i);
+        void onKitchenFragmentSelected(boolean visible);
     }
 }

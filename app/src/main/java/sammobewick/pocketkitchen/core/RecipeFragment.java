@@ -23,8 +23,10 @@ import java.util.List;
 
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.communication.HTTP_RecipeShort;
+import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.data_objects.RecipeShortAdapter;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
+import sammobewick.pocketkitchen.supporting.ActivityHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,8 +69,15 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Fetch our intent parameter - IT SHOULD NEVER BE NULL.
+        String urlStart = "";
+        if (getArguments() != null) {
+            if (getArguments().containsKey("recipe_image_url")) {
+                urlStart = getArguments().getString("recipe_image_url");
+            }
+        }
+
         // Prepare our adapter:
-        String urlStart = getArguments().getString("recipe_image_url");
         mAdapter = new RecipeShortAdapter(urlStart);
 
         // Prepare our API Controller:
@@ -142,7 +151,9 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
                             HTTP_RecipeShort handler = new HTTP_RecipeShort(response.parseAsString());
 
                             List<Recipe_Short> data = handler.getResults();
-                            mAdapter.setData(data);
+                            PocketKitchenData pkData = PocketKitchenData.getInstance();
+                            pkData.setRecipes(data);
+                            mAdapter.notifyDataSetChanged();
 
                             // Provides proper feedback when no results are returned:
                             if (data.size() == 0) {
@@ -151,18 +162,23 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
 
                         } catch (ParseException e) {
                             e.printStackTrace();
+                            ActivityHelper helper = new ActivityHelper(getActivity());
+                            helper.displayErrorDialog(e.getLocalizedMessage());
                         }
                     }
 
                     @Override
                     public void onFailure(HttpContext context, Throwable error) {
-                        // TODO: Proper error handling.
-                        System.out.println("API-ERROR: " + error.getMessage());
+                        error.printStackTrace();
+                        ActivityHelper helper = new ActivityHelper(getActivity());
+                        helper.displayErrorDialog(error.getLocalizedMessage());
                     }
                 });
 
         return false;
     }
+
+
 
     /**
      * Factory method required by the use of a SearchView. Only returns false as this means the
@@ -175,6 +191,14 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
         return false;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (mListener != null) {
+            mListener.onRecipeFragementSelected(isVisibleToUser);
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -183,5 +207,6 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     public interface OnFragmentInteractionListener {
         void onRecipeFragmentInteraction(Recipe_Short recipe_short);
+        void onRecipeFragementSelected(boolean visible);
     }
 }

@@ -29,13 +29,10 @@ public class RecipeShortAdapter extends BaseAdapter {
         TextView    recipeDesc;
     }
 
-    public RecipeShortAdapter(String urlStart, List<Recipe_Short> data) {
-        this.data = data;
-        this.urlStart = urlStart;
-    }
-
     public RecipeShortAdapter(String urlStart) {
         this.urlStart = urlStart;
+        PocketKitchenData pkData = PocketKitchenData.getInstance();
+        data = pkData.getRecipes();
     }
 
     @Override
@@ -91,10 +88,22 @@ public class RecipeShortAdapter extends BaseAdapter {
 
         // Load the images using aSync task:
         String url  = urlStart + recipe.getImage();
+
+        /* DEBUG:
         System.out.println("URL: " + url);
+        // END-DEBUG */
+
         new DownloadImageAsync(vh.recipeImg).execute(url);
 
         return v;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        System.out.println("RECIPE-FRAG: Call made to notifySetDataChanged!");
+        PocketKitchenData pkData = PocketKitchenData.getInstance();
+        data = pkData.getRecipes();
+        super.notifyDataSetChanged();
     }
 
     // ****************************************************************************************** //
@@ -112,6 +121,6 @@ public class RecipeShortAdapter extends BaseAdapter {
         /* DEBUG
         for(Recipe_Short r : data) {
             System.out.println("DATA: " + r.getTitle());
-        } */
+        } // END-DEBUG */
     }
 }

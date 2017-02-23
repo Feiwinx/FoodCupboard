@@ -22,6 +22,9 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 
 import sammobewick.pocketkitchen.R;
+import sammobewick.pocketkitchen.data_objects.Ingredient;
+import sammobewick.pocketkitchen.data_objects.ListItem;
+import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
 
 public class LoginActivity extends AppCompatActivity implements
@@ -146,6 +149,19 @@ public class LoginActivity extends AppCompatActivity implements
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         hideProgressDialog();
 
+        // TODO: Load this data, at the minute this is being called for instantiation.
+        PocketKitchenData pkData = PocketKitchenData.getInstance();
+
+        /* Do some test data:
+        ListItem li = new ListItem(
+                (float)11.0,
+                11,
+                "name",
+                "unit"
+        );
+        pkData.addToListItems(li);
+        // END-TEST-DATA */
+
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
@@ -183,7 +199,8 @@ public class LoginActivity extends AppCompatActivity implements
         // An unresolvable error has occurred and Google APIs (including Sign-In) will not
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
-        // TODO: Show error message.
+        ActivityHelper helper = new ActivityHelper(getApplicationContext());
+        helper.displayErrorDialog(connectionResult.getErrorMessage());
     }
 
     @Override

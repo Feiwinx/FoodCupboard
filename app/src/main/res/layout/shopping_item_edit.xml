@@ -9,25 +9,38 @@
     <!--
         This XML file the dialog box for when the user edits a shopping item.
     -->
+
+    <TextView android:id="@+id/txt_add_kitchen_title"
+        android:text="@string/lbl_add_kitchen_title"
+        android:textStyle="italic"
+        android:textColor="@color/red"
+        android:visibility="gone"
+
+        android:layout_margin="5dp"
+        android:gravity="center"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <TextView android:id="@+id/txt_shopping_item"
         android:text="@string/lbl_item"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="16sp"
 
+        android:layout_below="@id/txt_add_kitchen_title"
         android:layout_margin="5dp"
         android:gravity="center"
 
         android:layout_width="80dp"
         android:layout_height="80dp" />
 
-    <!-- TODO: Should this be EditText? It may not be feasible to edit the name of an item! -->
     <EditText android:id="@+id/edit_shopping_item"
         android:textSize="16sp"
         android:inputType="textAutoCorrect|textShortMessage"
-        android:text="example shopping item"
         android:textStyle="italic"
 
+        android:layout_below="@id/txt_add_kitchen_title"
         android:layout_toRightOf="@id/txt_shopping_item"
         android:layout_toEndOf="@id/txt_shopping_item"
 
@@ -36,24 +49,69 @@
         android:layout_width="fill_parent"
         android:layout_height="80dp" />
 
-    <TextView android:id="@+id/txt_lbl_qty_item"
-        android:text="@string/lbl_quantity"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
+    <LinearLayout android:id="@+id/ll_item_edit_1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_shopping_item"
+        android:weightSum="1">
 
-        android:layout_below="@id/txt_shopping_item"
+        <TextView android:id="@+id/txt_lbl_qty_item"
+            android:text="@string/lbl_quantity"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
 
-        android:gravity="center"
-        android:layout_margin="5dp"
+            android:layout_below="@id/txt_shopping_item"
 
-        android:layout_width="80dp"
-        android:layout_height="40dp" />
+            android:gravity="center"
+            android:layout_margin="5dp"
+
+            android:layout_width="80dp"
+            android:layout_height="match_parent" />
+
+        <!-- EditText for the Quantity: -->
+        <EditText android:id="@+id/measurements_editText"
+            android:hint="@string/hint_edit_quantity"
+            android:inputType="number"
+            android:textSize="16sp"
+
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_weight="0.9" />
+
+        <!-- EditText for Measurement Type -->
+        <EditText android:id="@+id/edit_item_qty_name"
+            android:textColor="@color/black"
+            android:textStyle="italic"
+            android:textSize="16sp"
+            android:text="kg"
+            android:textAlignment="center"
+
+            android:enabled="false"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:gravity="bottom|end"
+
+            android:layout_weight="0.1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:maxLines="1" />
+
+    </LinearLayout>
 
     <!-- Nested layout here keeps the buttons distributed evenly and easily: -->
     <LinearLayout
         android:layout_margin="10dp"
-        android:layout_below="@id/txt_lbl_qty_item"
+        android:layout_below="@id/ll_item_edit_1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
@@ -102,34 +160,4 @@
             android:layout_height="match_parent" />
 
     </LinearLayout>
-
-    <TextView android:id="@+id/txt_item_qty_name"
-        android:textColor="@color/black"
-        android:textStyle="italic"
-        android:textSize="16sp"
-        android:text="kg"
-
-        android:layout_margin="5dp"
-        android:gravity="bottom|right"
-
-        android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/txt_lbl_qty_item"
-        android:layout_below="@id/txt_shopping_item"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <!-- EditText for the Quantity: -->
-    <EditText android:id="@+id/measurements_editText"
-        android:hint="@string/hint_edit_quantity"
-        android:inputType="number"
-        android:textSize="16sp"
-
-        android:gravity="center_vertical"
-        android:layout_alignTop="@+id/txt_lbl_qty_item"
-        android:layout_alignLeft="@+id/edit_shopping_item"
-        android:layout_alignStart="@+id/edit_shopping_item"
-
-        android:layout_width="match_parent"
-        android:layout_height="40dp" />
 </RelativeLayout>

@@ -4,17 +4,17 @@
 
     <header
         android:fragment="sammobewick.pocketkitchen.core.SettingsActivity$GeneralPreferenceFragment"
-        android:icon="@drawable/ic_face_black_24dp"
+        android:icon="@drawable/ic_my_preferences"
         android:title="@string/pref_header_general" />
 
     <header
         android:fragment="sammobewick.pocketkitchen.core.SettingsActivity$NotificationPreferenceFragment"
-        android:icon="@drawable/ic_info_black_24dp"
+        android:icon="@drawable/ic_info"
         android:title="@string/pref_header_notifications" />
 
     <header
         android:fragment="sammobewick.pocketkitchen.core.SettingsActivity$DataSyncPreferenceFragment"
-        android:icon="@drawable/ic_sync_black_24dp"
+        android:icon="@drawable/ic_sync"
         android:title="@string/pref_header_data_sync" />
 
 </preference-headers>

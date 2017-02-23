@@ -8,8 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
+import android.widget.EditText;
+import android.widget.SearchView;
+
 import sammobewick.pocketkitchen.R;
+import sammobewick.pocketkitchen.data_objects.ListItem;
+import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.data_objects.ShoppingAdapter;
 
 /**
@@ -20,14 +24,17 @@ import sammobewick.pocketkitchen.data_objects.ShoppingAdapter;
  * Use the {@link ShoppingListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ShoppingListFragment extends Fragment {
+public class ShoppingListFragment extends Fragment implements SearchView.OnQueryTextListener {
     //********************************************************************************************//
     //  VARIABLES / HANDLERS FOR THIS FRAGMENT:                                                   //
     //********************************************************************************************//
 
     private AbsListView mListView;
-    private ListAdapter mAdapter;
+    private ShoppingAdapter mAdapter;
     private OnFragmentInteractionListener mListener;
+
+    private EditText edit_qty;
+    private EditText edit_name;
 
     // ****************************************************************************************** //
     //                                 CONSTRUCTORS + SET-UP:                                     //
@@ -46,13 +53,50 @@ public class ShoppingListFragment extends Fragment {
         return fragment;
     }
 
+    public boolean addItemToData(ListItem item) {
+        PocketKitchenData pkData = PocketKitchenData.getInstance();
+        boolean result = pkData.addToListItems(item);
+
+        if (result)
+            mAdapter.notifyDataSetChanged();
+
+        return result;
+    }
+
+    public boolean updateItemInData(ListItem old, ListItem item) {
+        PocketKitchenData pkData = PocketKitchenData.getInstance();
+        boolean result = pkData.updateInListItems(old, item);
+
+        if (result)
+            mAdapter.notifyDataSetChanged();
+
+        return result;
+    }
+
+    public boolean removeItemInData(ListItem item) {
+        PocketKitchenData pkData = PocketKitchenData.getInstance();
+        boolean result = pkData.removeFromListItems(item);
+
+        if (result)
+            mAdapter.notifyDataSetChanged();
+
+        return result;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Prepare our adapter:
-        String urlStart = getArguments().getString("recipe_image_url");
-        mAdapter = new ShoppingAdapter();
+        // Fetch our intent parameter - IT SHOULD NEVER BE NULL.
+        String urlStart = "";
+        if (getArguments() != null) {
+            if (getArguments().containsKey("recipe_image_url")) {
+                urlStart = getArguments().getString("recipe_image_url");
+            }
+        }
+
+        // Get our adapter:
+        mAdapter = new ShoppingAdapter(urlStart);
     }
 
     @Override
@@ -68,7 +112,7 @@ public class ShoppingListFragment extends Fragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    mListener.onShoppingFragmentInteraction(position);
+                    mListener.onShoppingFragmentInteraction(mAdapter.getItem(position));
                 }
             }
         );
@@ -93,13 +137,43 @@ public class ShoppingListFragment extends Fragment {
         mListener = null;
     }
 
-    /**
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (mListener != null) {
+            mListener.onShoppingFragmentSelected(isVisibleToUser);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // TODO: Might be dangerous call!
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        if (mAdapter != null) {
+            mAdapter.setFilterText(query);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+            /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
      */
     public interface OnFragmentInteractionListener {
-        void onShoppingFragmentInteraction(int shoppingID);
+        void onShoppingFragmentInteraction(final ListItem i);
+        void onShoppingFragmentSelected(boolean visible);
     }
 }

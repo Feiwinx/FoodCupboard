@@ -41,7 +41,26 @@ public class ActivityHelper {
                         context.startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
                     }
                 })
+                .setNegativeButton("Got It", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing?
+                    }
+                })
                 .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    public void displayErrorDialog(String errorMessage) {
+        new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.myDialog))
+                .setTitle("Oops! Something went wrong:")
+                .setMessage("Error: " + errorMessage + "\nYou may want to try again or report the error!")
+                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO: add any feature required here.
+                    }
+                })
                 .show();
     }
 }

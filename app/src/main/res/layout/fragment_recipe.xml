@@ -6,7 +6,7 @@
 
     <SearchView android:id="@+id/recipe_search"
 
-        android:queryHint="@string/hint_searchview"
+        android:queryHint="@string/hint_search_recipes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

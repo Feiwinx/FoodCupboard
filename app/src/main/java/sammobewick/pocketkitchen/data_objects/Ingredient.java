@@ -16,25 +16,21 @@ public class Ingredient implements Serializable {
     private String  image;
     private String  name;
     private float   amount;
-    private String  unit;                   // would like to leave out
     private String  unitShort;
     private String  unitLong;
     private String  originalString;         // this includes the meta information in a String usually.
-    private List<String> metaInformation;   // would like to leave this out due to the originalString.
 
     // ****************************************************************************************** //
     //                                      CONSTRUCTORS:                                         //
     // ****************************************************************************************** //
 
-    public Ingredient(String aisle, float amount, int id, String image, List<String> metaInformation, String name, String originalString, String unit, String unitLong, String unitShort) {
+    public Ingredient(String aisle, float amount, int id, String image, String name, String originalString, String unitLong, String unitShort) {
         this.aisle = aisle;
         this.amount = amount;
         this.id = id;
         this.image = image;
-        this.metaInformation = metaInformation;
         this.name = name;
         this.originalString = originalString;
-        this.unit = unit;
         this.unitLong = unitLong;
         this.unitShort = unitShort;
     }
@@ -50,10 +46,8 @@ public class Ingredient implements Serializable {
         this.amount             = ingredient.getAmount();
         this.id                 = ingredient.getId();
         this.image              = ingredient.getImage();
-        this.metaInformation    = ingredient.getMetaInformation();
         this.name               = ingredient.getName();
         this.originalString     = ingredient.getOriginalString();
-        this.unit               = ingredient.getUnit();
         this.unitLong           = ingredient.getUnitLong();
         this.unitShort          = ingredient.getUnitShort();
     }
@@ -79,10 +73,6 @@ public class Ingredient implements Serializable {
         return name;
     }
 
-    public String getUnit() {
-        return unit;
-    }
-
     public String getUnitShort() {
         return unitShort;
     }
@@ -95,10 +85,6 @@ public class Ingredient implements Serializable {
         return image;
     }
 
-    public List<String> getMetaInformation() {
-        return metaInformation;
-    }
-
     public String getOriginalString() {
         return originalString;
     }
@@ -108,14 +94,23 @@ public class Ingredient implements Serializable {
     }
 
     // ****************************************************************************************** //
-    //                                      SETTERS:                                              //
-    // ****************************************************************************************** //
-
-
-
-    // ****************************************************************************************** //
     //                                      toString():                                           //
     // ****************************************************************************************** //
 
     // TODO: Not worth having the full toString so create your own essential information version!
+
+
+    @Override
+    public String toString() {
+        return "Ingredient{" +
+                "aisle='" + aisle + '\'' +
+                ", id=" + id +
+                ", image='" + image + '\'' +
+                ", name='" + name + '\'' +
+                ", amount=" + amount +
+                ", unitShort='" + unitShort + '\'' +
+                ", unitLong='" + unitLong + '\'' +
+                ", originalString='" + originalString + '\'' +
+                '}';
+    }
 }

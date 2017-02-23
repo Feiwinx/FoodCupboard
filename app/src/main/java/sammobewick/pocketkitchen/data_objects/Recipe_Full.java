@@ -172,4 +172,28 @@ public class Recipe_Full implements Serializable {
     // ****************************************************************************************** //
 
     // TODO: Not worth having the full toString so create your own essential information version!
+
+
+    @Override
+    public String toString() {
+        return "Recipe_Full{" +
+                "cheap=" + cheap +
+                ", vegetarian=" + vegetarian +
+                ", vegan=" + vegan +
+                ", glutenFree=" + glutenFree +
+                ", dairyFree=" + dairyFree +
+                ", veryHealthy=" + veryHealthy +
+                ", veryPopular=" + veryPopular +
+                ", lowFodmap=" + lowFodmap +
+                ", ketogenic=" + ketogenic +
+                ", whole30=" + whole30 +
+                ", servings=" + servings +
+                ", spoonacularSourceUrl='" + spoonacularSourceUrl + '\'' +
+                ", extendedIngredients=" + extendedIngredients +
+                ", id=" + id +
+                ", title='" + title + '\'' +
+                ", readyInMinutes=" + readyInMinutes +
+                ", instructions='" + instructions + '\'' +
+                '}';
+    }
 }
