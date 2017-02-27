@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,12 +28,11 @@ import com.mashape.p.spoonacularrecipefoodnutritionv1.models.DynamicResponse;
 import java.text.ParseException;
 
 import sammobewick.pocketkitchen.R;
-import sammobewick.pocketkitchen.data_objects.Ingredient_Search;
-import sammobewick.pocketkitchen.data_objects.ListItem;
-import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
+import sammobewick.pocketkitchen.data_objects.Ingredient;
 import sammobewick.pocketkitchen.data_objects.Recipe_Full;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
+import sammobewick.pocketkitchen.supporting.DialogHelper;
 
 public class TabbedActivity extends AppCompatActivity implements
         KitchenFragment.OnFragmentInteractionListener, RecipeFragment.OnFragmentInteractionListener, ShoppingListFragment.OnFragmentInteractionListener, View.OnClickListener {
@@ -55,6 +53,9 @@ public class TabbedActivity extends AppCompatActivity implements
 
     // API Controller for calls to Spoonacular:
     private APIController           controller;
+
+    // Our Activity Helper simplifies this file massively!
+    ActivityHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +81,9 @@ public class TabbedActivity extends AppCompatActivity implements
         SpoonacularAPIClient api_client = new SpoonacularAPIClient();
         controller = api_client.getClient();
 
+        // Initialise this helper:
+        helper = new ActivityHelper(this);
+
         // Here we are setting listeners on the multiple Floating Action Buttons:
         com.github.clans.fab.FloatingActionButton fab;
         fab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_scan_receipts);
@@ -92,6 +96,9 @@ public class TabbedActivity extends AppCompatActivity implements
         fab.setOnClickListener(this);
 
         fab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_search_recipes);
+        fab.setOnClickListener(this);
+
+        fab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_view_saved);
         fab.setOnClickListener(this);
 
         // Initialise this method with the first fragment:
@@ -129,7 +136,7 @@ public class TabbedActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onKitchenFragmentInteraction(final Ingredient_Search i) {
+    public void onKitchenFragmentInteraction(final Ingredient i) {
         // Here we check that we have got an Ingredient_Search to display:
         if (i != null) {
             // Now display the dialog that allows us to edit the amounts of this ingredient:
@@ -158,26 +165,18 @@ public class TabbedActivity extends AppCompatActivity implements
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Ingredient_Search newI = new Ingredient_Search(
+                            Ingredient newI = new Ingredient(
                                     i.getAisle(),
                                     Float.valueOf(edit_qty.getText().toString()),
                                     i.getId(),
                                     i.getImage(),
                                     i.getName(),
-                                    i.getOriginal(),
+                                    i.getOriginalString(),
                                     i.getUnitLong(),
                                     i.getUnitShort()
                             );
 
-                            // Pass this update back to the fragment/adapter + give feedback:
-                            KitchenFragment fragment = (KitchenFragment) mSectionsPagerAdapter.getItem(KITCHEN_FRAG_ID);
-                            if (fragment.updateItemInData(i, newI)){
-                                Snackbar.make(findViewById(R.id.main_content), R.string.feedback_success_change, Snackbar.LENGTH_SHORT)
-                                        .setAction("Action", null).show();
-                            } else {
-                                Snackbar.make(findViewById(R.id.main_content), R.string.feedback_failed_change, Snackbar.LENGTH_SHORT)
-                                        .setAction("Action", null).show();
-                            }
+                            // TODO: Perform update.
                             // Close dialog:
                             dialog.dismiss();
                         }
@@ -205,10 +204,8 @@ public class TabbedActivity extends AppCompatActivity implements
     @Override
     public void onRecipeFragmentInteraction(final Recipe_Short recipe_short) {
         // Check network connectivity:
-        ActivityHelper helper = new ActivityHelper(this);
         if (!helper.isConnected()) {
-            Snackbar.make(findViewById(R.id.main_content), R.string.wifi_warning_short, Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+            helper.displaySnackBarNoAction(R.id.main_content, R.string.wifi_warning_short);
         } else {
             // Network connectivity exists! Here we get the full recipe information:
             controller.getRecipeInformationAsync(recipe_short.getId(), new APICallBack<DynamicResponse>() {
@@ -274,90 +271,9 @@ public class TabbedActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onShoppingFragmentInteraction(final ListItem item) {
-        // TODO: Perhaps insert a limit on the minimum or a warning if this item is not custom.
-        // Create a dialog so that we can add/amend an item:
-        final Dialog dialog = new Dialog(TabbedActivity.this);
+    public void onShoppingFragmentInteraction(final Ingredient item) {
 
-        dialog.setContentView(R.layout.shopping_item_edit);
-        dialog.setTitle("Edit List Item"); // TODO: We may want to change this.
-
-        // Get the views + set the text up:
-
-        final EditText edit_qty_name    = (EditText) dialog.findViewById(R.id.edit_item_qty_name);
-        final EditText edit_qty         = (EditText) dialog.findViewById(R.id.measurements_editText);
-        final EditText edit_name        = (EditText) dialog.findViewById(R.id.edit_shopping_item);
-
-        // As we are sometimes adding fresh ones, we need to only set this when not null:
-        if (item != null) {
-            edit_name.setText(item.getName());
-            edit_qty.setText(String.valueOf(item.getAmount()));
-            edit_qty_name.setText(item.getUnit());
-
-            // Disable some editing if not a custom.
-            if (!item.isCustom()) {
-                edit_name.setEnabled(false);
-                edit_qty_name.setEnabled(false);
-            }
-        }
-
-        final ShoppingListFragment fragment = (ShoppingListFragment) mSectionsPagerAdapter.getItem(LIST_FRAG_ID);
-
-        // Setting up the OnClickListeners:
-        dialog.findViewById(R.id.btn_discard_itm).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Provide feedback to the user + close dialog:
-                        Snackbar.make(findViewById(R.id.main_content), R.string.feedback_cancelled_change, Snackbar.LENGTH_SHORT)
-                                .setAction("Action", null).show();
-                        dialog.dismiss();
-                    }
-                }
-        );
-        dialog.findViewById(R.id.btn_save_itm).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ListItem newItem = new ListItem(
-                                Float.valueOf(edit_qty.getText().toString()), // AMOUNT
-                                0,                                  // TODO: ID
-                                edit_name.getText().toString(),     // NAME
-                                edit_qty_name.getText().toString()  // UNIT
-                        );
-
-                        // TODO: Update item in the current list:
-                        if (item != null) {
-                            if (fragment.updateItemInData(item, item)) {
-                                // Provide feedback to the user + close dialog:
-                                Snackbar.make(findViewById(R.id.main_content), R.string.feedback_success_change, Snackbar.LENGTH_SHORT)
-                                        .setAction("Action", null).show();
-                            } else {
-                                // TODO: Error.
-                            }
-                        } else {
-                            // TODO: Add a new item to the list:
-                        }
-                        dialog.dismiss();
-                    }
-                }
-        );
-
-        dialog.findViewById(R.id.btn_remove_itm).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (fragment.removeItemInData(item)) {
-                            Snackbar.make(findViewById(R.id.main_content), R.string.feedback_deleted_change, Snackbar.LENGTH_SHORT)
-                                    .setAction("Action", null).show();
-                        } else {
-                            // TODO: Error.
-                        }
-                        dialog.dismiss();
-                    }
-                }
-        );
-        dialog.show();
+        DialogHelper.dialogShoppingItem(TabbedActivity.this, item);
 
         /* DEBUG:
         Snackbar.make(findViewById(R.id.main_content), "Shopping Action: " + i.getId(), Snackbar.LENGTH_SHORT)
@@ -380,7 +296,7 @@ public class TabbedActivity extends AppCompatActivity implements
      */
     private void fragmentSelected(int type) {
         this.lastFragmentId = type;
-        System.out.println("FRAG-SELECTED:" + type);
+        ///* DEBUG */System.out.println("FRAG-SELECTED:" + type);
         switch (type) {
             case KITCHEN_FRAG_ID:   // Kitchen Fragment
                 findViewById(R.id.fab_search_recipes).setVisibility(View.GONE);
@@ -412,8 +328,7 @@ public class TabbedActivity extends AppCompatActivity implements
         // Check network connectivity on resume:
         ActivityHelper helper = new ActivityHelper(this);
         if (!helper.isConnected()) {
-            Snackbar.make(findViewById(R.id.main_content), R.string.wifi_warning_short, Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+            helper.displaySnackBarNoAction(R.id.main_content, R.string.wifi_warning_short);
         }
     }
 
@@ -430,20 +345,25 @@ public class TabbedActivity extends AppCompatActivity implements
                 break;
             case R.id.fab_add_recipe:       // Adding recipes:
                 ///* DEBUG:
-                Snackbar.make(findViewById(R.id.main_content), R.string.snackbar_wip_feature, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                helper.displaySnackBarNoAction(R.id.main_content, R.string.snackbar_wip_feature);
                 // END-DEBUG */
                 break;
             case R.id.fab_scan_receipts:    // Scanning Receipts:
                 ///* DEBUG:
-                Snackbar.make(findViewById(R.id.main_content), R.string.snackbar_wip_feature, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                helper.displaySnackBarNoAction(R.id.main_content, R.string.snackbar_wip_feature);
                 // END-DEBUG */
                 break;
             case R.id.fab_search_recipes:   // Search Recipes [advanced]:
                 ///* DEBUG:
-                Snackbar.make(findViewById(R.id.main_content), R.string.snackbar_wip_feature, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                helper.displaySnackBarNoAction(R.id.main_content, R.string.snackbar_wip_feature);
+                // END-DEBUG */
+                break;
+
+            case R.id.fab_view_saved:       // View saved recipes.
+                Intent intent = new Intent(this, RecipeSavedActivity.class);
+                startActivity(intent);
+                /* DEBUG:
+                helper.displaySnackBarNoAction(R.id.main_content, R.string.snackbar_wip_feature);
                 // END-DEBUG */
                 break;
         }

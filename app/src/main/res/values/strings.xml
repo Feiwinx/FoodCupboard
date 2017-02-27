@@ -3,6 +3,7 @@
     <string name="app_name">Pocket Kitchen</string>
     <string name="title_activity_tabbed">Pocket Kitchen</string>
     <string name="title_activity_settings">Preferences</string>
+    <string name="title_activity_saved">Saved Recipes</string>
 
     <string name="snackbar_wip_feature">Sorry! This feature is still WIP!</string>
 
@@ -14,9 +15,19 @@
     <string name="lbl_item">Item:</string>
     <string name="lbl_ingredient">Ingredient:</string>
     <string name="lbl_quantity">Quantity:</string>
-    <string name="lbl_add_kitchen_title">
-        Custom items will not sync effectively with recipes!\n
-        Advisable to use them for non-food items where possible!
+
+    <string name="lbl_add_custom_item_warning">
+        Custom items won\'t update automatically!\n
+        Use them only when necessary!
+    </string>
+
+    <string name="lbl_add_item_warning">
+        Non-custom items can\'t be edited!\n
+        You can delete it, or un-save the recipe.
+    </string>
+
+    <string name="lbl_add_item_requirements">
+        Oops.\nYou\'ll need to populate all the boxes to do that.
     </string>
 
     <string name="lbl_recipe_ing_title_f">Ingredients Required:</string>
@@ -32,17 +43,21 @@
 
     <string name="lbl_fab_search">Advanced Recipe Search</string>
     <string name="lbl_fab_scan">Scan Receipt</string>
-    <string name="lbl_fab_add_kitchen">Add Kitchen Item</string>
+    <string name="lbl_fab_add_item">Add Item</string>
     <string name="lbl_fab_add_recipe">Add Recipe</string>
+    <string name="lbl_fab_view_saved">View Saved Recipes</string>
 
     <!-- Hints: -->
     <string name="hint_btn_save">Save your changes</string>
     <string name="hint_btn_cancel">Undo any changes made</string>
     <string name="hint_btn_delete">Delete this item entirely</string>
-    <string name="hint_search_recipes">Search for recipes...</string>
+    <string name="hint_btn_purchase">Move this item to your kitchen</string>
+    <string name="hint_search_recipes">Search for recipesDisplayed...</string>
     <string name="hint_search_shopping">Filter your list...</string>
     <string name="hint_search_kitchen">Filter your kitchen...</string>
+    <string name="hint_enter_measurement">kg/g/etc.</string>
     <string name="hint_edit_quantity">Enter the amount</string>
+    <string name="hint_edit_item_name">Enter the item name</string>
     <string name="hint_btn_add_recipe">Add the recipe to your shopping &amp; cooking lists</string>
     <string name="hint_btn_rem_recipe">Remove the recipe from your shopping &amp; cooking lists</string>
     <string name="hint_btn_sign_out">Sign out from Pocket Kitchen</string>
@@ -52,6 +67,7 @@
     <string name="empty_recipes">You can use the search box to find yourself some tasty options!</string>
     <string name="empty_list">Success!\n\nYou don\'t have to go shopping!</string>
     <string name="empty_kitchen">Oops!\n\nYour cupboards are looking empty, time to go get some shopping!</string>
+    <string name="empty_saved_recipes">Nothing to see here! Find something to cook!</string>
     <string name="no_results">Oh no! Your search returned no results!</string>
 
     <!-- Feedback: -->
@@ -61,6 +77,8 @@
     <string name="feedback_failed_change">Oh no! Failed to save changes!</string>
     <string name="feedback_added_recipe">Recipe has been added to your list!</string>
     <string name="feedback_removed_recipe">Recipe has been removed from your list!</string>
+
+    <string name="feedback_unknown_problem">Oh dear. Something unexpected went wrong, this may be down to the values entered!</string>
 
     <!-- Test String for XML Views: -->
     <string name="test_recipe_title">Tasty Cottage Pie</string>

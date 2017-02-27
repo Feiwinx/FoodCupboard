@@ -39,15 +39,6 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <!--
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_add_white_24dp" /> -->
-
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -106,7 +97,7 @@
             android:layout_width="wrap_content"
             android:src="@drawable/ic_add"
             fab:fab_size="mini"
-            fab:fab_label="@string/lbl_fab_add_kitchen" />
+            fab:fab_label="@string/lbl_fab_add_item" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_search_recipes"
@@ -115,6 +106,14 @@
             android:src="@drawable/ic_search"
             fab:fab_size="mini"
             fab:fab_label="@string/lbl_fab_search" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_view_saved"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_star"
+            fab:fab_size="mini"
+            fab:fab_label="@string/lbl_fab_view_saved" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_scan_receipts"

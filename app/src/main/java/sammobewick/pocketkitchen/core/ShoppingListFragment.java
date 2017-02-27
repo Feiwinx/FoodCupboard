@@ -8,12 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.SearchView;
 
 import sammobewick.pocketkitchen.R;
-import sammobewick.pocketkitchen.data_objects.ListItem;
-import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
+import sammobewick.pocketkitchen.data_objects.Ingredient;
 import sammobewick.pocketkitchen.data_objects.ShoppingAdapter;
 
 /**
@@ -33,9 +31,6 @@ public class ShoppingListFragment extends Fragment implements SearchView.OnQuery
     private ShoppingAdapter mAdapter;
     private OnFragmentInteractionListener mListener;
 
-    private EditText edit_qty;
-    private EditText edit_name;
-
     // ****************************************************************************************** //
     //                                 CONSTRUCTORS + SET-UP:                                     //
     // ****************************************************************************************** //
@@ -53,50 +48,12 @@ public class ShoppingListFragment extends Fragment implements SearchView.OnQuery
         return fragment;
     }
 
-    public boolean addItemToData(ListItem item) {
-        PocketKitchenData pkData = PocketKitchenData.getInstance();
-        boolean result = pkData.addToListItems(item);
-
-        if (result)
-            mAdapter.notifyDataSetChanged();
-
-        return result;
-    }
-
-    public boolean updateItemInData(ListItem old, ListItem item) {
-        PocketKitchenData pkData = PocketKitchenData.getInstance();
-        boolean result = pkData.updateInListItems(old, item);
-
-        if (result)
-            mAdapter.notifyDataSetChanged();
-
-        return result;
-    }
-
-    public boolean removeItemInData(ListItem item) {
-        PocketKitchenData pkData = PocketKitchenData.getInstance();
-        boolean result = pkData.removeFromListItems(item);
-
-        if (result)
-            mAdapter.notifyDataSetChanged();
-
-        return result;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Fetch our intent parameter - IT SHOULD NEVER BE NULL.
-        String urlStart = "";
-        if (getArguments() != null) {
-            if (getArguments().containsKey("recipe_image_url")) {
-                urlStart = getArguments().getString("recipe_image_url");
-            }
-        }
-
-        // Get our adapter:
-        mAdapter = new ShoppingAdapter(urlStart);
+        // Get our adapter (pass URL and this class [listener]):
+        mAdapter = new ShoppingAdapter();
     }
 
     @Override
@@ -166,14 +123,14 @@ public class ShoppingListFragment extends Fragment implements SearchView.OnQuery
         return false;
     }
 
-            /**
+    /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
      */
     public interface OnFragmentInteractionListener {
-        void onShoppingFragmentInteraction(final ListItem i);
+        void onShoppingFragmentInteraction(final Ingredient i);
         void onShoppingFragmentSelected(boolean visible);
     }
 }

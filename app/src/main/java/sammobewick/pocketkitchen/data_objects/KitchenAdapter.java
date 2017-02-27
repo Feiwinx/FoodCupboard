@@ -13,16 +13,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sammobewick.pocketkitchen.R;
+import sammobewick.pocketkitchen.communication.DownloadImageAsync;
+import sammobewick.pocketkitchen.supporting.DataListener;
 
 /**
  * Created by Sam on 31/01/2017.
  */
 
-public class KitchenAdapter extends BaseAdapter  implements Filterable{
+public class KitchenAdapter extends BaseAdapter  implements Filterable, DataListener {
 
-    private List<Ingredient_Search> filtered;
-    private List<Ingredient_Search> data;
+    private List<Ingredient> filtered;
+    private List<Ingredient> data;
     private String urlStart;
+
+    @Override
+    public void dataUpdate() {
+        PocketKitchenData pkData = PocketKitchenData.getInstance(this);
+        data        = pkData.getInCupboards();
+        filtered    = data;
+        this.notifyDataSetChanged();
+    }
 
     private class ViewHolder{
         ImageView   kitchenImage;
@@ -33,10 +43,7 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable{
 
     public KitchenAdapter(String urlStart) {
         this.urlStart = urlStart;
-
-        PocketKitchenData pkData = PocketKitchenData.getInstance();
-        data        = pkData.getIngredients();
-        filtered    = data;
+        dataUpdate();
     }
 
     @Override
@@ -44,7 +51,7 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable{
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                List<Ingredient_Search> filteredData = getFilteredResults(constraint);
+                List<Ingredient> filteredData = getFilteredResults(constraint);
 
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = filteredData;
@@ -53,16 +60,16 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable{
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                filtered = (List<Ingredient_Search>) results.values;
+                filtered = (List<Ingredient>) results.values;
                 notifyDataSetChanged();
             }
         };
     }
 
-    private List<Ingredient_Search> getFilteredResults(CharSequence constraint) {
-        List<Ingredient_Search> resultList = new ArrayList<>(data);
+    private List<Ingredient> getFilteredResults(CharSequence constraint) {
+        List<Ingredient> resultList = new ArrayList<>(data);
 
-        for (Ingredient_Search i: resultList) {
+        for (Ingredient i: resultList) {
             if (!i.getName().contains(constraint)) {
                 resultList.remove(i);
             }
@@ -80,7 +87,7 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable{
     }
 
     @Override
-    public Ingredient_Search getItem(int position) {
+    public Ingredient getItem(int position) {
         return filtered.get(position);
     }
 
@@ -114,10 +121,15 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable{
         }
 
         // Here we get the object representing the ingredient!
-        Ingredient_Search ingredient = getItem(position);
+        Ingredient ingredient = getItem(position);
 
         // Then, we use the object data to populate / set our vh attributes.
-        vh.kitchenImage.setImageBitmap(null); // TODO: depends on what the attribute is.
+        String url = ingredient.getImage();
+
+        System.out.println("URL: " + url);
+
+        new DownloadImageAsync(vh.kitchenImage).execute(url);
+
         vh.kitchenMeasurement.setText(ingredient.getUnitShort());
         vh.kitchenQuantity.setText(String.valueOf(ingredient.getAmount()));
         vh.kitchenTitle.setText(ingredient.getName());
@@ -127,18 +139,12 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable{
 
     @Override
     public void notifyDataSetChanged() {
-        PocketKitchenData pkData = PocketKitchenData.getInstance();
-        data = pkData.getIngredients();
         super.notifyDataSetChanged();
     }
 
     // ****************************************************************************************** //
     //                                      SETTER + GETTER :                                     //
     // ****************************************************************************************** //
-
-    public List<Ingredient_Search> getData() {
-        return data;
-    }
 
     public void setFilterText(String filterText) {
         if (filterText.length() > 0) {

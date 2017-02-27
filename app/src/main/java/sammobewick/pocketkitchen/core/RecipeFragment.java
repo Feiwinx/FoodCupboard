@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.mashape.p.spoonacularrecipefoodnutritionv1.SpoonacularAPIClient;
 import com.mashape.p.spoonacularrecipefoodnutritionv1.controllers.APIController;
 import com.mashape.p.spoonacularrecipefoodnutritionv1.http.client.APICallBack;
@@ -79,6 +78,10 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
 
         // Prepare our adapter:
         mAdapter = new RecipeShortAdapter(urlStart);
+
+        // Pass any background saved data to adapter:
+        PocketKitchenData pkData = PocketKitchenData.getInstance();
+        mAdapter.setData(pkData.getRecipesDisplayed());
 
         // Prepare our API Controller:
         SpoonacularAPIClient api_client = new SpoonacularAPIClient();
@@ -152,8 +155,12 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
 
                             List<Recipe_Short> data = handler.getResults();
                             PocketKitchenData pkData = PocketKitchenData.getInstance();
-                            pkData.setRecipes(data);
-                            mAdapter.notifyDataSetChanged();
+
+                            // Load data in handler:
+                            pkData.setRecipesDisplayed(data);
+
+                            // Pass to adapter:
+                            mAdapter.setData(pkData.getRecipesDisplayed());
 
                             // Provides proper feedback when no results are returned:
                             if (data.size() == 0) {

@@ -11,9 +11,8 @@ import android.widget.AdapterView;
 import android.widget.SearchView;
 
 import sammobewick.pocketkitchen.R;
-import sammobewick.pocketkitchen.data_objects.Ingredient_Search;
+import sammobewick.pocketkitchen.data_objects.Ingredient;
 import sammobewick.pocketkitchen.data_objects.KitchenAdapter;
-import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,36 +46,6 @@ public class KitchenFragment extends Fragment implements SearchView.OnQueryTextL
     public static KitchenFragment newInstance() {
         KitchenFragment fragment = new KitchenFragment();
         return fragment;
-    }
-
-    public boolean addItemToData(Ingredient_Search item) {
-        PocketKitchenData pkData = PocketKitchenData.getInstance();
-        boolean result = pkData.addToIngredients(item);
-
-        if (result)
-            mAdapter.notifyDataSetChanged();
-
-        return result;
-    }
-
-    public boolean updateItemInData(Ingredient_Search old, Ingredient_Search item) {
-        PocketKitchenData pkData = PocketKitchenData.getInstance();
-        boolean result = pkData.updateInIngredients(old, item);
-
-        if (result)
-            mAdapter.notifyDataSetChanged();
-
-        return result;
-    }
-
-    public boolean removeItemInData(Ingredient_Search item) {
-        PocketKitchenData pkData = PocketKitchenData.getInstance();
-        boolean result = pkData.removeFromIngredients(item);
-
-        if (result)
-            mAdapter.notifyDataSetChanged();
-
-        return result;
     }
 
     @Override
@@ -161,7 +130,7 @@ public class KitchenFragment extends Fragment implements SearchView.OnQueryTextL
      * activity.
      */
     public interface OnFragmentInteractionListener {
-        void onKitchenFragmentInteraction(final Ingredient_Search i);
+        void onKitchenFragmentInteraction(final Ingredient i);
         void onKitchenFragmentSelected(boolean visible);
     }
 }

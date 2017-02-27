@@ -56,7 +56,7 @@ public class RecipeActivity extends AppCompatActivity {
         final Button mainButton = ((Button) findViewById(R.id.btn_do_recipe_f));
 
         // Insert a check for if the user wanted to cook this previously!
-        if (pkData.checkForSetOfIngredients(recipe_short.getId())) {
+        if (pkData.checkForSetOfIngredients(recipe_short)) {
             btnPressed = true;
             mainButton.setText(R.string.lbl_btn_rem_recipe);
             mainButton.setHint(R.string.hint_btn_rem_recipe);
@@ -67,7 +67,7 @@ public class RecipeActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         if (!btnPressed) {
-                            if (pkData.addSetOfIngredients(recipe_short.getId(), recipe_full.getExtendedIngredients())) {
+                            if (pkData.addRecipeToCookList(recipe_short, recipe_full.getExtendedIngredients())) {
                                 mainButton.setText(R.string.lbl_btn_rem_recipe);
                                 mainButton.setHint(R.string.hint_btn_rem_recipe);
 
@@ -80,7 +80,7 @@ public class RecipeActivity extends AppCompatActivity {
                                         "\nYou might benefit from reloading the application.");
                             }
                         } else {
-                            if (pkData.removeSetOfIngredients(recipe_short.getId())) {
+                            if (pkData.removeRecipeFromCookList(recipe_short)) {
                                 mainButton.setText(R.string.lbl_btn_add_recipe);
                                 mainButton.setHint(R.string.hint_btn_rem_recipe);
 

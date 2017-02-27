@@ -11,30 +11,29 @@
         We have used a RelativeLayout here, so that we can get the boxes alongside each other.
     -->
 
-    <!-- Edit Item // Removed for now, can be designed in a nicer fashion.
-    <Button android:id="@+id/shopping_edit_btn"
-
-        android:text="Edit"
-
-        android:focusable="false"
-        android:layout_toLeftOf="@id/shopping_del_btn"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored" />
-    -->
-
     <!-- Remove Item -->
-    <Button android:id="@+id/shopping_del_btn"
+    <ImageButton android:id="@+id/shopping_del_btn"
+        android:contentDescription="@string/hint_btn_delete"
 
-        android:text="Delete"
+        android:src="@drawable/ic_delete"
 
         android:focusable="false"
         android:layout_alignParentRight="true"
 
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+        android:layout_height="wrap_content" />
+
+    <!-- Buy Item -->
+    <ImageButton android:id="@+id/shopping_buy_btn"
+        android:contentDescription="@string/hint_btn_purchase"
+
+        android:src="@drawable/ic_basket"
+
+        android:focusable="false"
+        android:layout_toLeftOf="@id/shopping_del_btn"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <!-- Shopping Item Name -->
     <TextView android:id="@+id/shopping_title"
@@ -50,7 +49,7 @@
         android:layout_marginLeft="2dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
-        android:layout_toStartOf="@+id/shopping_del_btn" />
+        android:layout_toStartOf="@+id/shopping_buy_btn" />
 
     <!-- Quantity -->
     <TextView android:id="@+id/shopping_quantity"

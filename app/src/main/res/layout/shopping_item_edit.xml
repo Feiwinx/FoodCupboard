@@ -10,8 +10,13 @@
         This XML file the dialog box for when the user edits a shopping item.
     -->
 
-    <TextView android:id="@+id/txt_add_kitchen_title"
-        android:text="@string/lbl_add_kitchen_title"
+    <LinearLayout android:id="@+id/ll_kitchen_warnings"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <TextView android:id="@+id/txt_add_custom_kitchen_warning"
+        android:text="@string/lbl_add_custom_item_warning"
         android:textStyle="italic"
         android:textColor="@color/red"
         android:visibility="gone"
@@ -22,13 +27,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <TextView android:id="@+id/txt_edit_kitchen_warning"
+        android:text="@string/lbl_add_item_warning"
+        android:textStyle="italic"
+        android:textColor="@color/red"
+        android:visibility="gone"
+
+        android:layout_margin="5dp"
+        android:gravity="center"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+        <TextView android:id="@+id/txt_item_requirements"
+            android:text="@string/lbl_add_item_requirements"
+            android:textStyle="italic"
+            android:textColor="@color/red"
+            android:visibility="gone"
+
+            android:layout_margin="5dp"
+            android:gravity="center"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
     <TextView android:id="@+id/txt_shopping_item"
         android:text="@string/lbl_item"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="16sp"
 
-        android:layout_below="@id/txt_add_kitchen_title"
+        android:layout_below="@id/ll_kitchen_warnings"
         android:layout_margin="5dp"
         android:gravity="center"
 
@@ -37,10 +68,11 @@
 
     <EditText android:id="@+id/edit_shopping_item"
         android:textSize="16sp"
+        android:hint="@string/hint_edit_item_name"
         android:inputType="textAutoCorrect|textShortMessage"
         android:textStyle="italic"
 
-        android:layout_below="@id/txt_add_kitchen_title"
+        android:layout_below="@id/ll_kitchen_warnings"
         android:layout_toRightOf="@id/txt_shopping_item"
         android:layout_toEndOf="@id/txt_shopping_item"
 
@@ -88,10 +120,11 @@
 
         <!-- EditText for Measurement Type -->
         <EditText android:id="@+id/edit_item_qty_name"
+            android:hint="@string/hint_enter_measurement"
             android:textColor="@color/black"
+            android:inputType="textShortMessage|textNoSuggestions"
             android:textStyle="italic"
             android:textSize="16sp"
-            android:text="kg"
             android:textAlignment="center"
 
             android:enabled="false"
@@ -131,12 +164,12 @@
             android:layout_width="15dp"
             android:layout_height="match_parent" />
 
-        <Button android:id="@+id/btn_remove_itm"
+        <ImageButton android:id="@+id/btn_remove_itm"
             android:hint="@string/hint_btn_delete"
 
             android:textColor="@color/white"
             android:background="@color/dim_foreground_material_dark"
-            android:icon="@android:drawable/ic_input_delete"
+            android:src="@drawable/ic_delete"
 
             android:gravity="center"
             android:layout_weight="0.5"

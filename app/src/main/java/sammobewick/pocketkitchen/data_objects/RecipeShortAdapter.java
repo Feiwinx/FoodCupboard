@@ -13,9 +13,11 @@ import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.communication.DownloadImageAsync;
 
 /**
+ * This is the custom ListAdapter for displaying Recipe_Short objects.
+ * This is used both by the RecipeFragment and the RecipeSavedActivity, so the setting of data is
+ * called from those places.
  * Created by Sam on 31/01/2017.
  */
-
 public class RecipeShortAdapter extends BaseAdapter {
 
     private List<Recipe_Short> data;
@@ -32,7 +34,7 @@ public class RecipeShortAdapter extends BaseAdapter {
     public RecipeShortAdapter(String urlStart) {
         this.urlStart = urlStart;
         PocketKitchenData pkData = PocketKitchenData.getInstance();
-        data = pkData.getRecipes();
+        data = pkData.getRecipesDisplayed();
     }
 
     @Override
@@ -100,9 +102,6 @@ public class RecipeShortAdapter extends BaseAdapter {
 
     @Override
     public void notifyDataSetChanged() {
-        System.out.println("RECIPE-FRAG: Call made to notifySetDataChanged!");
-        PocketKitchenData pkData = PocketKitchenData.getInstance();
-        data = pkData.getRecipes();
         super.notifyDataSetChanged();
     }
 

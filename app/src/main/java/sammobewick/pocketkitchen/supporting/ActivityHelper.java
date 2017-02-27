@@ -1,13 +1,16 @@
 package sammobewick.pocketkitchen.supporting;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
+import android.view.View;
 
 import sammobewick.pocketkitchen.R;
 
@@ -62,5 +65,10 @@ public class ActivityHelper {
                     }
                 })
                 .show();
+    }
+
+    public void displaySnackBarNoAction(int layoutID, int stringResource) {
+        View layout = ((Activity) context).findViewById(layoutID);
+        Snackbar.make(layout, stringResource, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
     }
 }

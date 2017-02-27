@@ -2,26 +2,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="sammobewick.pocketkitchen.core.ShoppingListFragment">
+    tools:context="sammobewick.pocketkitchen.core.KitchenFragment">
 
-    <SearchView android:id="@+id/shopping_search"
 
-        android:queryHint="@string/hint_search_shopping"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <ListView
+        android:id="@+id/saved_recipes_list"
 
-    <ListView android:id="@+id/shopping_list"
+        android:layout_marginBottom="20dp"
+
         android:dividerHeight="4px"
-
-        android:layout_below="@id/shopping_search"
-        android:layout_marginBottom="?android:attr/listPreferredItemHeight"
+        android:transcriptMode="alwaysScroll"
 
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <TextView
-        android:id="@+id/empty_shopping"
-        android:text="@string/empty_list"
+        android:id="@+id/empty_saved_recipes"
+        android:text="@string/empty_saved_recipes"
 
         android:textStyle="italic"
         android:gravity="center"

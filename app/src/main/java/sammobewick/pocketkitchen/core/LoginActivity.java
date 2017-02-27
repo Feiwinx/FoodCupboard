@@ -23,7 +23,6 @@ import com.google.android.gms.common.api.Status;
 
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.data_objects.Ingredient;
-import sammobewick.pocketkitchen.data_objects.ListItem;
 import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
 
@@ -50,9 +49,6 @@ public class LoginActivity extends AppCompatActivity implements
                 updateUI(signedIn);
             }
         } else { signedIn = false; }
-
-        ActivityHelper helper = new ActivityHelper(this);
-        if (!helper.isConnected()) { helper.displayNetworkWarning(); }
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(Scopes.DRIVE_APPFOLDER))
@@ -149,17 +145,18 @@ public class LoginActivity extends AppCompatActivity implements
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         hideProgressDialog();
 
-        // TODO: Load this data, at the minute this is being called for instantiation.
+        // TODO: Load this data from file, at the minute this is being called for instantiation.
         PocketKitchenData pkData = PocketKitchenData.getInstance();
 
-        /* Do some test data:
-        ListItem li = new ListItem(
-                (float)11.0,
-                11,
-                "name",
-                "unit"
-        );
-        pkData.addToListItems(li);
+        /* Create some test data:
+        for (int a = 0; a < 5; a++) {
+            Ingredient ingredient = new Ingredient(
+                    (float) a * 3,
+                    "Test Name: " + a,
+                    "U" + a
+            );
+            pkData.addCustomIngredient(ingredient);
+        }
         // END-TEST-DATA */
 
         if (result.isSuccess()) {
