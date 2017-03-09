@@ -69,7 +69,7 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable, DataList
     private List<Ingredient> getFilteredResults(CharSequence constraint) {
         List<Ingredient> resultList = new ArrayList<>(data);
 
-        for (Ingredient i: resultList) {
+        for (Ingredient i: new ArrayList<>(data)) {
             if (!i.getName().contains(constraint)) {
                 resultList.remove(i);
             }
@@ -123,12 +123,14 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable, DataList
         // Here we get the object representing the ingredient!
         Ingredient ingredient = getItem(position);
 
-        // Then, we use the object data to populate / set our vh attributes.
+        // Then, we use the object data to populate / set our vh attributes, starting with URL:
         String url = ingredient.getImage();
 
-        System.out.println("URL: " + url);
-
-        new DownloadImageAsync(vh.kitchenImage).execute(url);
+        if (url.length() > 0) {
+            new DownloadImageAsync(vh.kitchenImage).execute(url);
+        } else {
+            // TODO: Set image to a custom one, showing that the user added it.
+        }
 
         vh.kitchenMeasurement.setText(ingredient.getUnitShort());
         vh.kitchenQuantity.setText(String.valueOf(ingredient.getAmount()));
@@ -147,8 +149,6 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable, DataList
     // ****************************************************************************************** //
 
     public void setFilterText(String filterText) {
-        if (filterText.length() > 0) {
-            this.getFilter().filter(filterText);
-        }
+        this.getFilter().filter(filterText);
     }
 }

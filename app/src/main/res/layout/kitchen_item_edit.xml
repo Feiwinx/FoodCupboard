@@ -15,30 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView android:id="@+id/txt_add_custom_kitchen_warning"
-            android:text="@string/lbl_add_custom_item_warning"
-            android:textStyle="italic"
-            android:textColor="@color/red"
-            android:visibility="gone"
-
-            android:layout_margin="5dp"
-            android:gravity="center"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:id="@+id/txt_edit_kitchen_warning"
-            android:text="@string/lbl_add_item_warning"
-            android:textStyle="italic"
-            android:textColor="@color/red"
-            android:visibility="gone"
-
-            android:layout_margin="5dp"
-            android:gravity="center"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
         <TextView android:id="@+id/txt_item_requirements"
             android:text="@string/lbl_add_item_requirements"
             android:textStyle="italic"
@@ -53,7 +29,7 @@
 
     </LinearLayout>
 
-    <TextView android:id="@+id/txt_shopping_item"
+    <TextView android:id="@+id/txt_kitchen_item"
         android:text="@string/lbl_item"
         android:textColor="@color/black"
         android:textStyle="bold"
@@ -66,26 +42,26 @@
         android:layout_width="80dp"
         android:layout_height="80dp" />
 
-    <EditText android:id="@+id/edit_shopping_item"
+    <EditText android:id="@+id/edit_kitchen_item"
         android:textSize="16sp"
         android:hint="@string/hint_edit_item_name"
         android:inputType="textAutoCorrect|textShortMessage"
         android:textStyle="italic"
 
         android:layout_below="@id/ll_kitchen_warnings"
-        android:layout_toRightOf="@id/txt_shopping_item"
-        android:layout_toEndOf="@id/txt_shopping_item"
+        android:layout_toRightOf="@id/txt_kitchen_item"
+        android:layout_toEndOf="@id/txt_kitchen_item"
 
         android:gravity="center_vertical"
         android:layout_margin="5dp"
         android:layout_width="fill_parent"
         android:layout_height="80dp" />
 
-    <LinearLayout android:id="@+id/ll_item_edit_1"
+    <LinearLayout android:id="@+id/ll_kitchen_edit_1"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_shopping_item"
+        android:layout_below="@+id/txt_kitchen_item"
         android:weightSum="1">
 
         <TextView android:id="@+id/txt_lbl_qty_item"
@@ -94,7 +70,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
 
-            android:layout_below="@id/txt_shopping_item"
+            android:layout_below="@id/txt_kitchen_item"
 
             android:gravity="center"
             android:layout_margin="5dp"
@@ -103,7 +79,7 @@
             android:layout_height="match_parent" />
 
         <!-- EditText for the Quantity: -->
-        <EditText android:id="@+id/measurements_editText"
+        <EditText android:id="@+id/measurements_editText_kitchen"
             android:hint="@string/hint_edit_quantity"
             android:inputType="number"
             android:textSize="16sp"
@@ -119,7 +95,7 @@
             android:layout_weight="0.9" />
 
         <!-- EditText for Measurement Type -->
-        <EditText android:id="@+id/edit_item_qty_name"
+        <EditText android:id="@+id/edit_kitchen_qty_name"
             android:hint="@string/hint_enter_measurement"
             android:textColor="@color/black"
             android:inputType="textShortMessage|textNoSuggestions"
@@ -143,12 +119,13 @@
 
     <!-- Nested layout here keeps the buttons distributed evenly and easily: -->
     <LinearLayout
+        android:id="@+id/ll_kitchen_edit_btns"
         android:layout_margin="10dp"
-        android:layout_below="@id/ll_item_edit_1"
+        android:layout_below="@id/ll_kitchen_edit_1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-        <Button android:id="@+id/btn_discard_itm"
+        <Button android:id="@+id/btn_discard_kitchen_itm"
             android:text="@string/action_cancel"
             android:textColor="@color/white"
             android:hint="@string/hint_btn_cancel"
@@ -164,7 +141,7 @@
             android:layout_width="15dp"
             android:layout_height="match_parent" />
 
-        <ImageButton android:id="@+id/btn_remove_itm"
+        <ImageButton android:id="@+id/btn_remove_kitchen_itm"
             android:hint="@string/hint_btn_delete"
 
             android:textColor="@color/white"
@@ -180,7 +157,7 @@
             android:layout_width="15dp"
             android:layout_height="match_parent" />
 
-        <Button android:id="@+id/btn_save_itm"
+        <Button android:id="@+id/btn_save_kitchen_itm"
             android:text="@string/action_save"
             android:textColor="@color/white"
             android:hint="@string/hint_btn_save"

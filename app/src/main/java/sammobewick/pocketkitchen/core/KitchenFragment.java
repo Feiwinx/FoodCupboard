@@ -27,8 +27,9 @@ public class KitchenFragment extends Fragment implements SearchView.OnQueryTextL
     //  VARIABLES / HANDLERS FOR THIS FRAGMENT:                                                   //
     //********************************************************************************************//
 
-    private AbsListView mListView;
-    private KitchenAdapter mAdapter;
+    private AbsListView     mListView;
+    private KitchenAdapter  mAdapter;
+    private SearchView      mSearchView;
     private OnFragmentInteractionListener mListener;
 
     // ****************************************************************************************** //
@@ -82,6 +83,10 @@ public class KitchenFragment extends Fragment implements SearchView.OnQueryTextL
             }
         );
 
+        // Prepare our SearchView:
+        mSearchView = (SearchView) view.findViewById(R.id.kitchen_search);
+        mSearchView.setOnQueryTextListener(this);
+
         return view;
     }
 
@@ -112,14 +117,14 @@ public class KitchenFragment extends Fragment implements SearchView.OnQueryTextL
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        if (mAdapter != null) {
-            mAdapter.setFilterText(query);
-        }
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        if (mAdapter != null) {
+            mAdapter.setFilterText(newText);
+        }
         return false;
     }
 

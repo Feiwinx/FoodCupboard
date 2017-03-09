@@ -4,6 +4,7 @@ package sammobewick.pocketkitchen.core;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.view.MenuItem;
 import java.util.List;
 
 import sammobewick.pocketkitchen.R;
+import sammobewick.pocketkitchen.supporting.LocalFileHelper;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -32,6 +34,9 @@ import sammobewick.pocketkitchen.R;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+
+    private static final String SHARED_PREFERENCES = "pocketKitchenPreferences";
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -148,9 +153,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
-                || GeneralPreferenceFragment.class.getName().equals(fragmentName)
-                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
-                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+                || MyPocketKitchenPreferences.class.getName().equals(fragmentName)
+                || MyDietaryPreferences.class.getName().equals(fragmentName)
+                || MyDataPreferences.class.getName().equals(fragmentName);
     }
 
     /**
@@ -158,18 +163,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment {
+    public static class MyPocketKitchenPreferences extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_general);
+            addPreferencesFromResource(R.xml.pref_my_kitchen);
             setHasOptionsMenu(true);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
         }
+
+
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
@@ -187,17 +189,42 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class NotificationPreferenceFragment extends PreferenceFragment {
+    public static class MyDataPreferences extends PreferenceFragment {
+
+        private Context context;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_notification);
+            addPreferencesFromResource(R.xml.pref_files);
             setHasOptionsMenu(true);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
+            final LocalFileHelper helper = new LocalFileHelper(context);
+
+            Preference delLocalBtn = findPreference(getString(R.string.pref_files_clear_local));
+            Preference delDriveBtn = findPreference(getString(R.string.pref_files_clear_drive));
+
+            delLocalBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    helper.deleteAll();
+                    return false;
+                }
+            });
+
+            delDriveBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    // TODO: Delete drive data.
+                    return false;
+                }
+            });
+        }
+
+        @Override
+        public void onAttach(Context context) {
+            this.context = context;
+            super.onAttach(context);
         }
 
         @Override
@@ -216,18 +243,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class DataSyncPreferenceFragment extends PreferenceFragment {
+    public static class MyDietaryPreferences extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_data_sync);
+            addPreferencesFromResource(R.xml.pref_dietary);
             setHasOptionsMenu(true);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
         }
 
         @Override

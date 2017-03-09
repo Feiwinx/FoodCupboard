@@ -27,8 +27,9 @@ public class ShoppingListFragment extends Fragment implements SearchView.OnQuery
     //  VARIABLES / HANDLERS FOR THIS FRAGMENT:                                                   //
     //********************************************************************************************//
 
-    private AbsListView mListView;
+    private AbsListView     mListView;
     private ShoppingAdapter mAdapter;
+    private SearchView      mSearchView;
     private OnFragmentInteractionListener mListener;
 
     // ****************************************************************************************** //
@@ -74,6 +75,10 @@ public class ShoppingListFragment extends Fragment implements SearchView.OnQuery
             }
         );
 
+        // Prepare our SearchView:
+        mSearchView = (SearchView) view.findViewById(R.id.shopping_search);
+        mSearchView.setOnQueryTextListener(this);
+
         return view;
     }
 
@@ -112,14 +117,14 @@ public class ShoppingListFragment extends Fragment implements SearchView.OnQuery
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        if (mAdapter != null) {
-            mAdapter.setFilterText(query);
-        }
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        if (mAdapter != null) {
+            mAdapter.setFilterText(newText);
+        }
         return false;
     }
 

@@ -17,8 +17,10 @@
 
         android:paddingBottom="0px"
         android:paddingTop="0px"
-        android:layout_width="?android:attr/listPreferredItemHeight"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:maxHeight="?android:attr/listPreferredItemHeight"
+        android:maxWidth="?android:attr/listPreferredItemHeight"
         android:cropToPadding="false" />
 
     <TextView android:id="@+id/kitchen_title"

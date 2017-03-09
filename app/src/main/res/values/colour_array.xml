@@ -1,27 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="colour_entries">
-        <item>Gray</item>
-        <item>Black</item>
-        <item>Amber</item>
-        <item>Blue</item>
-        <item>Blue Grey</item>
-        <item>Brown</item>
-        <item>Cyan</item>
-        <item>Deep Orange</item>
-        <item>Deep Purple</item>
-        <item>Deep Red</item>
-        <item>Green</item>
-        <item>Indigo</item>
-        <item>Light Blue</item>
-        <item>Light Green</item>
-        <item>Lime</item>
-        <item>Orange</item>
+        <item>Red</item>
         <item>Pink</item>
         <item>Purple</item>
-        <item>White</item>
-        <item>Yellow</item>
+        <item>Deep Purple</item>
+        <item>Indigo</item>
+        <item>Blue</item>
+        <item>Light Blue</item>
+        <item>Cyan</item>
         <item>Teal</item>
-        <item>Red</item>
+        <item>Green</item>
+        <item>Light Green</item>
+        <item>Lime</item>
+        <item>Yellow</item>
+        <item>Amber</item>
+        <item>Orange</item>
+        <item>Deep Orange</item>
+        <item>Brown</item>
+        <item>Gray</item>
+        <item>Blue Grey</item>
+        <item>Black</item>
+        <item>White</item>
+        <item>Deep Red</item>
+    </string-array>
+
+    <string-array name="colour_values">
+        <item name="red">#f44336</item>
+        <item name="pink">#E91E63</item>
+        <item name="purple">#9C27B0</item>
+        <item name="deep_purple">#673AB7</item>
+        <item name="indigo">#3f51b5</item>
+        <item name="blue">#2196f3</item>
+        <item name="light_blue">#03A9F4</item>
+        <item name="cyan">#00BCD4</item>
+        <item name="teal">#009688</item>
+        <item name="green">#4CAF50</item>
+        <item name="light_green">#8BC34A</item>
+        <item name="lime">#CDDC39</item>
+        <item name="yellow">#FFEB3B</item>
+        <item name="amber">#ffc107</item>
+        <item name="orange">#FF9800</item>
+        <item name="deep_orange">#ff5722</item>
+        <item name="brown">#795548</item>
+        <item name="gray">#9E9E9E</item>
+        <item name="blue_grey">#607d8b</item>
+        <item name="black">#000000</item>
+        <item name="white">#FFFFFF</item>
+        <item name="deep_red">#d50000</item>
     </string-array>
 </resources>

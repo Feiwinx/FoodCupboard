@@ -45,6 +45,9 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
     private SearchView          mSearchView;
     private APIController       controller;
 
+    private String  intolerances;
+    private String  dietQuery;
+
     private OnFragmentInteractionListener mListener;
 
     // ****************************************************************************************** //
@@ -68,11 +71,37 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Fetch our intent parameter - IT SHOULD NEVER BE NULL.
+        // Fetch our arguments:
         String urlStart = "";
+        intolerances    = "";
+        dietQuery       = "";
+
         if (getArguments() != null) {
-            if (getArguments().containsKey("recipe_image_url")) {
-                urlStart = getArguments().getString("recipe_image_url");
+            Bundle args = getArguments();
+            if (args.containsKey("recipe_image_url")) {
+                urlStart = args.getString("recipe_image_url");
+            }
+
+            // Generate the search queries:
+            if (args.containsKey(getString(R.string.pref_dietary_dairy))){
+                if (args.getBoolean(getString(R.string.pref_dietary_dairy))) {
+                    intolerances += "dairy, ";
+                }
+            }
+            if (args.containsKey(getString(R.string.pref_dietary_gluten))) {
+                if (args.getBoolean(getString(R.string.pref_dietary_gluten))) {
+                    intolerances += "gluten, ";
+                }
+            }
+            if (args.containsKey(getString(R.string.pref_dietary_vegetarian))) {
+                if (args.getBoolean(getString(R.string.pref_dietary_vegetarian))) {
+                    dietQuery += "vegetarian, ";
+                }
+            }
+            if (args.containsKey(getString(R.string.pref_dietary_vegan))) {
+                if (args.getBoolean(getString(R.string.pref_dietary_vegan))) {
+                    dietQuery += "vegan, ";
+                }
             }
         }
 
@@ -137,9 +166,9 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
         controller.searchRecipesAsync(
                 query,  // query                - required. The natural language recipe query.
                 "",   // cuisine              - optional.
-                "",   // diet                 - optional.
+                dietQuery,   // diet                 - optional.
                 "",   // excludeIngredients   - optional.
-                "",   // intolerance         - optional.
+                intolerances,   // intolerance         - optional.
                 true,   // limitLicense         - optional.
                 20,   // number               - optional, but default to 10 for now
                 0,   // offset               - optional, returns number of results from result 0.

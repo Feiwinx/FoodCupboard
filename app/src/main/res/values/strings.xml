@@ -27,7 +27,7 @@
     </string>
 
     <string name="lbl_add_item_requirements">
-        Oops.\nYou\'ll need to populate all the boxes to do that.
+        Oops.\nYou\'ll need to populate some more boxes to do that.
     </string>
 
     <string name="lbl_recipe_ing_title_f">Ingredients Required:</string>
@@ -46,6 +46,11 @@
     <string name="lbl_fab_add_item">Add Item</string>
     <string name="lbl_fab_add_recipe">Add Recipe</string>
     <string name="lbl_fab_view_saved">View Saved Recipes</string>
+
+    <string name="lbl_dialog_edit_item">Edit List Item</string>
+    <string name="lbl_dialog_new_item">New List Item</string>
+    <string name="lbl_dialog_edit_kitchen">Edit Cupboard Item</string>
+    <string name="lbl_dialog_new_kitchen">New Cupboard Item</string>
 
     <!-- Hints: -->
     <string name="hint_btn_save">Save your changes</string>
@@ -100,72 +105,34 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_delete">Delete</string>
 
-    <!-- TODO: Strings related to Settings (change these!) -->
-
-    <!-- Example General settings -->
-    <string name="pref_header_general">My Pocket Kitchen</string>
+    <!-- Settings for Pocket Kitchen colours -->
+    <string name="pref_header_my_kitchen">My Pocket Kitchen</string>
 
     <string name="pref_primary_colour">Primary Kitchen Colour</string>
-    <string name="pref_primary_colour_hint">This is the main colour used in the application.</string>
+    <string name="pref_primary_colour_hint">This is the accent colour for your kitchen.</string>
+    <string name="pref_secondary_colour">Secondary Kitchen Colour</string>
+    <string name="pref_secondary_colour_hint">This is the background colour for your kitchen.</string>
+    <string name="pref_primary_text_colour">Primary Text Colour</string>
+    <string name="pref_primary_text_colour_hint">This is the main text colour for your kitchen.</string>
+    <string name="pref_secondary_text_colour">Secondary Text Colour</string>
+    <string name="pref_secondary_text_colour_hint">This is the secondary text colour for your kitchen.</string>
 
-    <!-- Settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; Sync</string>
+    <!-- Settings for Dietary Preferences -->
+    <string name="pref_header_dietary_preferences">Dietary Preferences</string>
 
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
+    <string name="pref_dietary_dairy">Dairy</string>
+    <string name="pref_dietary_dairy_hint">Exclude dairy from searched recipes.</string>
+    <string name="pref_dietary_gluten">Gluten</string>
+    <string name="pref_dietary_gluten_hint">Exclude gluten from searched recipes.</string>
+    <string name="pref_dietary_vegetarian">Vegetarian</string>
+    <string name="pref_dietary_vegetarian_hint">Exclude non-vegetarian results from searched recipes.</string>
+    <string name="pref_dietary_vegan">Vegan</string>
+    <string name="pref_dietary_vegan_hint">Exclude non-vegan results from searched recipes.</string>
 
-    <string-array name="list_preference_entries">
-        <item>Entry 1</item>
-        <item>Entry 2</item>
-        <item>Entry 3</item>
-    </string-array>
+    <!-- Settings for File Data -->
+    <string name="pref_header_files">Pocket Kitchen Data</string>
 
-    <string-array name="list_preference_entry_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_notification">Enable Notifications</string>
-    <string name="pref_title_reminder_time">Reminder Frequency</string>
-
-    <string-array name="pref_reminder_entries">
-        <item>Every day</item>
-        <item>Every 2 days</item>
-        <item>Every 3 days</item>
-        <item>Every 4 days</item>
-        <item>Every 5 days</item>
-        <item>Every 7 days</item>
-        <item>Never</item>
-    </string-array>
-
-    <string-array name="pref_reminder_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>7</item>
-        <item>-1</item>
-    </string-array>
+    <string name="pref_files_disable_drive">Disable Drive Usage</string>
+    <string name="pref_files_clear_local">Clear Local-Stored Data</string>
+    <string name="pref_files_clear_drive">Clear Drive-Stored Data</string>
 </resources>

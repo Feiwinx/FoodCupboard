@@ -1,10 +1,12 @@
 package sammobewick.pocketkitchen.core;
 
-import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,8 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.mashape.p.spoonacularrecipefoodnutritionv1.SpoonacularAPIClient;
@@ -33,6 +33,7 @@ import sammobewick.pocketkitchen.data_objects.Recipe_Full;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
 import sammobewick.pocketkitchen.supporting.DialogHelper;
+import sammobewick.pocketkitchen.supporting.LocalFileHelper;
 
 public class TabbedActivity extends AppCompatActivity implements
         KitchenFragment.OnFragmentInteractionListener, RecipeFragment.OnFragmentInteractionListener, ShoppingListFragment.OnFragmentInteractionListener, View.OnClickListener {
@@ -45,11 +46,14 @@ public class TabbedActivity extends AppCompatActivity implements
     private static final int LIST_FRAG_ID    = 1;
     private static final int RECIPE_FRAG_ID  = 2;
 
+    private static final String SHARED_PREFERENCES = "pocketKitchenPreferences";
+
     private SectionsPagerAdapter    mSectionsPagerAdapter;
     private ViewPager               mViewPager;
 
-    // TODO: Decide if useful?
     private int lastFragmentId;
+
+    private SharedPreferences sharedPreferences;
 
     // API Controller for calls to Spoonacular:
     private APIController           controller;
@@ -61,6 +65,8 @@ public class TabbedActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabbed);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,6 +111,13 @@ public class TabbedActivity extends AppCompatActivity implements
         this.fragmentSelected(KITCHEN_FRAG_ID);
     }
 
+    // EXAMPLE FOR PREFERENCES:
+    //private void loadPreferences() {
+        //sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        //sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //String primary = sharedPreferences.getString(getString(R.string.pref_primary_colour), "?");
+    //}
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -136,56 +149,12 @@ public class TabbedActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onKitchenFragmentInteraction(final Ingredient i) {
-        // Here we check that we have got an Ingredient_Search to display:
-        if (i != null) {
-            // Now display the dialog that allows us to edit the amounts of this ingredient:
-            final Dialog dialog = new Dialog(TabbedActivity.this);
+    public void onKitchenFragmentInteraction(final Ingredient item) {
 
-            dialog.setContentView(R.layout.ingredient_edit);
-            dialog.setTitle("Edit List Item");
+        DialogHelper.dialogKitchenItem(TabbedActivity.this, item);
 
-            // Get the views + set the text up:
-            ((TextView) dialog.findViewById(R.id.txt_ingredient_name)).setText(i.getName());
-            ((TextView) dialog.findViewById(R.id.txt_ingredient_qty_name)).setText(i.getUnitShort());
-
-            final EditText edit_qty = (EditText) dialog.findViewById(R.id.edit_ingredient_qty);
-            edit_qty.setText(String.valueOf(i.getAmount()));
-
-            dialog.findViewById(R.id.btn_discard_ing).setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                        }
-                    }
-            );
-
-            dialog.findViewById(R.id.btn_save_ing).setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Ingredient newI = new Ingredient(
-                                    i.getAisle(),
-                                    Float.valueOf(edit_qty.getText().toString()),
-                                    i.getId(),
-                                    i.getImage(),
-                                    i.getName(),
-                                    i.getOriginalString(),
-                                    i.getUnitLong(),
-                                    i.getUnitShort()
-                            );
-
-                            // TODO: Perform update.
-                            // Close dialog:
-                            dialog.dismiss();
-                        }
-                    }
-            );
-        }
         /* DEBUG:
-        Snackbar.make(findViewById(R.id.main_content), "Kitchen Action: " + i.getId(), Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show();
+        helper.displaySnackBarNoAction(R.id.main_content, R.string.snackbar_wip_feature);
         // END-DEBUG */
     }
 
@@ -302,7 +271,7 @@ public class TabbedActivity extends AppCompatActivity implements
                 findViewById(R.id.fab_search_recipes).setVisibility(View.GONE);
                 findViewById(R.id.fab_add_recipe).setVisibility(View.GONE);
                 findViewById(R.id.fab_scan_receipts).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_add_list).setVisibility(View.GONE);
+                findViewById(R.id.fab_add_list).setVisibility(View.VISIBLE);
                 break;
 
             case LIST_FRAG_ID:      // Shopping Fragment
@@ -333,10 +302,22 @@ public class TabbedActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onPause() {
+        LocalFileHelper helper = new LocalFileHelper(this);
+        helper.saveAll();
+
+        super.onPause();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab_add_list:         // Adding to the Shopping List:
-                this.onShoppingFragmentInteraction(null);
+                if (lastFragmentId == LIST_FRAG_ID)
+                    this.onShoppingFragmentInteraction(null);
+
+                if (lastFragmentId == KITCHEN_FRAG_ID)
+                    this.onKitchenFragmentInteraction(null);
 
                 /* DEBUG:
                 Snackbar.make(findViewById(R.id.main_content), R.string.snackbar_wip_feature, Snackbar.LENGTH_LONG)
@@ -405,6 +386,26 @@ public class TabbedActivity extends AppCompatActivity implements
             try {
                 ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
                 Bundle bundle = ai.metaData;
+
+                // Also add the dietary preferences from the shared preferences:
+                if (sharedPreferences.contains(getString(R.string.pref_dietary_dairy))) {
+                    boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_dairy), false);
+                    bundle.putBoolean(getString(R.string.pref_dietary_dairy), value);
+                }
+                if (sharedPreferences.contains(getString(R.string.pref_dietary_gluten))) {
+                    boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_gluten), false);
+                    bundle.putBoolean(getString(R.string.pref_dietary_gluten), value);
+                }
+                if (sharedPreferences.contains(getString(R.string.pref_dietary_vegetarian))) {
+                    boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_vegetarian), false);
+                    bundle.putBoolean(getString(R.string.pref_dietary_vegetarian), value);
+                }
+                if (sharedPreferences.contains(getString(R.string.pref_dietary_vegan))) {
+                    boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_vegan), false);
+                    bundle.putBoolean(getString(R.string.pref_dietary_vegan), value);
+                }
+
+                // Set the arguments:
                 fragment.setArguments(bundle);
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();

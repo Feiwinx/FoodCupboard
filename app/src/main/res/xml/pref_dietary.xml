@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="@string/pref_dietary_dairy"
+        android:title="@string/pref_dietary_dairy"
+        android:summary="@string/pref_dietary_dairy_hint"
+        android:defaultValue="false" />
+
+    <CheckBoxPreference
+        android:key="@string/pref_dietary_gluten"
+        android:title="@string/pref_dietary_gluten"
+        android:summary="@string/pref_dietary_gluten_hint"
+        android:defaultValue="false" />
+
+    <CheckBoxPreference
+        android:key="@string/pref_dietary_vegetarian"
+        android:title="@string/pref_dietary_vegetarian"
+        android:summary="@string/pref_dietary_vegetarian_hint"
+        android:dependency="@string/pref_dietary_vegan"
+        android:defaultValue="false" />
+
+    <CheckBoxPreference
+        android:key="@string/pref_dietary_vegan"
+        android:title="@string/pref_dietary_vegan"
+        android:summary="@string/pref_dietary_vegan_hint"
+        android:disableDependentsState="true"
+        android:defaultValue="false" />
+
+</PreferenceScreen>

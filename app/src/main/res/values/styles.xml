@@ -4,29 +4,32 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/red</item>
-        <item name="colorPrimaryDark">@color/deep_red</item>
-        <item name="colorAccent">@color/deep_orange</item>
-        <item name="android:windowBackground">@color/teal</item>
+        <item name="colorPrimaryDark">@color/blue</item>
+        <item name="colorAccent">@color/deep_red</item>
+        <item name="android:windowBackground">@color/blue_grey</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="colorPrimary">@color/red</item>
-        <item name="colorPrimaryDark">@color/deep_red</item>
-        <item name="colorAccent">@color/deep_orange</item>
+        <item name="colorPrimaryDark">@color/blue</item>
+        <item name="colorAccent">@color/deep_red</item>
+        <item name="android:windowBackground">@color/blue_grey</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="myDialog" parent="Theme.AppCompat.Dialog.Alert" />
-
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/red</item>
-        <item name="colorPrimaryDark">@color/deep_red</item>
-        <item name="colorAccent">@color/deep_orange</item>
+        <item name="colorPrimaryDark">@color/blue</item>
+        <item name="colorAccent">@color/deep_red</item>
+        <item name="android:windowBackground">@color/blue_grey</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- Theme for basic dialogs: -->
+    <style name="myDialog" parent="Theme.AppCompat.Dialog.Alert" />
 
     <!-- We use a style for our Splash Screen so it loads instantly -->
     <style name="SplashScreen" parent="Theme.AppCompat.NoActionBar">

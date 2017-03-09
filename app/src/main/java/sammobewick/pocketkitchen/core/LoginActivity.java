@@ -22,9 +22,10 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 
 import sammobewick.pocketkitchen.R;
-import sammobewick.pocketkitchen.data_objects.Ingredient;
+import sammobewick.pocketkitchen.communication.SaveDriveActivity;
 import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
+import sammobewick.pocketkitchen.supporting.LocalFileHelper;
 
 public class LoginActivity extends AppCompatActivity implements
         View.OnClickListener,
@@ -52,14 +53,18 @@ public class LoginActivity extends AppCompatActivity implements
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(Scopes.DRIVE_APPFOLDER))
+                .requestScopes(new Scope(Scopes.DRIVE_FILE))
                 .requestEmail()
                 .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addScope(new Scope(Scopes.DRIVE_FILE))
+                .addScope(new Scope(Scopes.DRIVE_APPFOLDER))
                 .build();
 
+        // Set up listeners for the buttons using this activity:
         SignInButton signInButton = (SignInButton) findViewById(R.id.btn_google_sign_in);
         signInButton.setSize(SignInButton.SIZE_WIDE);
         signInButton.setOnClickListener(this);
@@ -148,7 +153,7 @@ public class LoginActivity extends AppCompatActivity implements
         // TODO: Load this data from file, at the minute this is being called for instantiation.
         PocketKitchenData pkData = PocketKitchenData.getInstance();
 
-        /* Create some test data:
+        /* TEST-DATA:
         for (int a = 0; a < 5; a++) {
             Ingredient ingredient = new Ingredient(
                     (float) a * 3,
@@ -163,6 +168,10 @@ public class LoginActivity extends AppCompatActivity implements
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             updateUI(true);
+
+            // Load local files:
+            LocalFileHelper helper = new LocalFileHelper(this);
+            helper.loadAll();
         } else {
             // Signed out, show unauthenticated UI.
             updateUI(false);

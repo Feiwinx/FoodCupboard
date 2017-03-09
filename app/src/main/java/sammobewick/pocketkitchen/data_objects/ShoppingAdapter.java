@@ -69,8 +69,9 @@ public class ShoppingAdapter extends BaseAdapter implements Filterable, DataList
     private List<Ingredient> getFilteredResults(CharSequence constraint) {
         List<Ingredient> resultList = new ArrayList<>(data);
 
-        for (Ingredient i: resultList) {
+        for (Ingredient i: new ArrayList<>(data)) {
             if (!i.getName().contains(constraint)) {
+                System.out.println("removing: " + i.getName());
                 resultList.remove(i);
             }
         }
@@ -129,9 +130,9 @@ public class ShoppingAdapter extends BaseAdapter implements Filterable, DataList
                     else {
                         pkData.removeIngredient(selected);
                     }
-                    pkData.updateListeners();
                 }
             });
+            vh.shoppingBtnDelete.setFocusable(false);
 
             vh.shoppingBtnBought.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -146,9 +147,9 @@ public class ShoppingAdapter extends BaseAdapter implements Filterable, DataList
                     } else {
                         pkData.removeIngredient(selected);
                     }
-                    pkData.updateListeners();
                 }
             });
+            vh.shoppingBtnBought.setFocusable(false);
 
             // Save the holder as a tag on the view:
             v.setTag(vh);
@@ -178,8 +179,6 @@ public class ShoppingAdapter extends BaseAdapter implements Filterable, DataList
     // ****************************************************************************************** //
 
     public void setFilterText(String filterText) {
-        if (filterText.length() > 0) {
-            this.getFilter().filter(filterText);
-        }
+        this.getFilter().filter(filterText);
     }
 }

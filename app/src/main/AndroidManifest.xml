@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -22,6 +23,11 @@
         <meta-data
             android:name="recipe_image_url"
             android:value="https://spoonacular.com/recipeImages/" />
+        <meta-data
+            android:name="com.google.android.apps.drive.APP_ID"
+            android:value="BA:85:A6:39:71:5C:A7:28:12:7B:02:E4:F3:42:11:F0:C8:53:7B:88" />
+
+        <action android:name="com.google.android.apps.drive.DRIVE_OPEN" />
 
         <activity
             android:name=".core.SplashActivity"
@@ -34,25 +40,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".core.TabbedActivity"
             android:label="@string/title_activity_tabbed"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".core.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".core.TabbedActivity" />
-
         <activity
             android:name=".core.RecipeActivity"
             android:parentActivityName=".core.TabbedActivity" />
         <activity android:name=".core.LoginActivity" />
-
-        <activity android:name=".core.RecipeSavedActivity"
+        <activity
+            android:name=".core.RecipeSavedActivity"
             android:label="@string/title_activity_saved"
-            android:parentActivityName=".core.TabbedActivity"/>
+            android:parentActivityName=".core.TabbedActivity" />
+
+        <activity android:name=".communication.SaveDriveActivity" />
+
     </application>
 
 </manifest>

@@ -16,7 +16,7 @@ public final class PocketKitchenData {
 
     private static PocketKitchenData        instance;
 
-    // Saved list of last search results, prevents results being destoroyed.
+    // Temporary list of last search results, prevents results being destroyed. Not saved to file!
     private List<Recipe_Short> recipesDisplayed;
 
     // Saved list of recipes the user wants to cook.
@@ -123,6 +123,18 @@ public final class PocketKitchenData {
         this.toBuy = MapManipulator.mergeIngredients(ingredientsRequired);
     }
 
+    public void setRecipesToCook(List<Recipe_Short> recipesToCook) {
+        this.recipesToCook = recipesToCook;
+    }
+
+    public void setIngredientsRequired(Map<Integer, List<Ingredient>> ingredientsRequired) {
+        this.ingredientsRequired = ingredientsRequired;
+    }
+
+    public void setInCupboards(List<Ingredient> inCupboards) {
+        this.inCupboards = inCupboards;
+    }
+
     // ****************************************************************************************** //
     //                                      RECIPES-TO-COOK:                                      //
     // ****************************************************************************************** //
@@ -136,7 +148,7 @@ public final class PocketKitchenData {
         ingredientsRequired.put(id, ingredient_set);
         recipesToCook.add(recipe);
 
-        //updateListeners();
+        updateListeners();
 
         return (ingredientsRequired.containsKey(id) & recipesToCook.contains(recipe));
     }
@@ -153,7 +165,7 @@ public final class PocketKitchenData {
             else { return false; }
         }
 
-        //updateListeners();
+        updateListeners();
 
         return (!ingredientsRequired.containsKey(id) & !recipesToCook.contains(recipe));
     }
@@ -174,7 +186,7 @@ public final class PocketKitchenData {
             }
         } else { return false; }
 
-        //updateListeners();
+        updateListeners();
 
         return ingredientsRequired.containsKey(id);
     }
@@ -224,10 +236,11 @@ public final class PocketKitchenData {
                 // Exit all iterations if we've reduced amount enough:
                 if (amount < 0) break;
             }
+            updateListeners();
         }
         // Final check + return:
         if (amount < 0) {
-            //updateListeners();
+            updateListeners();
             return true;
         } else { return false; }
     }
@@ -248,7 +261,7 @@ public final class PocketKitchenData {
         customSet.add(item);
         ingredientsRequired.put(0, customSet);
 
-        //updateListeners();
+        updateListeners();
 
         return (customSet.contains(item) & ingredientsRequired.containsValue(customSet));
     }
@@ -263,7 +276,7 @@ public final class PocketKitchenData {
             if (customSet.contains(item)) {
                 customSet.remove(item);
                 ingredientsRequired.put(0, customSet);
-                //updateListeners();
+                updateListeners();
                 return true;
             } else { return false; }
         } else { return false; }
@@ -280,7 +293,7 @@ public final class PocketKitchenData {
             if (customSet.contains(old)) {
                 customSet.set(customSet.indexOf(old), item);
                 ingredientsRequired.put(0, customSet);
-                //updateListeners();
+                updateListeners();
                 return true;
             } else { return false; }
         } else { return false; }
@@ -294,7 +307,7 @@ public final class PocketKitchenData {
         if (inCupboards == null) { inCupboards = new ArrayList<>(); }
 
         inCupboards.add(item);
-        //updateListeners();
+        updateListeners();
 
         return inCupboards.contains(item);
     }
@@ -303,7 +316,7 @@ public final class PocketKitchenData {
         if (inCupboards != null) {
             if (inCupboards.contains(item)) {
                 inCupboards.remove(item);
-                //updateListeners();
+                updateListeners();
                 return !inCupboards.contains(item);
             } else { return false; }
         } else { return false; }
@@ -313,7 +326,7 @@ public final class PocketKitchenData {
         if (inCupboards != null) {
             if (inCupboards.contains(existing)) {
                 inCupboards.set(inCupboards.indexOf(existing), replacement);
-                //updateListeners();
+                updateListeners();
                 return inCupboards.contains(replacement);
             } else { return false; }
         } else { return false; }

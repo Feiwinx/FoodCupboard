@@ -1,9 +1,0 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <ListPreference
-        android:key="@string/pref_primary_colour"
-        android:title="@string/pref_primary_colour"
-        android:entryValues="@array/colour_entries"
-        android:entries="@array/colour_entries"/>
-
-</PreferenceScreen>
