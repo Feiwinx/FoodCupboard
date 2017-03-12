@@ -12,11 +12,11 @@ public class Recipe_Short implements Serializable {
     // Matches: Search > GET Search Recipes
     // Usage: represents the brief amount of information gotten from text searches. This is what
     // can be displayed in the listview.
-    private int             id;
-    private String          title;
-    private int             readyInMinutes;
-    private String          image;
-    private List<String>    imageUrls;
+    private int id;
+    private String title;
+    private int readyInMinutes;
+    private String image;
+    private List<String> imageUrls;
 
     // ****************************************************************************************** //
     //                                      CONSTRUCTORS:                                         //

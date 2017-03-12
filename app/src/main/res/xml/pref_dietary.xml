@@ -1,29 +1,62 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
-        android:key="@string/pref_dietary_dairy"
-        android:title="@string/pref_dietary_dairy"
-        android:summary="@string/pref_dietary_dairy_hint"
-        android:defaultValue="false" />
+    <PreferenceCategory
+        android:title="@string/pref_dietary_cat_veg" >
 
-    <CheckBoxPreference
-        android:key="@string/pref_dietary_gluten"
-        android:title="@string/pref_dietary_gluten"
-        android:summary="@string/pref_dietary_gluten_hint"
-        android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="@string/pref_dietary_vegetarian"
+            android:title="@string/pref_dietary_vegetarian"
+            android:summary="@string/pref_dietary_vegetarian_hint"
+            android:dependency="@string/pref_dietary_vegan"
+            android:defaultValue="false" />
 
-    <CheckBoxPreference
-        android:key="@string/pref_dietary_vegetarian"
-        android:title="@string/pref_dietary_vegetarian"
-        android:summary="@string/pref_dietary_vegetarian_hint"
-        android:dependency="@string/pref_dietary_vegan"
-        android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="@string/pref_dietary_vegan"
+            android:title="@string/pref_dietary_vegan"
+            android:summary="@string/pref_dietary_vegan_hint"
+            android:disableDependentsState="true"
+            android:defaultValue="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_dietary_cat_allergens" >
 
-    <CheckBoxPreference
-        android:key="@string/pref_dietary_vegan"
-        android:title="@string/pref_dietary_vegan"
-        android:summary="@string/pref_dietary_vegan_hint"
-        android:disableDependentsState="true"
-        android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="@string/pref_dietary_dairy"
+            android:title="@string/pref_dietary_dairy"
+            android:summary="@string/pref_dietary_dairy_hint"
+            android:defaultValue="false" />
 
+        <CheckBoxPreference
+            android:key="@string/pref_dietary_gluten"
+            android:title="@string/pref_dietary_gluten"
+            android:summary="@string/pref_dietary_gluten_hint"
+            android:defaultValue="false" />
+
+        <CheckBoxPreference
+            android:key="@string/pref_dietary_nuts"
+            android:title="@string/pref_dietary_nuts"
+            android:summary="@string/pref_dietary_nuts_hint"
+            android:defaultValue="false" />
+
+        <CheckBoxPreference
+            android:key="@string/pref_dietary_soy"
+            android:title="@string/pref_dietary_soy"
+            android:summary="@string/pref_dietary_soy_hint"
+            android:defaultValue="false" />
+
+        <CheckBoxPreference
+            android:key="@string/pref_dietary_seafood"
+            android:title="@string/pref_dietary_seafood"
+            android:summary="@string/pref_dietary_seafood_hint"
+            android:disableDependentsState="true"
+            android:defaultValue="false" />
+
+        <CheckBoxPreference
+            android:key="@string/pref_dietary_shellfish"
+            android:title="@string/pref_dietary_shellfish"
+            android:summary="@string/pref_dietary_shellfish_hint"
+            android:dependency="@string/pref_dietary_seafood"
+            android:defaultValue="false" />
+
+    </PreferenceCategory>
 </PreferenceScreen>

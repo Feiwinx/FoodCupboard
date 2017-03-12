@@ -54,14 +54,16 @@ public class SaveDriveActivity extends BaseDriveActivity {
                     SaveList saveInCupboards = new SaveList();
 
                     // Arguably dangerous casting, but as I can guarantee the usage then this will be fine:
-                    saveInCupboards.setListToSave((List<Object>)(Object)pkData.getInCupboards());
+                    //noinspection unchecked
+                    saveInCupboards.setListToSave((List<Object>) (Object) pkData.getInCupboards());
                     saveInCupboards.setContents(contents);
                     saveInCupboards.run();
 
                     SaveList saveRecipesToCook = new SaveList();
 
                     // Again, arguable dangerous cast, but same as above applies:
-                    saveRecipesToCook.setListToSave((List<Object>)(Object)pkData.getRecipesToCook());
+                    //noinspection unchecked
+                    saveRecipesToCook.setListToSave((List<Object>) (Object) pkData.getRecipesToCook());
                     saveRecipesToCook.setContents(contents);
                     saveRecipesToCook.run();
 
@@ -77,7 +79,7 @@ public class SaveDriveActivity extends BaseDriveActivity {
     final private ResultCallback<DriveFolder.DriveFileResult> fileCallback = new
             ResultCallback<DriveFolder.DriveFileResult>() {
                 @Override
-                public void onResult(DriveFolder.DriveFileResult result) {
+                public void onResult(@NonNull DriveFolder.DriveFileResult result) {
                     if (!result.getStatus().isSuccess()) {
                         // TODO: Error.
                         return;
@@ -107,7 +109,9 @@ public class SaveDriveActivity extends BaseDriveActivity {
                     filename = "inCupboards.pk";
                 } else if (listToSave.get(0).getClass() == Recipe_Short.class) {
                     filename = "recipesToCook.pk";
-                } else { return; }
+                } else {
+                    return;
+                }
 
                 // Write to File:
                 try {

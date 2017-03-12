@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="sammobewick.pocketkitchen.core.SearchRecipesFragment">
+
+    <SearchView
+        android:id="@+id/recipe_search"
+
+        android:queryHint="@string/hint_search_recipes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ListView
+        android:id="@+id/recipe_list"
+        android:dividerHeight="4dp"
+
+        android:layout_below="@id/recipe_search"
+        android:layout_marginBottom="60dp"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- TextView for when list is empty -->
+    <TextView
+        android:id="@+id/empty_recipe"
+        android:text="@string/empty_recipes"
+
+        android:layout_below="@id/recipe_search"
+
+        android:gravity="center"
+        android:textStyle="italic"
+        android:layout_margin="10dp"
+        android:focusable="false"
+        android:clickable="false"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Progress Spinner for Loading -->
+    <ProgressBar
+        android:id="@+id/recipe_search_progress"
+
+        style="?android:progressBarStyleLarge"
+        android:progressDrawable="@drawable/progress"
+        android:indeterminateDrawable="@drawable/progress"
+        android:layout_below="@id/recipe_search"
+        android:layout_centerHorizontal="true"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

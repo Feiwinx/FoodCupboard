@@ -12,11 +12,11 @@ import sammobewick.pocketkitchen.data_objects.Ingredient;
 public class HTTP_Ingredient {
     private List<Ingredient> results;
     private String baseUri;
-    private int    offset;
-    private int    number;
-    private int    totalResults;
-    private int    processingTimeMs;
-    private long   expires;
+    private int offset;
+    private int number;
+    private int totalResults;
+    private int processingTimeMs;
+    private long expires;
     private boolean isStale;
 
     private HTTP_Ingredient(String baseUri, long expires, boolean isStale, int number, int offset, int processingTimeMs, List<Ingredient> results, int totalResults) {

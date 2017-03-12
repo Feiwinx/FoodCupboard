@@ -1,10 +1,12 @@
 package sammobewick.pocketkitchen.supporting;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
+import android.view.ContextThemeWrapper;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,24 +14,54 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 
+import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.data_objects.Ingredient;
 import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 
 /**
+ * TODO: May want to add some sort of error handling for the user's end?
  * Created by Sam on 07/03/2017.
  */
-
 public class LocalFileHelper {
-    // FILENAMES:
+    private static final String TAG             = "LocalFileHelper";
     private static final String IN_CUPBOARDS    = "inCupboards.pk";
     private static final String RECIPES         = "recipesToCook.pk";
     private static final String INGREDIENTS     = "ingredientsRequired.pk";
 
-    private Context context;
+    private final Context context;
 
     public LocalFileHelper(Context context) {
         this.context = context;
+    }
+
+    public void ConfirmRunnable(String message, final Runnable runnable) {
+        AlertDialog dialog = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.myDialog)).create();
+
+        dialog.setTitle(R.string.lbl_dialog_confirmation_title);
+        dialog.setMessage(message);
+        dialog.setCancelable(true);
+        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+
+        // BUTTONS
+        String lbl;
+        lbl = context.getResources().getString(R.string.lbl_dialog_confirmation_yes);
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                runnable.run();
+            }
+        });
+
+        lbl = context.getResources().getString(R.string.lbl_dialog_confirmation_no);
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i(TAG, "Deletion aborted.");
+            }
+        });
+
+        dialog.show();
     }
 
     public void saveAll() {
@@ -44,9 +76,10 @@ public class LocalFileHelper {
         this.loadRecipesToCook();
     }
 
+    // NOTE: So far as DRIVE data does not exist, this is only local!
     public void deleteAll() {
         RunDeleteFiles run = new RunDeleteFiles();
-        run.run();
+        ConfirmRunnable("Are you sure you want to delete all locally-stored files?", run);
     }
 
     public void saveIngredientsRequired() {
@@ -109,6 +142,7 @@ public class LocalFileHelper {
                 fos.close();
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.e(TAG, e.getLocalizedMessage());
             }
         }
     }
@@ -122,15 +156,14 @@ public class LocalFileHelper {
             data = pkData.getRecipesToCook();
 
             try {
-                FileOutputStream fos    = context.openFileOutput(RECIPES, Context.MODE_PRIVATE);
-                ObjectOutputStream oos  = new ObjectOutputStream(fos);
+                FileOutputStream fos = context.openFileOutput(RECIPES, Context.MODE_PRIVATE);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(data);
                 oos.close();
                 fos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.e(TAG, e.getLocalizedMessage());
             }
         }
     }
@@ -144,15 +177,14 @@ public class LocalFileHelper {
             data = pkData.getInCupboards();
 
             try {
-                FileOutputStream fos    = context.openFileOutput(IN_CUPBOARDS, Context.MODE_PRIVATE);
-                ObjectOutputStream oos  = new ObjectOutputStream(fos);
+                FileOutputStream fos = context.openFileOutput(IN_CUPBOARDS, Context.MODE_PRIVATE);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(data);
                 oos.close();
                 fos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.e(TAG, e.getLocalizedMessage());
             }
         }
     }
@@ -170,12 +202,9 @@ public class LocalFileHelper {
                 if (list != null)
                     pkData.setInCupboards(list);
 
-            } catch (FileNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.getLocalizedMessage());
             }
         }
     }
@@ -193,12 +222,9 @@ public class LocalFileHelper {
                 if (list != null)
                     pkData.setRecipesToCook(list);
 
-            } catch (FileNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.getLocalizedMessage());
             }
         }
     }
@@ -216,12 +242,9 @@ public class LocalFileHelper {
                 if (map != null)
                     pkData.setIngredientsRequired(map);
 
-            } catch (FileNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.getLocalizedMessage());
             }
         }
     }

@@ -3,11 +3,13 @@ package sammobewick.pocketkitchen.core;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -23,30 +25,31 @@ import java.util.List;
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.communication.HTTP_RecipeShort;
 import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
-import sammobewick.pocketkitchen.data_objects.RecipeShortAdapter;
+import sammobewick.pocketkitchen.data_objects.SearchedRecipesAdapter;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link RecipeFragment.OnFragmentInteractionListener} interface
+ * {@link SearchRecipesFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link RecipeFragment#newInstance} factory method to
+ * Use the {@link SearchRecipesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecipeFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class SearchRecipesFragment extends Fragment implements SearchView.OnQueryTextListener {
     //********************************************************************************************//
     //  VARIABLES / HANDLERS FOR THIS FRAGMENT:                                                   //
     //********************************************************************************************//
+    private static final String TAG = "SearchRecipesFragment";
 
-    private AbsListView         mListView;
-    private RecipeShortAdapter  mAdapter;
-    private SearchView          mSearchView;
-    private APIController       controller;
-
-    private String  intolerances;
-    private String  dietQuery;
+    private AbsListView             mListView;
+    private SearchedRecipesAdapter  mAdapter;
+    private SearchView              mSearchView;
+    private ProgressBar             mProgressBar;
+    private APIController           controller;
+    private String                  intolerances;
+    private String                  dietQuery;
 
     private OnFragmentInteractionListener mListener;
 
@@ -54,17 +57,16 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
     //                                 CONSTRUCTORS + SET-UP:                                     //
     // ****************************************************************************************** //
 
-    public RecipeFragment() { /* Empty constructor */ }
+    public SearchRecipesFragment() { /* Empty constructor */ }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment.
      *
-     * @return A new instance of fragment RecipeFragment.
+     * @return A new instance of fragment SearchRecipesFragment.
      */
-    public static RecipeFragment newInstance() {
-        RecipeFragment fragment = new RecipeFragment();
-        return fragment;
+    public static SearchRecipesFragment newInstance() {
+        return new SearchRecipesFragment();
     }
 
     @Override
@@ -73,8 +75,8 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
 
         // Fetch our arguments:
         String urlStart = "";
-        intolerances    = "";
-        dietQuery       = "";
+        intolerances = "";
+        dietQuery = "";
 
         if (getArguments() != null) {
             Bundle args = getArguments();
@@ -83,7 +85,17 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
             }
 
             // Generate the search queries:
-            if (args.containsKey(getString(R.string.pref_dietary_dairy))){
+            if (args.containsKey(getString(R.string.pref_dietary_vegan))) {
+                if (args.getBoolean(getString(R.string.pref_dietary_vegan))) {
+                    dietQuery += "vegan, ";
+                }
+            }
+            if (args.containsKey(getString(R.string.pref_dietary_vegetarian))) {
+                if (args.getBoolean(getString(R.string.pref_dietary_vegetarian))) {
+                    dietQuery += "vegetarian, ";
+                }
+            }
+            if (args.containsKey(getString(R.string.pref_dietary_dairy))) {
                 if (args.getBoolean(getString(R.string.pref_dietary_dairy))) {
                     intolerances += "dairy, ";
                 }
@@ -93,20 +105,30 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
                     intolerances += "gluten, ";
                 }
             }
-            if (args.containsKey(getString(R.string.pref_dietary_vegetarian))) {
-                if (args.getBoolean(getString(R.string.pref_dietary_vegetarian))) {
-                    dietQuery += "vegetarian, ";
+            if (args.containsKey(getString(R.string.pref_dietary_nuts))) {
+                if (args.getBoolean(getString(R.string.pref_dietary_nuts))) {
+                    intolerances += "nuts, ";
                 }
             }
-            if (args.containsKey(getString(R.string.pref_dietary_vegan))) {
-                if (args.getBoolean(getString(R.string.pref_dietary_vegan))) {
-                    dietQuery += "vegan, ";
+            if (args.containsKey(getString(R.string.pref_dietary_seafood))) {
+                if (args.getBoolean(getString(R.string.pref_dietary_seafood))){
+                    intolerances += "seafood, ";
+                }
+            }
+            if (args.containsKey(getString(R.string.pref_dietary_shellfish))) {
+                if (args.getBoolean(getString(R.string.pref_dietary_shellfish))) {
+                    intolerances += "shellfish, ";
+                }
+            }
+            if (args.containsKey(getString(R.string.pref_dietary_soy))) {
+                if (args.getBoolean(getString(R.string.pref_dietary_soy))) {
+                    intolerances += "soy, ";
                 }
             }
         }
 
         // Prepare our adapter:
-        mAdapter = new RecipeShortAdapter(urlStart);
+        mAdapter = new SearchedRecipesAdapter(urlStart);
 
         // Pass any background saved data to adapter:
         PocketKitchenData pkData = PocketKitchenData.getInstance();
@@ -121,23 +143,27 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_recipe, container, false);
+        View view = inflater.inflate(R.layout.fragment_search_recipes, container, false);
 
         // Prepare our ListView:
         mListView = (AbsListView) view.findViewById(R.id.recipe_list);
         mListView.setAdapter(mAdapter);
         mListView.setEmptyView(view.findViewById(R.id.empty_recipe));
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    mListener.onRecipeFragmentInteraction(mAdapter.getItem(position));
-                }
-            }
+                                             @Override
+                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                                 setProgressBar(true);
+                                                 mListener.onRecipeFragmentInteraction(mAdapter.getItem(position));
+                                             }
+                                         }
         );
 
         // Prepare our SearchView:
         mSearchView = (SearchView) view.findViewById(R.id.recipe_search);
         mSearchView.setOnQueryTextListener(this);
+
+        mProgressBar = (ProgressBar)view.findViewById(R.id.recipe_search_progress);
+        setProgressBar(false);
 
         return view;
     }
@@ -159,10 +185,21 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
         mListener = null;
     }
 
+    private void setProgressBar(boolean visible){
+        if (visible) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mListView.setEnabled(false);
+        } else {
+            mProgressBar.setVisibility(View.GONE);
+            mListView.setEnabled(true);
+        }
+    }
+
     @Override
     public boolean onQueryTextSubmit(String query) {
+        mAdapter.setData(null);
+        setProgressBar(true);
         // Make the API call using the submitted data:
-        // TODO: Need to include preferences here!
         controller.searchRecipesAsync(
                 query,  // query                - required. The natural language recipe query.
                 "",   // cuisine              - optional.
@@ -177,15 +214,16 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
                 new APICallBack<DynamicResponse>() {
                     @Override
                     public void onSuccess(HttpContext context, DynamicResponse response) {
-                        //API_Response.ReadHTTPResponse(response);
+                        // Hide spinner:
+                        setProgressBar(false);
                         try {
 
                             HTTP_RecipeShort handler = new HTTP_RecipeShort(response.parseAsString());
 
                             List<Recipe_Short> data = handler.getResults();
-                            PocketKitchenData pkData = PocketKitchenData.getInstance();
 
                             // Load data in handler:
+                            PocketKitchenData pkData = PocketKitchenData.getInstance();
                             pkData.setRecipesDisplayed(data);
 
                             // Pass to adapter:
@@ -193,35 +231,25 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
 
                             // Provides proper feedback when no results are returned:
                             if (data.size() == 0) {
-                                ((TextView)mListView.getEmptyView()).setText(R.string.no_results);
+                                ((TextView) mListView.getEmptyView()).setText(R.string.no_results);
                             }
 
                         } catch (ParseException e) {
-                            e.printStackTrace();
-                            ActivityHelper helper = new ActivityHelper(getActivity());
-                            helper.displayErrorDialog(e.getLocalizedMessage());
+                            ActivityHelper.displayErrorDialog(getActivity(), e.getLocalizedMessage());
+                            Log.e(TAG, "Parsing recipe failed!\n" + e.getLocalizedMessage());
                         }
                     }
 
                     @Override
                     public void onFailure(HttpContext context, Throwable error) {
-                        error.printStackTrace();
-                        ActivityHelper helper = new ActivityHelper(getActivity());
-                        helper.displayErrorDialog(error.getLocalizedMessage());
+                        ActivityHelper.displayErrorDialog(getActivity(), error.getLocalizedMessage());
+                        Log.e(TAG, "Recipe query failed!\n" + error.getLocalizedMessage());
                     }
                 });
 
         return false;
     }
 
-
-
-    /**
-     * Factory method required by the use of a SearchView. Only returns false as this means the
-     * suggestions of what to enter is handled by the OS.
-     * @param newText
-     * @return
-     */
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
@@ -243,6 +271,7 @@ public class RecipeFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     public interface OnFragmentInteractionListener {
         void onRecipeFragmentInteraction(Recipe_Short recipe_short);
+
         void onRecipeFragementSelected(boolean visible);
     }
 }

@@ -12,41 +12,40 @@ import android.widget.SearchView;
 
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.data_objects.Ingredient;
-import sammobewick.pocketkitchen.data_objects.ShoppingAdapter;
+import sammobewick.pocketkitchen.data_objects.MyListAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ShoppingListFragment.OnFragmentInteractionListener} interface
+ * {@link MyListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ShoppingListFragment#newInstance} factory method to
+ * Use the {@link MyListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ShoppingListFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class MyListFragment extends Fragment implements SearchView.OnQueryTextListener {
     //********************************************************************************************//
     //  VARIABLES / HANDLERS FOR THIS FRAGMENT:                                                   //
     //********************************************************************************************//
 
-    private AbsListView     mListView;
-    private ShoppingAdapter mAdapter;
-    private SearchView      mSearchView;
+    private AbsListView mListView;
+    private MyListAdapter mAdapter;
+    private SearchView mSearchView;
     private OnFragmentInteractionListener mListener;
 
     // ****************************************************************************************** //
     //                                 CONSTRUCTORS + SET-UP:                                     //
     // ****************************************************************************************** //
 
-    public ShoppingListFragment() { /* Empty constructor */ }
+    public MyListFragment() { /* Empty constructor */ }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment.
      *
-     * @return A new instance of fragment ShoppingListFragment.
+     * @return A new instance of fragment MyListFragment.
      */
-    public static ShoppingListFragment newInstance() {
-        ShoppingListFragment fragment = new ShoppingListFragment();
-        return fragment;
+    public static MyListFragment newInstance() {
+        return new MyListFragment();
     }
 
     @Override
@@ -54,25 +53,25 @@ public class ShoppingListFragment extends Fragment implements SearchView.OnQuery
         super.onCreate(savedInstanceState);
 
         // Get our adapter (pass URL and this class [listener]):
-        mAdapter = new ShoppingAdapter();
+        mAdapter = new MyListAdapter();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_list, container, false);
 
         // Prepare out ListView:
         mListView = (AbsListView) view.findViewById(R.id.shopping_list);
         mListView.setAdapter(mAdapter);
         mListView.setEmptyView(view.findViewById(R.id.empty_shopping));
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    mListener.onShoppingFragmentInteraction(mAdapter.getItem(position));
-                }
-            }
+                                             @Override
+                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                                 mListener.onShoppingFragmentInteraction(mAdapter.getItem(position));
+                                             }
+                                         }
         );
 
         // Prepare our SearchView:
@@ -136,6 +135,7 @@ public class ShoppingListFragment extends Fragment implements SearchView.OnQuery
      */
     public interface OnFragmentInteractionListener {
         void onShoppingFragmentInteraction(final Ingredient i);
+
         void onShoppingFragmentSelected(boolean visible);
     }
 }

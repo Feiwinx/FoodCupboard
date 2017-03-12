@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,72 +8,82 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:id="@+id/login_form_ll"
     tools:context="sammobewick.pocketkitchen.core.LoginActivity">
 
-    <ScrollView
-        android:id="@+id/login_form"
+    <!-- Pocket Kitchen Logo -->
+    <ImageView
+        android:id="@+id/login_pocket_kitchen_img"
+        android:src="@drawable/pocket_kitchen_img"
+        android:adjustViewBounds="true"
+        android:layout_centerHorizontal="true"
+        android:maxHeight="300dp"
+        android:maxWidth="300dp"
+        android:layout_margin="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="ContentDescription" />
+
+    <!-- Google Sign-In Button -->
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btn_google_sign_in"
+        android:layout_below="@id/login_pocket_kitchen_img"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        android:layout_gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
+
+    <Button
+        android:id="@+id/btn_google_sign_out"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:visibility="visible"
+
+        android:text="@string/lbl_btn_sign_out"
+        android:hint="@string/hint_btn_sign_out"
+
+        android:layout_below="@id/btn_google_sign_in"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content" />
 
-        <LinearLayout
-            android:id="@+id/login_form_ll"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <Button
+        android:id="@+id/btn_google_disconnect"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:visibility="visible"
 
-            <!-- Pocket Kitchen Logo -->
-            <ImageView android:src="@drawable/pocket_kitchen_img"
-                android:adjustViewBounds="true"
-                android:layout_gravity="center"
-                android:maxHeight="300dp"
-                android:maxWidth="300dp"
-                android:layout_margin="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        android:text="@string/lbl_btn_disconnect"
+        android:hint="@string/hint_btn_disconnect"
 
-            <!-- Google Sign-In Button -->
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/btn_google_sign_in"
-                android:layout_margin="5dp"
-                android:layout_gravity="center_vertical"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                />
+        android:layout_below="@id/btn_google_sign_out"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-            <Button android:id="@+id/btn_google_sign_out"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:visibility="gone"
+    <Button
+        android:id="@+id/btn_proceed"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:visibility="visible"
 
-                android:text="@string/lbl_btn_sign_out"
-                android:hint="@string/hint_btn_sign_out"
+        android:text="@string/lbl_btn_proceed"
+        android:hint="@string/hint_btn_proceed"
 
-                android:layout_margin="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        android:layout_below="@id/btn_google_disconnect"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-            <Button android:id="@+id/btn_google_disconnect"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:visibility="gone"
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:progressBarStyleLarge"
+        android:progressDrawable="@drawable/progress"
+        android:indeterminateDrawable="@drawable/progress"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/btn_google_sign_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-                android:text="@string/lbl_btn_disconnect"
-                android:hint="@string/hint_btn_disconnect"
-
-                android:layout_margin="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <Button android:id="@+id/btn_proceed"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:visibility="gone"
-
-                android:text="@string/lbl_btn_proceed"
-                android:hint="@string/hint_btn_proceed"
-
-                android:layout_margin="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+</RelativeLayout>

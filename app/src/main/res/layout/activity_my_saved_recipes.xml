@@ -2,22 +2,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="sammobewick.pocketkitchen.core.KitchenFragment">
-
+    tools:context="sammobewick.pocketkitchen.core.MyKitchenFragment">
 
     <ListView
         android:id="@+id/saved_recipes_list"
 
         android:layout_marginBottom="20dp"
 
-        android:dividerHeight="4px"
+        android:dividerHeight="4dp"
         android:transcriptMode="alwaysScroll"
+        android:focusable="true"
 
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <TextView
-        android:id="@+id/empty_saved_recipes"
+        android:id="@+id/saved_recipes_empty"
         android:text="@string/empty_saved_recipes"
 
         android:textStyle="italic"
@@ -28,5 +28,14 @@
 
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <ProgressBar
+        style="?android:progressBarStyleLarge"
+        android:progressDrawable="@drawable/progress"
+        android:indeterminateDrawable="@drawable/progress"
+        android:id="@+id/saved_recipes_progress"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

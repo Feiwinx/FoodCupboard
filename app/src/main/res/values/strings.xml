@@ -6,6 +6,7 @@
     <string name="title_activity_saved">Saved Recipes</string>
 
     <string name="snackbar_wip_feature">Sorry! This feature is still WIP!</string>
+    <string name="snackbar_revoke_success">Success! The access has been revoked.</string>
 
     <!-- Labels (for TextViews/Buttons/Etc.) -->
     <string name="section_recipes">Recipes</string>
@@ -52,14 +53,19 @@
     <string name="lbl_dialog_edit_kitchen">Edit Cupboard Item</string>
     <string name="lbl_dialog_new_kitchen">New Cupboard Item</string>
 
+    <string name="lbl_dialog_confirmation_title">Confirmation Required:</string>
+    <string name="lbl_dialog_confirmation_yes">Yes</string>
+    <string name="lbl_dialog_confirmation_no">No</string>
+    <string name="lbl_dialog_confirmation_revoke">Are you sure about that?\nAll saved data will also be deleted!</string>
+
     <!-- Hints: -->
     <string name="hint_btn_save">Save your changes</string>
     <string name="hint_btn_cancel">Undo any changes made</string>
     <string name="hint_btn_delete">Delete this item entirely</string>
     <string name="hint_btn_purchase">Move this item to your kitchen</string>
-    <string name="hint_search_recipes">Search for recipesDisplayed...</string>
-    <string name="hint_search_shopping">Filter your list...</string>
-    <string name="hint_search_kitchen">Filter your kitchen...</string>
+    <string name="hint_search_recipes">Search for recipes…</string>
+    <string name="hint_search_shopping">Filter your list…</string>
+    <string name="hint_search_kitchen">Filter your kitchen…</string>
     <string name="hint_enter_measurement">kg/g/etc.</string>
     <string name="hint_edit_quantity">Enter the amount</string>
     <string name="hint_edit_item_name">Enter the item name</string>
@@ -120,14 +126,25 @@
     <!-- Settings for Dietary Preferences -->
     <string name="pref_header_dietary_preferences">Dietary Preferences</string>
 
-    <string name="pref_dietary_dairy">Dairy</string>
-    <string name="pref_dietary_dairy_hint">Exclude dairy from searched recipes.</string>
-    <string name="pref_dietary_gluten">Gluten</string>
-    <string name="pref_dietary_gluten_hint">Exclude gluten from searched recipes.</string>
+    <string name="pref_dietary_cat_veg">Vegetarian or Vegan</string>
     <string name="pref_dietary_vegetarian">Vegetarian</string>
     <string name="pref_dietary_vegetarian_hint">Exclude non-vegetarian results from searched recipes.</string>
     <string name="pref_dietary_vegan">Vegan</string>
     <string name="pref_dietary_vegan_hint">Exclude non-vegan results from searched recipes.</string>
+
+    <string name="pref_dietary_cat_allergens">Allergens or Other Preferences</string>
+    <string name="pref_dietary_dairy">Dairy</string>
+    <string name="pref_dietary_dairy_hint">Exclude dairy from searched recipes.</string>
+    <string name="pref_dietary_gluten">Gluten</string>
+    <string name="pref_dietary_gluten_hint">Exclude gluten from searched recipes.</string>
+    <string name="pref_dietary_nuts">Nuts</string>
+    <string name="pref_dietary_nuts_hint">Exclude all types of nuts. You can use advanced search to be more specific!</string>
+    <string name="pref_dietary_seafood">Seafood</string>
+    <string name="pref_dietary_seafood_hint">Exclude all seafood from search recipes.</string>
+    <string name="pref_dietary_shellfish">Shellfish</string>
+    <string name="pref_dietary_shellfish_hint">Exclude shellfish from search recipes.</string>
+    <string name="pref_dietary_soy">Soy</string>
+    <string name="pref_dietary_soy_hint">Exclude soy from searched recipes.</string>
 
     <!-- Settings for File Data -->
     <string name="pref_header_files">Pocket Kitchen Data</string>

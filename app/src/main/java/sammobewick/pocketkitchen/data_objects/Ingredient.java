@@ -1,6 +1,7 @@
 package sammobewick.pocketkitchen.data_objects;
 
 import com.google.gson.Gson;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -10,14 +11,14 @@ import java.util.Objects;
 public class Ingredient implements Serializable {
     // Matches: Data > GET Get Recipe Information
     // Usage: represents an ingredient from a recipe.
-    private int     id;
-    private String  aisle;
-    private String  image;
-    private String  name;
-    private float   amount;
-    private String  unitShort;
-    private String  unitLong;
-    private String  originalString;
+    private int id;
+    private String aisle;
+    private String image;
+    private String name;
+    private float amount;
+    private String unitShort;
+    private String unitLong;
+    private String originalString;
 
     private boolean custom;
 
@@ -49,6 +50,7 @@ public class Ingredient implements Serializable {
         this.originalString = "";   // UNUSED
         this.unitLong = unitShort;  // REPLICATED
         this.unitShort = unitShort;
+        this.image = "";            // UNUSED
         this.custom = true;         // CUSTOM
     }
 
@@ -60,15 +62,15 @@ public class Ingredient implements Serializable {
     public Ingredient(String json) {
         Gson gson = new Gson();
         Ingredient ingredient = gson.fromJson(json, Ingredient.class);
-        this.aisle              = ingredient.getAisle();
-        this.amount             = ingredient.getAmount();
-        this.id                 = ingredient.getId();
-        this.image              = ingredient.getImage();
-        this.name               = ingredient.getName();
-        this.originalString     = ingredient.getOriginalString();
-        this.unitLong           = ingredient.getUnitLong();
-        this.unitShort          = ingredient.getUnitShort();
-        this.custom             = false;
+        this.aisle = ingredient.getAisle();
+        this.amount = ingredient.getAmount();
+        this.id = ingredient.getId();
+        this.image = ingredient.getImage();
+        this.name = ingredient.getName();
+        this.originalString = ingredient.getOriginalString();
+        this.unitLong = ingredient.getUnitLong();
+        this.unitShort = ingredient.getUnitShort();
+        this.custom = false;
     }
 
     public String getJson() {
@@ -87,11 +89,11 @@ public class Ingredient implements Serializable {
 
         // This is only reached when we know it's the same class!
         Ingredient that = (Ingredient) obj;
-        return  Objects.equals(id, that.getId())            &&
-                Objects.equals(aisle, that.getAisle())      &&
-                Objects.equals(name, that.getName())        &&
-                Objects.equals(unitLong, that.unitLong)     &&
-                Objects.equals(unitShort, that.unitShort)   &&
+        return Objects.equals(id, that.getId()) &&
+                Objects.equals(aisle, that.getAisle()) &&
+                Objects.equals(name, that.getName()) &&
+                Objects.equals(unitLong, that.unitLong) &&
+                Objects.equals(unitShort, that.unitShort) &&
                 Objects.equals(custom, that.isCustom());    // END-RETURN
     }
 

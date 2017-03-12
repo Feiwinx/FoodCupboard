@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,29 +23,32 @@ import sammobewick.pocketkitchen.data_objects.Recipe_Full;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
 
-public class RecipeActivity extends AppCompatActivity {
-    // As we need to load images here, we need to save the meta-data for URL start:
-    private String          urlStart;
-    private boolean         btnPressed;
+public class ViewSingleRecipeActivity extends AppCompatActivity {
+    //********************************************************************************************//
+    //  VARIABLES / HANDLERS FOR THIS ACTIVITY:                                                   //
+    //********************************************************************************************//
+    private static final String TAG = "SingleRecipeActivity";
+
+    private String urlStart;
+    private boolean btnPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.recipe_full);
+        setContentView(R.layout.view_single_recipe);
         setupActionBar();
 
         // Load both versions of the recipe from the intent + set the title:
         final Recipe_Short recipe_short = (Recipe_Short) getIntent().getExtras().get("recipe_short");
-        final Recipe_Full recipe_full = (Recipe_Full) getIntent().getExtras().get("recipe_full");
+        final Recipe_Full recipe_full = (Recipe_Full) getIntent().getExtras().get("view_single_recipe");
 
         // Load meta-data:
         try {
             ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
             urlStart = ai.metaData.getString("recipe_image_url");
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            ActivityHelper helper = new ActivityHelper(getApplicationContext());
-            helper.displayErrorDialog(e.getLocalizedMessage());
+            ActivityHelper.displayErrorDialog(getApplicationContext(), e.getLocalizedMessage());
+            Log.e(TAG, "Getting bundle failed!\n" + e.getLocalizedMessage());
         }
 
         loadData(recipe_short, recipe_full);
@@ -60,14 +64,16 @@ public class RecipeActivity extends AppCompatActivity {
             btnPressed = true;
             mainButton.setText(R.string.lbl_btn_rem_recipe);
             mainButton.setHint(R.string.hint_btn_rem_recipe);
-        } else { btnPressed = false; }
+        } else {
+            btnPressed = false;
+        }
 
         mainButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (!btnPressed) {
-                            if (pkData.addRecipeToCookList(recipe_short, recipe_full.getExtendedIngredients())) {
+                            if (pkData.addRecipeToCookList(recipe_short, recipe_full != null ? recipe_full.getExtendedIngredients() : null)) {
                                 mainButton.setText(R.string.lbl_btn_rem_recipe);
                                 mainButton.setHint(R.string.hint_btn_rem_recipe);
 
@@ -75,9 +81,10 @@ public class RecipeActivity extends AppCompatActivity {
                                 Snackbar.make(findViewById(R.id.recipe_full_content), R.string.feedback_added_recipe, Snackbar.LENGTH_SHORT)
                                         .setAction("Action", null).show();
                             } else {
-                                ActivityHelper helper = new ActivityHelper(getApplicationContext());
-                                helper.displayErrorDialog("Failed to add this recipe to your cooking list!" +
+                                ActivityHelper.displayErrorDialog(getApplicationContext(),
+                                        "Failed to add this recipe to your cooking list!" +
                                         "\nYou might benefit from reloading the application.");
+                                Log.e(TAG, "Error occurred when adding recipe to cook list!\n" + recipe_short.toString());
                             }
                         } else {
                             if (pkData.removeRecipeFromCookList(recipe_short)) {
@@ -88,9 +95,10 @@ public class RecipeActivity extends AppCompatActivity {
                                 Snackbar.make(findViewById(R.id.recipe_full_content), R.string.feedback_removed_recipe, Snackbar.LENGTH_SHORT)
                                         .setAction("Action", null).show();
                             } else {
-                                ActivityHelper helper = new ActivityHelper(getApplicationContext());
-                                helper.displayErrorDialog("Failed to add this recipe to your cooking list!" +
-                                        "\nYou might benefit from reloading the application.");
+                                ActivityHelper.displayErrorDialog(getApplicationContext(),
+                                        "Failed to add this recipe to your cooking list!" +
+                                                "\nYou might benefit from reloading the application.");
+                                Log.e(TAG, "Unusual error occurred when adding recipe to cook list!\n" + recipe_short.toString());
                             }
                         }
                         btnPressed = !btnPressed;
@@ -112,19 +120,20 @@ public class RecipeActivity extends AppCompatActivity {
 
     /**
      * Here we load the recipe data into the view, showing/hiding images and setting text.
+     *
      * @param recipe_short - contains the image details.
-     * @param recipe_full - contains everything else to display.
+     * @param recipe_full  - contains everything else to display.
      */
-    private void loadData(Recipe_Short recipe_short, Recipe_Full recipe_full){
-                            // ***** RECIPE TITLE:                  ***** //
+    private void loadData(Recipe_Short recipe_short, Recipe_Full recipe_full) {
+        // ***** RECIPE TITLE:                  ***** //
         ((TextView) this.findViewById(R.id.recipe_title_f)).setText(recipe_full.getTitle());
 
-                            // ***** MAIN RECIPE IMAGE:             ***** //
+        // ***** MAIN RECIPE IMAGE:             ***** //
         String url = urlStart + recipe_short.getImage();
         ImageView recipe_img = (ImageView) this.findViewById(R.id.recipe_image_f);
         new DownloadImageAsync(recipe_img).execute(url);
 
-                            // ***** RIGHT-HAND INFORMATION PANE:   ***** //
+        // ***** RIGHT-HAND INFORMATION PANE:   ***** //
         if (recipe_full.isVegan()) {
             this.findViewById(R.id.dietary_vegan_f).setVisibility(View.VISIBLE);
             this.findViewById(R.id.dietary_veg_f).setVisibility(View.GONE);
@@ -161,18 +170,20 @@ public class RecipeActivity extends AppCompatActivity {
         }
 
         /* TODO: Optional information that is not yet displayable!
-        if (recipe_full.isKetogenic()) {}
-        if (recipe_full.isLowFodmap()) {}
-        if (recipe_full.isWhole30()) {}
+        if (view_single_recipe.isKetogenic()) {}
+        if (view_single_recipe.isLowFodmap()) {}
+        if (view_single_recipe.isWhole30()) {}
         */
 
-                        // ***** BENEATH IMAGE AREA FOR INFORMATION:    ***** //
+        // ***** BENEATH IMAGE AREA FOR INFORMATION:    ***** //
         TextView recipe_time = (TextView) findViewById(R.id.recipe_time_f);
         recipe_time.setText(recipe_full.getReadyInMinutes() + "m");
 
         String plates = " plates";
         int servings = recipe_full.getServings();
-        if (servings == 1) { plates = " plate"; }
+        if (servings == 1) {
+            plates = " plate";
+        }
         TextView recipe_serves = (TextView) findViewById(R.id.recipe_serves_f);
         recipe_serves.setText(recipe_full.getServings() + plates);
 
@@ -186,20 +197,20 @@ public class RecipeActivity extends AppCompatActivity {
         ingredients.setMovementMethod(new ScrollingMovementMethod());
         ingredients.setText(readIngredients(recipe_full.getExtendedIngredients()));
 
-                        // ***** RECIPE INSTRUCTIONS ***** //
+        // ***** RECIPE INSTRUCTIONS ***** //
         TextView instructions = (TextView) findViewById(R.id.recipe_ins_f);
         instructions.setMovementMethod(new ScrollingMovementMethod());
 
         String instr_text = recipe_full.getInstructions();
         if (instr_text != null) {
-            instructions.setText(instr_text.replaceAll("<[^>]*>","\n").trim());
+            instructions.setText(instr_text.replaceAll("<[^>]*>", "\n").trim());
         } else {
             instructions.setText("Oops!\nNo instructions have been provided by Spoonacular!");
         }
 
         /* DEBUG:
-        System.out.println("RECIPEINFO: " + recipe_full.toString());
-        for (Ingredient i : recipe_full.getExtendedIngredients()) {
+        System.out.println("RECIPEINFO: " + view_single_recipe.toString());
+        for (Ingredient i : view_single_recipe.getExtendedIngredients()) {
             System.out.println("RECIPEINFO: " + i.toString());
         }
         // END-DEBUG */
@@ -208,6 +219,7 @@ public class RecipeActivity extends AppCompatActivity {
     /**
      * Simple method to save space above. Loops through the ingredients and generates a
      * String to represent all ingredients.
+     *
      * @param ingredientList
      * @return
      */

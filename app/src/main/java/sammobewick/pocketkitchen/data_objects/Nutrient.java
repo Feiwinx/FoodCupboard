@@ -9,10 +9,10 @@ public class Nutrient {
     // Matches: Data > GET Food Information
     // Usage: Would represent detailed information on an ingredient. May not be worth using but is
     // all set up for future work?
-    private final String  title;
-    private final float   amount;
-    private final String  unit;
-    private final float   percentOfDailyNeeds;
+    private final String title;
+    private final float amount;
+    private final String unit;
+    private final float percentOfDailyNeeds;
 
     // ****************************************************************************************** //
     //                                      CONSTRUCTORS:                                         //
@@ -20,8 +20,8 @@ public class Nutrient {
 
     public Nutrient(float amount, float percentOfDailyNeeds, String title, String unit) {
         this.amount = amount;
-        this.title  = title;
-        this.unit   = unit;
+        this.title = title;
+        this.unit = unit;
         this.percentOfDailyNeeds = percentOfDailyNeeds;
     }
 
@@ -29,12 +29,12 @@ public class Nutrient {
     //                                      JSON CONVERSIONS:                                     //
     // ****************************************************************************************** //
 
-    public Nutrient(String json){
+    public Nutrient(String json) {
         Gson gson = new Gson();
-        Nutrient nutrient   = gson.fromJson(json, Nutrient.class);
-        this.title  = nutrient.getTitle();
+        Nutrient nutrient = gson.fromJson(json, Nutrient.class);
+        this.title = nutrient.getTitle();
         this.amount = nutrient.getAmount();
-        this.unit   = nutrient.getUnit();
+        this.unit = nutrient.getUnit();
         this.percentOfDailyNeeds = nutrient.getpercentOfDailyNeeds();
     }
 

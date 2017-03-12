@@ -25,15 +25,13 @@ public final class DownloadImageAsync extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(String... urls) {
-        String urlDisplay   = urls[0];
-        Bitmap img          = null;
+        String urlDisplay = urls[0];
+        Bitmap img = null;
 
         try {
             InputStream in = new URL(urlDisplay).openStream();
-            img            = BitmapFactory.decodeStream(in);
+            img = BitmapFactory.decodeStream(in);
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

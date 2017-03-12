@@ -25,15 +25,15 @@ public class Recipe_Full implements Serializable {
     private boolean lowFodmap;                  // Leave out?
     private boolean ketogenic;                  // Leave out?
     private boolean whole30;                    // Leave out?
-    private int     servings;
+    private int servings;
     // private String sourceUrl;                // Left out
-    private String  spoonacularSourceUrl;
+    private String spoonacularSourceUrl;
     // private String creditText;               // left out
     private List<Ingredient> extendedIngredients;
-    private int     id;
-    private String  title;
-    private int     readyInMinutes;
-    private String  instructions;   // hopefully just a String?
+    private int id;
+    private String title;
+    private int readyInMinutes;
+    private String instructions;   // hopefully just a String?
 
     // ****************************************************************************************** //
     //                                      CONSTRUCTORS:                                         //
@@ -71,23 +71,23 @@ public class Recipe_Full implements Serializable {
     public Recipe_Full(String json) {
         Gson gson = new Gson();
         Recipe_Full recipeFull = gson.fromJson(json, Recipe_Full.class);
-        this.cheap                  = recipeFull.isCheap();
-        this.dairyFree              = recipeFull.isDairyFree();
-        this.extendedIngredients    = recipeFull.getExtendedIngredients();
-        this.glutenFree             = recipeFull.isGlutenFree();
-        this.id                     = recipeFull.getId();
-        this.instructions           = recipeFull.getInstructions();
-        this.ketogenic              = recipeFull.isKetogenic();
-        this.lowFodmap              = recipeFull.isLowFodmap();
-        this.readyInMinutes         = recipeFull.getReadyInMinutes();
-        this.servings               = recipeFull.getServings();
-        this.spoonacularSourceUrl   = recipeFull.getSpoonacularSourceUrl();
-        this.title                  = recipeFull.getTitle();
-        this.vegan                  = recipeFull.isVegan();
-        this.vegetarian             = recipeFull.isVegetarian();
-        this.veryHealthy            = recipeFull.isVeryHealthy();
-        this.veryPopular            = recipeFull.isVeryPopular();
-        this.whole30                = recipeFull.isWhole30();
+        this.cheap = recipeFull.isCheap();
+        this.dairyFree = recipeFull.isDairyFree();
+        this.extendedIngredients = recipeFull.getExtendedIngredients();
+        this.glutenFree = recipeFull.isGlutenFree();
+        this.id = recipeFull.getId();
+        this.instructions = recipeFull.getInstructions();
+        this.ketogenic = recipeFull.isKetogenic();
+        this.lowFodmap = recipeFull.isLowFodmap();
+        this.readyInMinutes = recipeFull.getReadyInMinutes();
+        this.servings = recipeFull.getServings();
+        this.spoonacularSourceUrl = recipeFull.getSpoonacularSourceUrl();
+        this.title = recipeFull.getTitle();
+        this.vegan = recipeFull.isVegan();
+        this.vegetarian = recipeFull.isVegetarian();
+        this.veryHealthy = recipeFull.isVeryHealthy();
+        this.veryPopular = recipeFull.isVeryPopular();
+        this.whole30 = recipeFull.isWhole30();
     }
 
     public String getJson() {

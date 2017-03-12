@@ -3,6 +3,7 @@ package sammobewick.pocketkitchen.communication;
 import com.google.gson.Gson;
 
 import java.util.List;
+
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 
 /**
@@ -12,11 +13,11 @@ import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 public class HTTP_RecipeShort {
     private List<Recipe_Short> results;
     private String baseUri;
-    private int    offset;
-    private int    number;
-    private int    totalResults;
-    private int    processingTimeMs;
-    private long   expires;
+    private int offset;
+    private int number;
+    private int totalResults;
+    private int processingTimeMs;
+    private long expires;
     private boolean isStale;
 
     private HTTP_RecipeShort(String baseUri, long expires, boolean isStale, int number, int offset, int processingTimeMs, List<Recipe_Short> results, int totalResults) {
@@ -37,7 +38,7 @@ public class HTTP_RecipeShort {
         this.expires = handler.getExpires();
         this.isStale = handler.isStale();
         this.offset = handler.getOffset();
-        this.number= handler.getNumber();
+        this.number = handler.getNumber();
         this.processingTimeMs = handler.getProcessingTimeMs();
         this.results = handler.getResults();
         this.totalResults = handler.getTotalResults();

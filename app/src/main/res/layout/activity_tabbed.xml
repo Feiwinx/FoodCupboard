@@ -44,7 +44,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
@@ -58,7 +57,7 @@
         fab:menu_colorNormal="#DA4336"
         fab:menu_colorPressed="#E75043"
         fab:menu_colorRipple="#99FFFFFF"
-        fab:menu_animationDelayPerItem="50"
+        fab:menu_animationDelayPerItem="100"
         fab:menu_icon="@drawable/ic_more_vert"
         fab:menu_buttonSpacing="0dp"
         fab:menu_labels_margin="0dp"
@@ -88,6 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_add"
+            android:visibility="gone"
             fab:fab_size="mini"
             fab:fab_label="@string/lbl_fab_add_recipe" />
 
@@ -96,6 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:src="@drawable/ic_add"
+            android:visibility="gone"
             fab:fab_size="mini"
             fab:fab_label="@string/lbl_fab_add_item" />
 
@@ -104,6 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:src="@drawable/ic_search"
+            android:visibility="gone"
             fab:fab_size="mini"
             fab:fab_label="@string/lbl_fab_search" />
 
@@ -112,6 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:src="@drawable/ic_star"
+            android:visibility="gone"
             fab:fab_size="mini"
             fab:fab_label="@string/lbl_fab_view_saved" />
 
@@ -120,6 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:src="@drawable/ic_camera"
+            android:visibility="gone"
             fab:fab_size="mini"
             fab:fab_label="@string/lbl_fab_scan" />
 

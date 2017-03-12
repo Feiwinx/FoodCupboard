@@ -3,17 +3,17 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="sammobewick.pocketkitchen.core.SettingsActivity$MyPocketKitchenPreferences"
+        android:fragment="sammobewick.pocketkitchen.core.MySettingsActivity$MyPocketKitchenPreferences"
         android:icon="@drawable/ic_my_preferences"
         android:title="@string/pref_header_my_kitchen" />
 
     <header
-        android:fragment="sammobewick.pocketkitchen.core.SettingsActivity$MyDataPreferences"
+        android:fragment="sammobewick.pocketkitchen.core.MySettingsActivity$MyDataPreferences"
         android:icon="@drawable/ic_info"
         android:title="@string/pref_header_files" />
 
     <header
-        android:fragment="sammobewick.pocketkitchen.core.SettingsActivity$MyDietaryPreferences"
+        android:fragment="sammobewick.pocketkitchen.core.MySettingsActivity$MyDietaryPreferences"
         android:icon="@drawable/ic_sync"
         android:title="@string/pref_header_dietary_preferences" />
 

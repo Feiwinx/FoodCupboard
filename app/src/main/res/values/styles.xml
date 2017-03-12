@@ -4,16 +4,16 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/red</item>
-        <item name="colorPrimaryDark">@color/blue</item>
+        <item name="colorPrimaryDark">@color/deep_red</item>
         <item name="colorAccent">@color/deep_red</item>
-        <item name="android:windowBackground">@color/blue_grey</item>
+        <item name="android:windowBackground">@color/gray</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="colorPrimary">@color/red</item>
-        <item name="colorPrimaryDark">@color/blue</item>
+        <item name="colorPrimaryDark">@color/deep_red</item>
         <item name="colorAccent">@color/deep_red</item>
-        <item name="android:windowBackground">@color/blue_grey</item>
+        <item name="android:windowBackground">@color/gray</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -21,9 +21,9 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/red</item>
-        <item name="colorPrimaryDark">@color/blue</item>
+        <item name="colorPrimaryDark">@color/deep_red</item>
         <item name="colorAccent">@color/deep_red</item>
-        <item name="android:windowBackground">@color/blue_grey</item>
+        <item name="android:windowBackground">@color/gray</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

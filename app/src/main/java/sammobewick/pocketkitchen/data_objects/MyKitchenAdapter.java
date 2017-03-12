@@ -20,7 +20,7 @@ import sammobewick.pocketkitchen.supporting.DataListener;
  * Created by Sam on 31/01/2017.
  */
 
-public class KitchenAdapter extends BaseAdapter  implements Filterable, DataListener {
+public class MyKitchenAdapter extends BaseAdapter implements Filterable, DataListener {
 
     private List<Ingredient> filtered;
     private List<Ingredient> data;
@@ -29,19 +29,19 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable, DataList
     @Override
     public void dataUpdate() {
         PocketKitchenData pkData = PocketKitchenData.getInstance(this);
-        data        = pkData.getInCupboards();
-        filtered    = data;
+        data = pkData.getInCupboards();
+        filtered = data;
         this.notifyDataSetChanged();
     }
 
-    private class ViewHolder{
-        ImageView   kitchenImage;
-        TextView    kitchenTitle;
-        TextView    kitchenQuantity;
-        TextView    kitchenMeasurement;
+    private class ViewHolder {
+        ImageView kitchenImage;
+        TextView kitchenTitle;
+        TextView kitchenQuantity;
+        TextView kitchenMeasurement;
     }
 
-    public KitchenAdapter(String urlStart) {
+    public MyKitchenAdapter(String urlStart) {
         this.urlStart = urlStart;
         dataUpdate();
     }
@@ -60,6 +60,7 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable, DataList
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
+                //noinspection unchecked // we are controlling this through the rest of the class.
                 filtered = (List<Ingredient>) results.values;
                 notifyDataSetChanged();
             }
@@ -67,14 +68,18 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable, DataList
     }
 
     private List<Ingredient> getFilteredResults(CharSequence constraint) {
-        List<Ingredient> resultList = new ArrayList<>(data);
+        if (data != null) {
+            List<Ingredient> resultList = new ArrayList<>(data);
 
-        for (Ingredient i: new ArrayList<>(data)) {
-            if (!i.getName().contains(constraint)) {
-                resultList.remove(i);
+            for (Ingredient i : new ArrayList<>(data)) {
+                if (!i.getName().contains(constraint)) {
+                    resultList.remove(i);
+                }
             }
+            return resultList;
+        } else {
+            return null;
         }
-        return resultList;
     }
 
     @Override
@@ -99,19 +104,19 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable, DataList
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View v          = convertView;
-        ViewHolder vh   = new ViewHolder();
+        View v = convertView;
+        ViewHolder vh = new ViewHolder();
 
         // If null, then we need to get the view and inflate it:
         if (v == null) {
             LayoutInflater vi = LayoutInflater.from(parent.getContext());
-            v = vi.inflate(R.layout.kitchen_item, null);
+            v = vi.inflate(R.layout.ingredient_item_kitchen, parent, false);
 
             // Establish our holder information:
-            vh.kitchenImage         = (ImageView) v.findViewById(R.id.kitchen_image);
-            vh.kitchenMeasurement   = (TextView)  v.findViewById(R.id.kitchen_measurement);
-            vh.kitchenQuantity      = (TextView)  v.findViewById(R.id.kitchen_quantity);
-            vh.kitchenTitle         = (TextView)  v.findViewById(R.id.kitchen_title);
+            vh.kitchenImage = (ImageView) v.findViewById(R.id.kitchen_image);
+            vh.kitchenMeasurement = (TextView) v.findViewById(R.id.kitchen_measurement);
+            vh.kitchenQuantity = (TextView) v.findViewById(R.id.kitchen_quantity);
+            vh.kitchenTitle = (TextView) v.findViewById(R.id.kitchen_title);
 
             // Save the holder as a tag on the view:
             v.setTag(vh);
@@ -130,6 +135,7 @@ public class KitchenAdapter extends BaseAdapter  implements Filterable, DataList
             new DownloadImageAsync(vh.kitchenImage).execute(url);
         } else {
             // TODO: Set image to a custom one, showing that the user added it.
+            vh.kitchenImage.setVisibility(View.INVISIBLE);
         }
 
         vh.kitchenMeasurement.setText(ingredient.getUnitShort());

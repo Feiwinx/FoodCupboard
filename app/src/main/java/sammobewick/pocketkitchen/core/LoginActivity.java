@@ -1,9 +1,14 @@
 package sammobewick.pocketkitchen.core;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,41 +27,51 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 
 import sammobewick.pocketkitchen.R;
-import sammobewick.pocketkitchen.communication.SaveDriveActivity;
-import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
 import sammobewick.pocketkitchen.supporting.LocalFileHelper;
 
 public class LoginActivity extends AppCompatActivity implements
         View.OnClickListener,
         GoogleApiClient.OnConnectionFailedListener {
-
+    //********************************************************************************************//
+    //  VARIABLES / HANDLERS FOR THIS ACTIVITY:                                                   //
+    //********************************************************************************************//
     private static final String TAG         = "LoginActivity";
     private static final int    RC_SIGN_IN  = 9001;
 
     private GoogleApiClient mGoogleApiClient;
-    private boolean         signedIn;
+    private SharedPreferences sharedPreferences;
+    private boolean signedIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Get the bundled extras. These only exist when returning to this activity.
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             if (extras.containsKey("signedIn")) {
                 signedIn = extras.getBoolean("signedIn", false);
-
-                updateUI(signedIn);
             }
         } else { signedIn = false; }
 
+        Log.i(TAG, "Got signed-in argument of: " + signedIn);
+
+        // Grab the shared preferences:
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Update UI:
+        updateUI(signedIn);
+
+        // Create Sign-In Options:
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(Scopes.DRIVE_APPFOLDER))
                 .requestScopes(new Scope(Scopes.DRIVE_FILE))
                 .requestEmail()
                 .build();
 
+        // Build API Client:
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -77,6 +92,9 @@ public class LoginActivity extends AppCompatActivity implements
 
         Button proceedButton = (Button) findViewById(R.id.btn_proceed);
         proceedButton.setOnClickListener(this);
+
+        // Hide progress dialog:
+        hideProgressDialog();
     }
 
     @Override
@@ -91,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_google_sign_in:
                 signIn();
                 break;
@@ -99,7 +117,7 @@ public class LoginActivity extends AppCompatActivity implements
                 signOut();
                 break;
             case R.id.btn_google_disconnect:
-                disconnectAccount();
+                confirmDisconnectAccount();
                 break;
             case R.id.btn_proceed:
                 proceed();
@@ -107,6 +125,10 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * This is simply the method to proceed to PocketKitchen.
+     * Can be triggered in a few ways.
+     */
     private void proceed() {
         Intent intent = new Intent(this, TabbedActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -114,18 +136,25 @@ public class LoginActivity extends AppCompatActivity implements
         finish();
     }
 
+    /**
+     * Shows the progress dialog and launches the sign-in intent.
+     */
     private void signIn() {
         showProgressDialog();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    /**
+     * Shows the progress dialog and launches the sign-out intent.
+     */
     private void signOut() {
         showProgressDialog();
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(@NonNull Status status) {
+                        // Set up the UI for signed out and action complete:
                         updateUI(false);
                         hideProgressDialog();
                     }
@@ -133,25 +162,59 @@ public class LoginActivity extends AppCompatActivity implements
         );
     }
 
+    private void confirmDisconnectAccount() {
+        AlertDialog dialog = new AlertDialog.Builder(new ContextThemeWrapper(LoginActivity.this, R.style.myDialog)).create();
+
+        dialog.setTitle(R.string.lbl_dialog_confirmation_title);
+        dialog.setMessage(getString(R.string.lbl_dialog_confirmation_revoke));
+        dialog.setCancelable(true);
+        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+
+        // BUTTONS
+        String lbl;
+        lbl = getString(R.string.lbl_dialog_confirmation_yes);
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                disconnectAccount();
+            }
+        });
+
+        lbl = getString(R.string.lbl_dialog_confirmation_no);
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.e(TAG, "Account revocation aborted");
+            }
+        });
+        dialog.show();
+    }
+
+    /**
+     * Shows the progress dialog, then launches the disconnect process.
+     */
     private void disconnectAccount() {
         showProgressDialog();
         Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(@NonNull Status status) {
+                        // Set up the UI for signed out and action complete:
                         updateUI(false);
                         hideProgressDialog();
+                        ActivityHelper.displaySnackBarNoAction(LoginActivity.this, R.id.login_form_ll, R.string.snackbar_wip_feature);
                     }
                 }
         );
     }
 
+    /**
+     * Handles the sign in result (called from our callback):
+     * @param result GoogleSignInResult - passed result.
+     */
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         hideProgressDialog();
-
-        // TODO: Load this data from file, at the minute this is being called for instantiation.
-        PocketKitchenData pkData = PocketKitchenData.getInstance();
 
         /* TEST-DATA:
         for (int a = 0; a < 5; a++) {
@@ -165,19 +228,32 @@ public class LoginActivity extends AppCompatActivity implements
         // END-TEST-DATA */
 
         if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
+            // We will want to reference their name/ID later so save them to the application:
             GoogleSignInAccount acct = result.getSignInAccount();
+            sharedPreferences.edit()
+                    .putString("user_id", acct != null ? acct.getId() : null)
+                    .putString("user_name", acct != null ? acct.getDisplayName() : null)
+                    .apply();
+
+            // Update UI:
             updateUI(true);
 
             // Load local files:
             LocalFileHelper helper = new LocalFileHelper(this);
             helper.loadAll();
+
+            // Automatically continue when signing in, but not when returning to this activity:
+            if (!signedIn) { this.proceed(); }
         } else {
             // Signed out, show unauthenticated UI.
             updateUI(false);
         }
     }
 
+    /**
+     * Updates our UI depending on signed in or out.
+     * @param signedIn boolean - are we signed in?
+     */
     private void updateUI(boolean signedIn) {
         if (signedIn) {
             findViewById(R.id.btn_google_disconnect).setVisibility(View.VISIBLE);
@@ -192,28 +268,33 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Helper method to show the dialog.
+     */
     private void showProgressDialog() {
-        // TODO:
+        findViewById(R.id.login_progress).setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Helper method to hide the dialog.
+     */
     private void hideProgressDialog() {
-        // TODO:
+        findViewById(R.id.login_progress).setVisibility(View.GONE);
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // An unresolvable error has occurred and Google APIs (including Sign-In) will not
         // be available.
-        Log.d(TAG, "onConnectionFailed:" + connectionResult);
-        ActivityHelper helper = new ActivityHelper(getApplicationContext());
-        helper.displayErrorDialog(connectionResult.getErrorMessage());
+        Log.e(TAG, "onConnectionFailed:" + connectionResult);
+        ActivityHelper.displayErrorDialog(getApplicationContext(), connectionResult.getErrorMessage());
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        if (signedIn == false) {
+        if (!signedIn) {
             OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
             if (opr.isDone()) {
                 // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
@@ -228,7 +309,7 @@ public class LoginActivity extends AppCompatActivity implements
                 showProgressDialog();
                 opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                     @Override
-                    public void onResult(GoogleSignInResult googleSignInResult) {
+                    public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
                         hideProgressDialog();
                         handleSignInResult(googleSignInResult);
                     }
@@ -240,7 +321,8 @@ public class LoginActivity extends AppCompatActivity implements
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        ActivityHelper helper = new ActivityHelper(this);
-        if (!helper.isConnected()) { helper.displayNetworkWarning(); }
+        if (!ActivityHelper.isConnected(getApplicationContext())) {
+            ActivityHelper.displayNetworkWarning(getApplicationContext());
+        }
     }
 }

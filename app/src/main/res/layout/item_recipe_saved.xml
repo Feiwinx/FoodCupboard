@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:padding="6dip"
-
+    android:descendantFocusability="blocksDescendants"
     android:layout_width="fill_parent"
-    android:layout_height="?android:attr/listPreferredItemHeightLarge" >
+    android:layout_height="?android:attr/listPreferredItemHeight">
     <!--
         We've set the layout_height to the preferred list item height, as this is what
         this file is for!
 
         We have used a RelativeLayout here, so that we can get the boxes alongside each other.
     -->
+    <!-- Remove Recipe -->
+    <ImageButton
+        android:id="@+id/recipe_saved_del_btn"
+        android:contentDescription="@string/hint_btn_delete"
+
+        android:src="@drawable/ic_delete"
+
+        android:focusable="false"
+        android:layout_alignParentEnd="true"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Recipe Image -->
     <ImageView
-        android:id="@+id/recipe_image"
+        android:id="@+id/recipe_saved_img"
         android:adjustViewBounds="true"
         android:layout_centerVertical="true"
         android:paddingBottom="0px"
@@ -22,40 +36,16 @@
         android:maxWidth="?android:attr/listPreferredItemHeight"
         android:cropToPadding="false" />
 
-    <TextView android:id="@+id/recipe_title"
+    <!-- Recipe Title -->
+    <TextView
+        android:id="@+id/recipe_saved_title"
 
         android:textSize="18sp"
         android:textStyle="bold"
 
-        android:layout_toRightOf="@id/recipe_image"
+        android:layout_toStartOf="@id/recipe_saved_del_btn"
+        android:layout_toEndOf="@id/recipe_saved_img"
         android:layout_margin="5dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
-
-    <ImageView
-        android:id="@+id/recipe_dietary_image"
-
-        android:layout_below="@id/recipe_title"
-        android:layout_alignParentRight="true"
-
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
-
-    <TextView android:id="@+id/recipe_descr"
-
-        android:textSize="15sp"
-        android:textStyle="italic"
-
-        android:text="@string/test_recipe_desc"
-
-        android:layout_toRightOf="@id/recipe_image"
-
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/recipe_title"
-        android:layout_toLeftOf="@id/recipe_dietary_image"
-        android:layout_alignParentBottom="true" />
-
 </RelativeLayout>

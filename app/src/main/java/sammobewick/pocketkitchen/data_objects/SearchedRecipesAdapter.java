@@ -14,24 +14,23 @@ import sammobewick.pocketkitchen.communication.DownloadImageAsync;
 
 /**
  * This is the custom ListAdapter for displaying Recipe_Short objects.
- * This is used both by the RecipeFragment and the RecipeSavedActivity, so the setting of data is
+ * This is used both by the SearchRecipesFragment and the MySavedRecipesActivity, so the setting of data is
  * called from those places.
  * Created by Sam on 31/01/2017.
  */
-public class RecipeShortAdapter extends BaseAdapter {
+public class SearchedRecipesAdapter extends BaseAdapter {
 
     private List<Recipe_Short> data;
-    private String             urlStart;
+    private String urlStart;
 
     // Here we use this inner class to hold our views for this item:
     private class ViewHolder {
         ImageView   recipeImg;
-        ImageView   dietaryImg;
         TextView    recipeTitle;
         TextView    recipeDesc;
     }
 
-    public RecipeShortAdapter(String urlStart) {
+    public SearchedRecipesAdapter(String urlStart) {
         this.urlStart = urlStart;
         PocketKitchenData pkData = PocketKitchenData.getInstance();
         data = pkData.getRecipesDisplayed();
@@ -59,19 +58,18 @@ public class RecipeShortAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View v          = convertView;
-        ViewHolder vh   = new ViewHolder();
+        View v = convertView;
+        ViewHolder vh = new ViewHolder();
 
         // If null, then we need to get the view and inflate it:
         if (v == null) {
             LayoutInflater vi = LayoutInflater.from(parent.getContext());
-            v = vi.inflate(R.layout.recipe_item, null);
+            v = vi.inflate(R.layout.item_recipe_short, parent, false);
 
             // Establish our holder information:
-            vh.dietaryImg   = (ImageView) v.findViewById(R.id.recipe_dietary_image);
-            vh.recipeImg    = (ImageView) v.findViewById(R.id.recipe_image);
-            vh.recipeDesc   = (TextView)  v.findViewById(R.id.recipe_descr);
-            vh.recipeTitle  = (TextView)  v.findViewById(R.id.recipe_title);
+            vh.recipeImg    = (ImageView)   v.findViewById(R.id.recipe_search_img);
+            vh.recipeDesc   = (TextView)    v.findViewById(R.id.recipe_search_desc);
+            vh.recipeTitle  = (TextView)    v.findViewById(R.id.recipe_search_title);
 
             // Save the holder as a tag on the view:
             v.setTag(vh);
@@ -89,7 +87,7 @@ public class RecipeShortAdapter extends BaseAdapter {
         vh.recipeDesc.setText(desc);
 
         // Load the images using aSync task:
-        String url  = urlStart + recipe.getImage();
+        String url = urlStart + recipe.getImage();
 
         /* DEBUG:
         System.out.println("URL: " + url);

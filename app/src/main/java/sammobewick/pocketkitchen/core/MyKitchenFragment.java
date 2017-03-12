@@ -12,41 +12,40 @@ import android.widget.SearchView;
 
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.data_objects.Ingredient;
-import sammobewick.pocketkitchen.data_objects.KitchenAdapter;
+import sammobewick.pocketkitchen.data_objects.MyKitchenAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link KitchenFragment.OnFragmentInteractionListener} interface
+ * {@link MyKitchenFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link KitchenFragment#newInstance} factory method to
+ * Use the {@link MyKitchenFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class KitchenFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class MyKitchenFragment extends Fragment implements SearchView.OnQueryTextListener {
     //********************************************************************************************//
     //  VARIABLES / HANDLERS FOR THIS FRAGMENT:                                                   //
     //********************************************************************************************//
 
-    private AbsListView     mListView;
-    private KitchenAdapter  mAdapter;
-    private SearchView      mSearchView;
+    private AbsListView mListView;
+    private MyKitchenAdapter mAdapter;
+    private SearchView mSearchView;
     private OnFragmentInteractionListener mListener;
 
     // ****************************************************************************************** //
     //                                 CONSTRUCTORS + SET-UP:                                     //
     // ****************************************************************************************** //
 
-    public KitchenFragment() { /* Empty constructor */ }
+    public MyKitchenFragment() { /* Empty constructor */ }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment.
      *
-     * @return A new instance of fragment KitchenFragment.
+     * @return A new instance of fragment MyKitchenFragment.
      */
-    public static KitchenFragment newInstance() {
-        KitchenFragment fragment = new KitchenFragment();
-        return fragment;
+    public static MyKitchenFragment newInstance() {
+        return new MyKitchenFragment();
     }
 
     @Override
@@ -62,25 +61,25 @@ public class KitchenFragment extends Fragment implements SearchView.OnQueryTextL
         }
 
         // Prepare our adapter:
-        mAdapter = new KitchenAdapter(urlStart);
+        mAdapter = new MyKitchenAdapter(urlStart);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_kitchen, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_kitchen, container, false);
 
         // Prepare our ListView:
         mListView = (AbsListView) view.findViewById(R.id.kitchen_list);
         mListView.setAdapter(mAdapter);
         mListView.setEmptyView(view.findViewById(R.id.empty_kitchen));
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    mListener.onKitchenFragmentInteraction(mAdapter.getItem(position));
-                }
-            }
+                                             @Override
+                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                                 mListener.onKitchenFragmentInteraction(mAdapter.getItem(position));
+                                             }
+                                         }
         );
 
         // Prepare our SearchView:
@@ -136,6 +135,7 @@ public class KitchenFragment extends Fragment implements SearchView.OnQueryTextL
      */
     public interface OnFragmentInteractionListener {
         void onKitchenFragmentInteraction(final Ingredient i);
+
         void onKitchenFragmentSelected(boolean visible);
     }
 }

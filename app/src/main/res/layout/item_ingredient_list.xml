@@ -3,7 +3,7 @@
     android:padding="6dip"
 
     android:layout_width="fill_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight" >
+    android:layout_height="?android:attr/listPreferredItemHeight">
     <!--
         We've set the layout_height to the preferred list item height, as this is what
         this file is for!
@@ -12,47 +12,51 @@
     -->
 
     <!-- Remove Item -->
-    <ImageButton android:id="@+id/shopping_del_btn"
+    <ImageButton
+        android:id="@+id/shopping_del_btn"
         android:contentDescription="@string/hint_btn_delete"
 
         android:src="@drawable/ic_delete"
 
         android:focusable="false"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <!-- Buy Item -->
-    <ImageButton android:id="@+id/shopping_buy_btn"
+    <ImageButton
+        android:id="@+id/shopping_buy_btn"
         android:contentDescription="@string/hint_btn_purchase"
 
         android:src="@drawable/ic_basket"
 
         android:focusable="false"
-        android:layout_toLeftOf="@id/shopping_del_btn"
+        android:layout_toStartOf="@id/shopping_del_btn"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <!-- Shopping Item Name -->
-    <TextView android:id="@+id/shopping_title"
+    <TextView
+        android:id="@+id/shopping_title"
 
         android:divider="@color/white"
-        android:dividerHeight="4px"
+        android:dividerHeight="4dp"
         android:textSize="15sp"
 
         android:text="@string/test_shopping_title"
 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
+        android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
         android:layout_toStartOf="@+id/shopping_buy_btn" />
 
     <!-- Quantity -->
-    <TextView android:id="@+id/shopping_quantity"
+    <TextView
+        android:id="@+id/shopping_quantity"
 
         android:layout_below="@id/shopping_title"
 
@@ -64,13 +68,14 @@
         android:layout_height="wrap_content" />
 
     <!-- Measurement -->
-    <TextView android:id="@+id/shopping_measurement"
+    <TextView
+        android:id="@+id/shopping_measurement"
 
         android:text="@string/test_shopping_measure"
         android:textSize="15sp"
 
         android:layout_below="@id/shopping_title"
-        android:layout_toRightOf="@id/shopping_quantity"
+        android:layout_toEndOf="@id/shopping_quantity"
 
         android:layout_margin="5dp"
         android:layout_width="wrap_content"

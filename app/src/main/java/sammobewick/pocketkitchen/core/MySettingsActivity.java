@@ -4,7 +4,6 @@ package sammobewick.pocketkitchen.core;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,7 +32,7 @@ import sammobewick.pocketkitchen.supporting.LocalFileHelper;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends AppCompatPreferenceActivity {
+public class MySettingsActivity extends AppCompatPreferenceActivity {
 
     private static final String SHARED_PREFERENCES = "pocketKitchenPreferences";
 
@@ -69,7 +68,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 break;
@@ -132,11 +131,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         return isXLargeTablet(this);
     }
 
-    /**
-     *  EVERYTHING BELOW HERE REFERS TO HONEYCOMB;
-     *  CHANGING THE SETTINGS CATEGORIES MAY REQUIRE YOU TO MAKE CHANGES HERE BUT OTHERWISE IGNORE.
+    /*
+       EVERYTHING BELOW HERE REFERS TO HONEYCOMB;
+       CHANGING THE SETTINGS CATEGORIES MAY REQUIRE YOU TO MAKE CHANGES HERE BUT OTHERWISE IGNORE.
      */
-
 
     /**
      * {@inheritDoc}
@@ -172,12 +170,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
 
 
-
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), MySettingsActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -191,15 +188,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class MyDataPreferences extends PreferenceFragment {
 
-        private Context context;
-
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_files);
             setHasOptionsMenu(true);
 
-            final LocalFileHelper helper = new LocalFileHelper(context);
+            final LocalFileHelper helper = new LocalFileHelper(getActivity());
 
             Preference delLocalBtn = findPreference(getString(R.string.pref_files_clear_local));
             Preference delDriveBtn = findPreference(getString(R.string.pref_files_clear_drive));
@@ -223,7 +218,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         @Override
         public void onAttach(Context context) {
-            this.context = context;
             super.onAttach(context);
         }
 
@@ -231,7 +225,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), MySettingsActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -255,7 +249,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), MySettingsActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);

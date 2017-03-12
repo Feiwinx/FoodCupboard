@@ -16,7 +16,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:fullBackupContent="@xml/backup_descriptor">
         <meta-data
             android:name="xmashapekey"
             android:value="89uaBM1DYFmshbBN98rIAI62xuB2p1ZF3rfjsnWxuvaM0RPHpi" />
@@ -26,8 +27,6 @@
         <meta-data
             android:name="com.google.android.apps.drive.APP_ID"
             android:value="BA:85:A6:39:71:5C:A7:28:12:7B:02:E4:F3:42:11:F0:C8:53:7B:88" />
-
-        <action android:name="com.google.android.apps.drive.DRIVE_OPEN" />
 
         <activity
             android:name=".core.SplashActivity"
@@ -45,16 +44,21 @@
             android:label="@string/title_activity_tabbed"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".core.SettingsActivity"
+            android:name=".core.MySettingsActivity"
             android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme"
             android:parentActivityName=".core.TabbedActivity" />
         <activity
-            android:name=".core.RecipeActivity"
+            android:name=".core.ViewSingleRecipeActivity"
+            android:theme="@style/AppTheme"
             android:parentActivityName=".core.TabbedActivity" />
-        <activity android:name=".core.LoginActivity" />
         <activity
-            android:name=".core.RecipeSavedActivity"
+            android:name=".core.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".core.MySavedRecipesActivity"
             android:label="@string/title_activity_saved"
+            android:theme="@style/AppTheme"
             android:parentActivityName=".core.TabbedActivity" />
 
         <activity android:name=".communication.SaveDriveActivity" />

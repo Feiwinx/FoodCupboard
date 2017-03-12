@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import sammobewick.pocketkitchen.supporting.DataListener;
-import sammobewick.pocketkitchen.supporting.MapManipulator;
+import sammobewick.pocketkitchen.supporting.MapHelper;
 
 /**
  * Created by Sam on 22/02/2017.
@@ -14,7 +14,7 @@ import sammobewick.pocketkitchen.supporting.MapManipulator;
 
 public final class PocketKitchenData {
 
-    private static PocketKitchenData        instance;
+    private static PocketKitchenData instance;
 
     // Temporary list of last search results, prevents results being destroyed. Not saved to file!
     private List<Recipe_Short> recipesDisplayed;
@@ -26,10 +26,10 @@ public final class PocketKitchenData {
     private Map<Integer, List<Ingredient>> ingredientsRequired;
 
     // Saved list of ingredients in their cupboards.
-    private List<Ingredient>                inCupboards;
+    private List<Ingredient> inCupboards;
 
     // This shouldn't be stored to file, but is a runtime calculated list of things they need.
-    private List<Ingredient>                toBuy;
+    private List<Ingredient> toBuy;
 
     private static ArrayList<DataListener> listeners = new ArrayList<>();
 
@@ -85,7 +85,7 @@ public final class PocketKitchenData {
     public void updateListeners() {
         updateToBuy();
         if (!listeners.isEmpty()) {
-            for (int d=0; d<listeners.size(); d++) {
+            for (int d = 0; d < listeners.size(); d++) {
                 listeners.get(d).dataUpdate();
             }
         }
@@ -120,7 +120,7 @@ public final class PocketKitchenData {
     }
 
     public void updateToBuy() {
-        this.toBuy = MapManipulator.mergeIngredients(ingredientsRequired);
+        this.toBuy = MapHelper.mergeIngredients(ingredientsRequired);
     }
 
     public void setRecipesToCook(List<Recipe_Short> recipesToCook) {
@@ -142,8 +142,12 @@ public final class PocketKitchenData {
     public boolean addRecipeToCookList(Recipe_Short recipe, List<Ingredient> ingredient_set) {
         int id = recipe.getId();
 
-        if (ingredientsRequired == null) { ingredientsRequired = new HashMap<>(); }
-        if (recipesToCook == null) { recipesToCook = new ArrayList<>(); }
+        if (ingredientsRequired == null) {
+            ingredientsRequired = new HashMap<>();
+        }
+        if (recipesToCook == null) {
+            recipesToCook = new ArrayList<>();
+        }
 
         ingredientsRequired.put(id, ingredient_set);
         recipesToCook.add(recipe);
@@ -157,12 +161,18 @@ public final class PocketKitchenData {
         int id = recipe.getId();
 
         if (ingredientsRequired != null) {
-            if (ingredientsRequired.containsKey(id)) { ingredientsRequired.remove(id); }
-            else { return false; }
+            if (ingredientsRequired.containsKey(id)) {
+                ingredientsRequired.remove(id);
+            } else {
+                return false;
+            }
         }
         if (recipesToCook != null) {
-            if (recipesToCook.contains(recipe)) { recipesToCook.remove(recipe); }
-            else { return false; }
+            if (recipesToCook.contains(recipe)) {
+                recipesToCook.remove(recipe);
+            } else {
+                return false;
+            }
         }
 
         updateListeners();
@@ -184,7 +194,9 @@ public final class PocketKitchenData {
                     break;
                 }
             }
-        } else { return false; }
+        } else {
+            return false;
+        }
 
         updateListeners();
 
@@ -192,9 +204,7 @@ public final class PocketKitchenData {
     }
 
     public boolean checkForSetOfIngredients(Recipe_Short recipe) {
-        if (ingredientsRequired != null & recipesToCook != null) {
-            return (ingredientsRequired.containsKey(recipe.getId()) & recipesToCook.contains(recipe));
-        } else { return false; }
+        return ingredientsRequired != null & recipesToCook != null && (ingredientsRequired.containsKey(recipe.getId()) & recipesToCook.contains(recipe));
     }
 
     // ****************************************************************************************** //
@@ -242,7 +252,9 @@ public final class PocketKitchenData {
         if (amount < 0) {
             updateListeners();
             return true;
-        } else { return false; }
+        } else {
+            return false;
+        }
     }
 
     // ****************************************************************************************** //
@@ -250,13 +262,17 @@ public final class PocketKitchenData {
     // ****************************************************************************************** //
 
     public boolean addCustomIngredient(Ingredient item) {
-        if (ingredientsRequired == null) { ingredientsRequired = new HashMap<>(); }
+        if (ingredientsRequired == null) {
+            ingredientsRequired = new HashMap<>();
+        }
 
         List<Ingredient> customSet;
 
         if (!ingredientsRequired.containsKey(0)) {
             customSet = new ArrayList<>();
-        } else { customSet = ingredientsRequired.get(0); }
+        } else {
+            customSet = ingredientsRequired.get(0);
+        }
 
         customSet.add(item);
         ingredientsRequired.put(0, customSet);
@@ -267,7 +283,9 @@ public final class PocketKitchenData {
     }
 
     public boolean removeCustomIngredient(Ingredient item) {
-        if (ingredientsRequired == null) { return false; }
+        if (ingredientsRequired == null) {
+            return false;
+        }
 
         List<Ingredient> customSet;
 
@@ -278,12 +296,18 @@ public final class PocketKitchenData {
                 ingredientsRequired.put(0, customSet);
                 updateListeners();
                 return true;
-            } else { return false; }
-        } else { return false; }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public boolean updateCustomIngredient(Ingredient old, Ingredient item) {
-        if (ingredientsRequired == null) { return false; }
+        if (ingredientsRequired == null) {
+            return false;
+        }
 
         List<Ingredient> customSet;
 
@@ -295,8 +319,12 @@ public final class PocketKitchenData {
                 ingredientsRequired.put(0, customSet);
                 updateListeners();
                 return true;
-            } else { return false; }
-        } else { return false; }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     // ****************************************************************************************** //
@@ -304,7 +332,9 @@ public final class PocketKitchenData {
     // ****************************************************************************************** //
 
     public boolean addToCupboard(Ingredient item) {
-        if (inCupboards == null) { inCupboards = new ArrayList<>(); }
+        if (inCupboards == null) {
+            inCupboards = new ArrayList<>();
+        }
 
         inCupboards.add(item);
         updateListeners();
@@ -318,8 +348,12 @@ public final class PocketKitchenData {
                 inCupboards.remove(item);
                 updateListeners();
                 return !inCupboards.contains(item);
-            } else { return false; }
-        } else { return false; }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public boolean updateInCupbaord(Ingredient existing, Ingredient replacement) {
@@ -328,7 +362,11 @@ public final class PocketKitchenData {
                 inCupboards.set(inCupboards.indexOf(existing), replacement);
                 updateListeners();
                 return inCupboards.contains(replacement);
-            } else { return false; }
-        } else { return false; }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }

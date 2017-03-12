@@ -6,7 +6,7 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/pocket_kitchen_img"/>
+            android:src="@drawable/pocket_kitchen_img" />
     </item>
 
 </layer-list>

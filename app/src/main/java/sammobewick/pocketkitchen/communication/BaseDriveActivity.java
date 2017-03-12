@@ -19,8 +19,8 @@ public abstract class BaseDriveActivity extends Activity implements
 
     private static final String TAG = "DriveActivity";
 
-    private static final int REQ_CODE_RESOLUTION        = 1;
-    private static final int REQ_CODE_NEXT_AVAILABLE    = 2;
+    private static final int REQ_CODE_RESOLUTION = 1;
+    private static final int REQ_CODE_NEXT_AVAILABLE = 2;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -42,7 +42,7 @@ public abstract class BaseDriveActivity extends Activity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQ_CODE_RESOLUTION && resultCode == RESULT_OK){
+        if (requestCode == REQ_CODE_RESOLUTION && resultCode == RESULT_OK) {
             mGoogleApiClient.connect();
         }
     }

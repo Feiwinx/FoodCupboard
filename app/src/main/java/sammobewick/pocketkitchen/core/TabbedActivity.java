@@ -6,7 +6,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,34 +32,31 @@ import sammobewick.pocketkitchen.data_objects.Ingredient;
 import sammobewick.pocketkitchen.data_objects.Recipe_Full;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
-import sammobewick.pocketkitchen.supporting.DialogHelper;
 import sammobewick.pocketkitchen.supporting.LocalFileHelper;
 
 public class TabbedActivity extends AppCompatActivity implements
-        KitchenFragment.OnFragmentInteractionListener, RecipeFragment.OnFragmentInteractionListener, ShoppingListFragment.OnFragmentInteractionListener, View.OnClickListener {
+        MyKitchenFragment.OnFragmentInteractionListener, SearchRecipesFragment.OnFragmentInteractionListener, MyListFragment.OnFragmentInteractionListener, View.OnClickListener {
     //********************************************************************************************//
     //  VARIABLES / HANDLERS FOR THIS ACTIVITY:                                                   //
     //********************************************************************************************//
+    private static final String TAG = "TabbedActivity";
 
     // ID values for the various fragments:
     private static final int KITCHEN_FRAG_ID = 0;
-    private static final int LIST_FRAG_ID    = 1;
-    private static final int RECIPE_FRAG_ID  = 2;
+    private static final int LIST_FRAG_ID = 1;
+    private static final int RECIPE_FRAG_ID = 2;
 
     private static final String SHARED_PREFERENCES = "pocketKitchenPreferences";
 
-    private SectionsPagerAdapter    mSectionsPagerAdapter;
-    private ViewPager               mViewPager;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
 
     private int lastFragmentId;
 
     private SharedPreferences sharedPreferences;
 
     // API Controller for calls to Spoonacular:
-    private APIController           controller;
-
-    // Our Activity Helper simplifies this file massively!
-    ActivityHelper helper;
+    private APIController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +74,7 @@ public class TabbedActivity extends AppCompatActivity implements
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setOffscreenPageLimit(mSectionsPagerAdapter.getCount());
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -86,9 +84,6 @@ public class TabbedActivity extends AppCompatActivity implements
 
         SpoonacularAPIClient api_client = new SpoonacularAPIClient();
         controller = api_client.getClient();
-
-        // Initialise this helper:
-        helper = new ActivityHelper(this);
 
         // Here we are setting listeners on the multiple Floating Action Buttons:
         com.github.clans.fab.FloatingActionButton fab;
@@ -111,13 +106,6 @@ public class TabbedActivity extends AppCompatActivity implements
         this.fragmentSelected(KITCHEN_FRAG_ID);
     }
 
-    // EXAMPLE FOR PREFERENCES:
-    //private void loadPreferences() {
-        //sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
-        //sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        //String primary = sharedPreferences.getString(getString(R.string.pref_primary_colour), "?");
-    //}
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -132,10 +120,9 @@ public class TabbedActivity extends AppCompatActivity implements
 
         // Here we check what option menu item was selected using resources:
         switch (id) {
-
             // Launch Settings activity:
             case R.id.action_settings:
-                intent = new Intent(this, SettingsActivity.class);
+                intent = new Intent(this, MySettingsActivity.class);
                 startActivity(intent);
                 break;
 
@@ -150,9 +137,7 @@ public class TabbedActivity extends AppCompatActivity implements
 
     @Override
     public void onKitchenFragmentInteraction(final Ingredient item) {
-
-        DialogHelper.dialogKitchenItem(TabbedActivity.this, item);
-
+        ActivityHelper.dialogKitchenItem(TabbedActivity.this, item);
         /* DEBUG:
         helper.displaySnackBarNoAction(R.id.main_content, R.string.snackbar_wip_feature);
         // END-DEBUG */
@@ -166,15 +151,11 @@ public class TabbedActivity extends AppCompatActivity implements
         this.fragmentSelected(KITCHEN_FRAG_ID);
     }
 
-    /**
-     *
-     * @param recipe_short
-     */
     @Override
     public void onRecipeFragmentInteraction(final Recipe_Short recipe_short) {
         // Check network connectivity:
-        if (!helper.isConnected()) {
-            helper.displaySnackBarNoAction(R.id.main_content, R.string.wifi_warning_short);
+        if (!ActivityHelper.isConnected(getApplicationContext())) {
+            ActivityHelper.displaySnackBarNoAction(getApplicationContext(), R.id.main_content, R.string.wifi_warning_short);
         } else {
             // Network connectivity exists! Here we get the full recipe information:
             controller.getRecipeInformationAsync(recipe_short.getId(), new APICallBack<DynamicResponse>() {
@@ -190,24 +171,22 @@ public class TabbedActivity extends AppCompatActivity implements
                         Recipe_Full recipe_full = gson.fromJson(response.parseAsString(), Recipe_Full.class);
 
                         /* DEBUG: TEST GSON:
-                        * System.out.println("RESPONSE-GSON: " + recipe_full.getTitle());
+                        * System.out.println("RESPONSE-GSON: " + view_single_recipe.getTitle());
                         // END-DEBUG */
 
-                        // Call the method to launch the RecipeActivity:
+                        // Call the method to launch the ViewSingleRecipeActivity:
                         viewRecipe(recipe_short, recipe_full);
 
                     } catch (ParseException e) {
-                        e.printStackTrace();
-                        ActivityHelper helper = new ActivityHelper(getApplicationContext());
-                        helper.displayErrorDialog(e.getLocalizedMessage());
+                        ActivityHelper.displayErrorDialog(getApplicationContext(), e.getLocalizedMessage());
+                        Log.e(TAG, "Parsing recipe information failed!\n" + e.getLocalizedMessage());
                     }
                 }
 
                 @Override
                 public void onFailure(HttpContext context, Throwable error) {
-                    error.printStackTrace();
-                    ActivityHelper helper = new ActivityHelper(getApplicationContext());
-                    helper.displayErrorDialog(error.getLocalizedMessage());
+                    ActivityHelper.displayErrorDialog(getApplicationContext(), error.getLocalizedMessage());
+                    Log.e(TAG, "Getting recipe information failed! See below:\n" + error.getLocalizedMessage());
                 }
             });
         }
@@ -226,24 +205,23 @@ public class TabbedActivity extends AppCompatActivity implements
     }
 
     /**
-     * This method handles the launching of the RecipeActivity to display the full details of a
+     * This method handles the launching of the ViewSingleRecipeActivity to display the full details of a
      * selected recipe.
+     *
      * @param r_short - the short version of the selected recipe.
-     * @param r_full - the full version of the selected recipe.
+     * @param r_full  - the full version of the selected recipe.
      */
     private void viewRecipe(Recipe_Short r_short, Recipe_Full r_full) {
         // Call our intent, including the recipe details in it!
-        Intent intent = new Intent(this, RecipeActivity.class);
-        intent.putExtra("recipe_full", r_full);
+        Intent intent = new Intent(this, ViewSingleRecipeActivity.class);
+        intent.putExtra("view_single_recipe", r_full);
         intent.putExtra("recipe_short", r_short);
         startActivity(intent);
     }
 
     @Override
     public void onShoppingFragmentInteraction(final Ingredient item) {
-
-        DialogHelper.dialogShoppingItem(TabbedActivity.this, item);
-
+        ActivityHelper.dialogShoppingItem(TabbedActivity.this, item);
         /* DEBUG:
         Snackbar.make(findViewById(R.id.main_content), "Shopping Action: " + i.getId(), Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
@@ -261,31 +239,35 @@ public class TabbedActivity extends AppCompatActivity implements
     /**
      * This method adjusts our Floating Action Buttons so that only the applicable actions are
      * visible.
+     *
      * @param type - This is the INTEGER representing our fragment index from mSectionsPager.
      */
     private void fragmentSelected(int type) {
+        Log.d(TAG, "Fragment selected. ID of " + type);
         this.lastFragmentId = type;
-        ///* DEBUG */System.out.println("FRAG-SELECTED:" + type);
         switch (type) {
             case KITCHEN_FRAG_ID:   // Kitchen Fragment
+                //findViewById(R.id.fab_scan_receipts).setVisibility(View.VISIBLE);
+                findViewById(R.id.fab_add_list).setVisibility(View.VISIBLE);
+                findViewById(R.id.fab_view_saved).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_search_recipes).setVisibility(View.GONE);
                 findViewById(R.id.fab_add_recipe).setVisibility(View.GONE);
-                findViewById(R.id.fab_scan_receipts).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_add_list).setVisibility(View.VISIBLE);
                 break;
 
             case LIST_FRAG_ID:      // Shopping Fragment
+                //findViewById(R.id.fab_scan_receipts).setVisibility(View.VISIBLE);
+                findViewById(R.id.fab_add_list).setVisibility(View.VISIBLE);
+                findViewById(R.id.fab_view_saved).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_search_recipes).setVisibility(View.GONE);
                 findViewById(R.id.fab_add_recipe).setVisibility(View.GONE);
-                findViewById(R.id.fab_scan_receipts).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_add_list).setVisibility(View.VISIBLE);
                 break;
 
             case RECIPE_FRAG_ID:    // Recipe Fragment:
                 findViewById(R.id.fab_search_recipes).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_add_list).setVisibility(View.GONE);
                 findViewById(R.id.fab_add_recipe).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_scan_receipts).setVisibility(View.GONE);
+                findViewById(R.id.fab_view_saved).setVisibility(View.VISIBLE);
+                findViewById(R.id.fab_add_list).setVisibility(View.GONE);
+                //findViewById(R.id.fab_scan_receipts).setVisibility(View.GONE);
                 break;
         }
     }
@@ -295,17 +277,20 @@ public class TabbedActivity extends AppCompatActivity implements
         super.onPostResume();
 
         // Check network connectivity on resume:
-        ActivityHelper helper = new ActivityHelper(this);
-        if (!helper.isConnected()) {
-            helper.displaySnackBarNoAction(R.id.main_content, R.string.wifi_warning_short);
+        if (!ActivityHelper.isConnected(getApplicationContext())) {
+            Log.i(TAG, "No connection onPostResume!");
+            ActivityHelper.displaySnackBarNoAction(getApplicationContext(), R.id.main_content, R.string.wifi_warning_short);
         }
+
+        // Return to last fragment selected:
+        mViewPager.setCurrentItem(lastFragmentId);
     }
 
     @Override
     protected void onPause() {
+        // Save all files:
         LocalFileHelper helper = new LocalFileHelper(this);
         helper.saveAll();
-
         super.onPause();
     }
 
@@ -326,22 +311,22 @@ public class TabbedActivity extends AppCompatActivity implements
                 break;
             case R.id.fab_add_recipe:       // Adding recipes:
                 ///* DEBUG:
-                helper.displaySnackBarNoAction(R.id.main_content, R.string.snackbar_wip_feature);
+                ActivityHelper.displaySnackBarNoAction(getApplicationContext(), R.id.main_content, R.string.snackbar_wip_feature);
                 // END-DEBUG */
                 break;
             case R.id.fab_scan_receipts:    // Scanning Receipts:
                 ///* DEBUG:
-                helper.displaySnackBarNoAction(R.id.main_content, R.string.snackbar_wip_feature);
+                ActivityHelper.displaySnackBarNoAction(getApplicationContext(), R.id.main_content, R.string.snackbar_wip_feature);
                 // END-DEBUG */
                 break;
             case R.id.fab_search_recipes:   // Search Recipes [advanced]:
                 ///* DEBUG:
-                helper.displaySnackBarNoAction(R.id.main_content, R.string.snackbar_wip_feature);
+                ActivityHelper.displaySnackBarNoAction(getApplicationContext(), R.id.main_content, R.string.snackbar_wip_feature);
                 // END-DEBUG */
                 break;
 
             case R.id.fab_view_saved:       // View saved recipes.
-                Intent intent = new Intent(this, RecipeSavedActivity.class);
+                Intent intent = new Intent(this, MySavedRecipesActivity.class);
                 startActivity(intent);
                 /* DEBUG:
                 helper.displaySnackBarNoAction(R.id.main_content, R.string.snackbar_wip_feature);
@@ -364,21 +349,21 @@ public class TabbedActivity extends AppCompatActivity implements
         public Fragment getItem(int position) {
             Fragment fragment;
 
-            switch (position){
+            switch (position) {
                 case 0:
-                    fragment = KitchenFragment.newInstance();
+                    fragment = MyKitchenFragment.newInstance();
                     break;
 
                 case 1:
-                    fragment = ShoppingListFragment.newInstance();
+                    fragment = MyListFragment.newInstance();
                     break;
 
                 case 2:
-                    fragment = RecipeFragment.newInstance();
+                    fragment = SearchRecipesFragment.newInstance();
                     break;
 
-                default:
-                    fragment = KitchenFragment.newInstance();
+                default: // Should never be reached!
+                    fragment = MyKitchenFragment.newInstance();
                     break;
             }
 
@@ -404,30 +389,45 @@ public class TabbedActivity extends AppCompatActivity implements
                     boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_vegan), false);
                     bundle.putBoolean(getString(R.string.pref_dietary_vegan), value);
                 }
+                if (sharedPreferences.contains(getString(R.string.pref_dietary_nuts))) {
+                    boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_nuts), false);
+                    bundle.putBoolean(getString(R.string.pref_dietary_nuts), value);
+                }
+                if (sharedPreferences.contains(getString(R.string.pref_dietary_seafood))) {
+                    boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_seafood), false);
+                    bundle.putBoolean(getString(R.string.pref_dietary_seafood), value);
+                }
+                if (sharedPreferences.contains(getString(R.string.pref_dietary_shellfish))) {
+                    boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_shellfish), false);
+                    bundle.putBoolean(getString(R.string.pref_dietary_shellfish), value);
+                }
+                if (sharedPreferences.contains(getString(R.string.pref_dietary_soy))) {
+                    boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_soy), false);
+                    bundle.putBoolean(getString(R.string.pref_dietary_soy), value);
+                }
 
                 // Set the arguments:
                 fragment.setArguments(bundle);
             } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-                ActivityHelper helper = new ActivityHelper(getApplicationContext());
-                helper.displayErrorDialog(e.getLocalizedMessage());
+                Log.e(TAG, e.getLocalizedMessage());
+                ActivityHelper.displayErrorDialog(getApplicationContext(), e.getLocalizedMessage());
             }
 
             return fragment;
         }
 
-        @Override
         /**
          * Will always return 3 (our number of fragments). Generated by Android Studio.
          */
+        @Override
         public int getCount() {
             return 3;
         }
 
-        @Override
         /**
          * Gets the page title using the resources in strings.xml
          */
+        @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case KITCHEN_FRAG_ID:

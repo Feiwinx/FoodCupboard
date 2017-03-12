@@ -18,7 +18,7 @@ import sammobewick.pocketkitchen.supporting.DataListener;
 /**
  * Created by Sam on 31/01/2017.
  */
-public class ShoppingAdapter extends BaseAdapter implements Filterable, DataListener {
+public class MyListAdapter extends BaseAdapter implements Filterable, DataListener {
 
     private List<Ingredient> filtered;
     private List<Ingredient> data;
@@ -28,8 +28,8 @@ public class ShoppingAdapter extends BaseAdapter implements Filterable, DataList
         PocketKitchenData pkData = PocketKitchenData.getInstance(this);
         pkData.updateToBuy();
 
-        data        = pkData.getToBuy();
-        filtered    = data;
+        data = pkData.getToBuy();
+        filtered = data;
         this.notifyDataSetChanged();
     }
 
@@ -42,7 +42,7 @@ public class ShoppingAdapter extends BaseAdapter implements Filterable, DataList
         ImageButton shoppingBtnBought;
     }
 
-    public ShoppingAdapter() {
+    public MyListAdapter() {
         dataUpdate();
     }
 
@@ -60,6 +60,7 @@ public class ShoppingAdapter extends BaseAdapter implements Filterable, DataList
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
+                //noinspection unchecked // we have controlled this using the rest of the class.
                 filtered = (List<Ingredient>) results.values;
                 notifyDataSetChanged();
             }
@@ -67,15 +68,17 @@ public class ShoppingAdapter extends BaseAdapter implements Filterable, DataList
     }
 
     private List<Ingredient> getFilteredResults(CharSequence constraint) {
-        List<Ingredient> resultList = new ArrayList<>(data);
+        if (data != null) {
+            List<Ingredient> resultList = new ArrayList<>(data);
 
-        for (Ingredient i: new ArrayList<>(data)) {
-            if (!i.getName().contains(constraint)) {
-                System.out.println("removing: " + i.getName());
-                resultList.remove(i);
+            for (Ingredient i : new ArrayList<>(data)) {
+                if (!i.getName().contains(constraint)) {
+                    System.out.println("removing: " + i.getName());
+                    resultList.remove(i);
+                }
             }
-        }
-        return resultList;
+            return resultList;
+        } else { return null; }
     }
 
     @Override
@@ -100,20 +103,20 @@ public class ShoppingAdapter extends BaseAdapter implements Filterable, DataList
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        View v          = convertView;
-        ViewHolder vh   = new ViewHolder();
+        View v = convertView;
+        ViewHolder vh = new ViewHolder();
 
         // If null, then we need to get the view and inflate it:
         if (v == null) {
             LayoutInflater vi = LayoutInflater.from(parent.getContext());
-            v = vi.inflate(R.layout.shopping_item, null);
+            v = vi.inflate(R.layout.item_ingredient_list, parent, false);
 
             // Establish our holder information:
-            vh.shoppingMeasurement  = (TextView) v.findViewById(R.id.shopping_measurement);
-            vh.shoppingQuantity     = (TextView) v.findViewById(R.id.shopping_quantity);
-            vh.shoppingTitle        = (TextView) v.findViewById(R.id.shopping_title);
-            vh.shoppingBtnDelete    = (ImageButton) v.findViewById(R.id.shopping_del_btn);
-            vh.shoppingBtnBought    = (ImageButton) v.findViewById(R.id.shopping_buy_btn);
+            vh.shoppingMeasurement = (TextView) v.findViewById(R.id.shopping_measurement);
+            vh.shoppingQuantity = (TextView) v.findViewById(R.id.shopping_quantity);
+            vh.shoppingTitle = (TextView) v.findViewById(R.id.shopping_title);
+            vh.shoppingBtnDelete = (ImageButton) v.findViewById(R.id.shopping_del_btn);
+            vh.shoppingBtnBought = (ImageButton) v.findViewById(R.id.shopping_buy_btn);
 
             vh.shoppingMeasurement.setClickable(false);
             vh.shoppingQuantity.setClickable(false);
@@ -126,8 +129,7 @@ public class ShoppingAdapter extends BaseAdapter implements Filterable, DataList
                     PocketKitchenData pkData = PocketKitchenData.getInstance();
                     if (selected.isCustom()) {
                         pkData.removeCustomIngredient(selected);
-                    }
-                    else {
+                    } else {
                         pkData.removeIngredient(selected);
                     }
                 }
