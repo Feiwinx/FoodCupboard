@@ -11,11 +11,19 @@
             android:defaultValue="false" />
 
         <CheckBoxPreference
+            android:key="@string/pref_dietary_pescetarian"
+            android:title="@string/pref_dietary_pescetarian"
+            android:summary="@string/pref_dietary_pescetarian_hint"
+            android:dependency="@string/pref_dietary_vegan"
+            android:defaultValue="false" />
+
+        <CheckBoxPreference
             android:key="@string/pref_dietary_vegan"
             android:title="@string/pref_dietary_vegan"
             android:summary="@string/pref_dietary_vegan_hint"
             android:disableDependentsState="true"
             android:defaultValue="false" />
+
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/pref_dietary_cat_allergens" >
@@ -24,6 +32,12 @@
             android:key="@string/pref_dietary_dairy"
             android:title="@string/pref_dietary_dairy"
             android:summary="@string/pref_dietary_dairy_hint"
+            android:defaultValue="false" />
+
+        <CheckBoxPreference
+            android:key="@string/pref_dietary_eggs"
+            android:title="@string/pref_dietary_eggs"
+            android:summary="@string/pref_dietary_eggs_hint"
             android:defaultValue="false" />
 
         <CheckBoxPreference

@@ -14,12 +14,11 @@
     <!-- Pocket Kitchen Logo -->
     <ImageView
         android:id="@+id/login_pocket_kitchen_img"
-        android:src="@drawable/pocket_kitchen_img"
+        android:src="@drawable/ps_pocket_kitchen_img"
         android:adjustViewBounds="true"
         android:layout_centerHorizontal="true"
         android:maxHeight="300dp"
         android:maxWidth="300dp"
-        android:layout_margin="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:ignore="ContentDescription" />

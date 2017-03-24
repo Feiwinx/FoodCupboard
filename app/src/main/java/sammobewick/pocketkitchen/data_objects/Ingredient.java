@@ -194,9 +194,6 @@ public class Ingredient implements Serializable {
     //                                      toString():                                           //
     // ****************************************************************************************** //
 
-    // TODO: Not worth having the full toString so create your own essential information version!
-
-
     @Override
     public String toString() {
         return "Ingredient{" +

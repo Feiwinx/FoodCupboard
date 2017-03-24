@@ -4,11 +4,13 @@
     <string name="title_activity_tabbed">Pocket Kitchen</string>
     <string name="title_activity_settings">Preferences</string>
     <string name="title_activity_saved">Saved Recipes</string>
+    <string name="title_activity_search">Advanced Search</string>
+    <string name="title_activity_add_recipe">Add Your Own Recipe</string>
 
     <string name="snackbar_wip_feature">Sorry! This feature is still WIP!</string>
     <string name="snackbar_revoke_success">Success! The access has been revoked.</string>
 
-    <!-- Labels (for TextViews/Buttons/Etc.) -->
+    <!-- General Labels (buttons, main application, etc) -->
     <string name="section_recipes">Recipes</string>
     <string name="section_list">Shopping List</string>
     <string name="section_kitchen">My Kitchen</string>
@@ -42,12 +44,14 @@
     <string name="lbl_btn_disconnect">Revoke Google Account Access</string>
     <string name="lbl_btn_proceed">Go To Pocket Kitchen</string>
 
+    <!-- Floating Action Button -->
     <string name="lbl_fab_search">Advanced Recipe Search</string>
     <string name="lbl_fab_scan">Scan Receipt</string>
     <string name="lbl_fab_add_item">Add Item</string>
     <string name="lbl_fab_add_recipe">Add Recipe</string>
     <string name="lbl_fab_view_saved">View Saved Recipes</string>
 
+    <!-- Dialogs -->
     <string name="lbl_dialog_edit_item">Edit List Item</string>
     <string name="lbl_dialog_new_item">New List Item</string>
     <string name="lbl_dialog_edit_kitchen">Edit Cupboard Item</string>
@@ -58,7 +62,68 @@
     <string name="lbl_dialog_confirmation_no">No</string>
     <string name="lbl_dialog_confirmation_revoke">Are you sure about that?\nAll saved data will also be deleted!</string>
 
-    <!-- Hints: -->
+    <!-- Adding Recipes -->
+    <string name="lbl_check_custom_recipe_privacy">Keep Private</string>
+    <string name="lbl_btn_add_custom_recipe">Save &amp; Exit</string>
+    <string name="lbl_custom_recipe_section_ingredients">Ingredients:</string>
+    <string name="lbl_custom_recipe_section_instructions">Instructions:</string>
+    <string name="lbl_custom_recipe_section_dietary">Dietary Information:</string>
+    <string name="lbl_custom_recipe_section_title">Recipe Title:</string>
+
+    <string name="hint_custom_recipe_enter_title">Enter your recipe title here…</string>
+    <string name="hint_item_ingredient_name">name</string>
+    <string name="hint_item_ingredient_qty">amount</string>
+    <string name="hint_item_ingredient_qty_name">unit</string>
+
+    <!-- Advanced Search -->
+    <string name="lbl_adv_search_terms">Recipe Search:</string>
+    <string name="lbl_adv_search_type">Filter to Type:</string>
+    <string name="lbl_adv_search_cuisine">Filter to Cuisines:</string>
+    <string name="lbl_adv_search_dietary">Filter to Diet:</string>
+    <string name="lbl_adv_search_exclusions">Other Exclusions: (comma separated)</string>
+    <string name="lbl_adv_search_inst_yes">I would like instructions please!</string>
+    <string name="lbl_adv_search_inst_no">Nevermind instructions, show me everything!</string>
+
+    <string name="lbl_adv_search_check_main">Main Course</string>
+    <string name="lbl_adv_search_check_side">Side Dish</string>
+    <string name="lbl_adv_search_check_dessert">Dessert</string>
+    <string name="lbl_adv_search_check_starter">Starter Dish</string>
+    <string name="lbl_adv_search_check_salad">Salad Dish</string>
+    <string name="lbl_adv_search_check_bread">Bread-based</string>
+    <string name="lbl_adv_search_check_breakfast">Breakfast</string>
+    <string name="lbl_adv_search_check_soup">Soup</string>
+    <string name="lbl_adv_search_check_sauce">Sauce</string>
+    <string name="lbl_adv_search_check_drink">Drink</string>
+    <string name="lbl_adv_search_cuisine_african">African</string>
+    <string name="lbl_adv_search_cuisine_chinese">Chinese</string>
+    <string name="lbl_adv_search_cuisine_japanese">Japanese</string>
+    <string name="lbl_adv_search_cuisine_korean">Korean</string>
+    <string name="lbl_adv_search_cuisine_vietnamese">Vietnamese</string>
+    <string name="lbl_adv_search_cuisine_thai">Thai</string>
+    <string name="lbl_adv_search_cuisine_indian">Indian</string>
+    <string name="lbl_adv_search_cuisine_british">British</string>
+    <string name="lbl_adv_search_cuisine_irish">Irish</string>
+    <string name="lbl_adv_search_cuisine_french">French</string>
+    <string name="lbl_adv_search_cuisine_italian">Italian</string>
+    <string name="lbl_adv_search_cuisine_mexican">Mexican</string>
+    <string name="lbl_adv_search_cuisine_spanish">Spanish</string>
+    <string name="lbl_adv_search_cuisine_middleeastern">Middle Eastern</string>
+    <string name="lbl_adv_search_cuisine_jewish">Jewish</string>
+    <string name="lbl_adv_search_cuisine_american">American</string>
+    <string name="lbl_adv_search_cuisine_southern">Southern</string>
+    <string name="lbl_adv_search_cuisine_greek">Greek</string>
+    <string name="lbl_adv_search_cuisine_german">German</string>
+    <string name="lbl_adv_search_cuisine_caribbean">Caribbean</string>
+    <string name="hint_adv_search_search">Search for recipes…</string>
+    <string name="hint_adv_search_clear">Reset all fields</string>
+    <string name="hint_adv_search_terms">Enter your keywords here!</string>
+    <string name="hint_adv_search_type">Narrow your search to a specific recipe type</string>
+    <string name="hint_adv_search_restrictions">Narrow your search to specific diets</string>
+    <string name="hint_adv_search_cuisines">Narrow your search to specific cuisines?</string>
+    <string name="hint_adv_search_instructions">Do you require instructions?</string>
+    <string name="hint_adv_search_exclusions">Narrow your search on your own terms</string>
+
+    <!-- General Hints -->
     <string name="hint_btn_save">Save your changes</string>
     <string name="hint_btn_cancel">Undo any changes made</string>
     <string name="hint_btn_delete">Delete this item entirely</string>
@@ -74,14 +139,20 @@
     <string name="hint_btn_sign_out">Sign out from Pocket Kitchen</string>
     <string name="hint_btn_disconnect">Revoke Pocket Kitchen\'s access to your Google account</string>
     <string name="hint_btn_proceed">Click to proceed to the Pocket Kitchen application</string>
+    <string name="hint_img_not_provided">No image provided by Spoonacular for this!</string>
+    <string name="hint_img_for_custom">No image has been provided for this custom ingredient!</string>
 
-    <string name="empty_recipes">You can use the search box to find yourself some tasty options!</string>
+    <!-- ListView Empty Texts -->
+    <string name="empty_recipes">Welcome!\nYou can use the search box to find yourself some tasty options!</string>
     <string name="empty_list">Success!\n\nYou don\'t have to go shopping!</string>
     <string name="empty_kitchen">Oops!\n\nYour cupboards are looking empty, time to go get some shopping!</string>
     <string name="empty_saved_recipes">Nothing to see here! Find something to cook!</string>
-    <string name="no_results">Oh no! Your search returned no results!</string>
+    <string name="no_results">
+        Oh no! Your search returned no results,\n
+        this could mean you have restricted the search too much!
+    </string>
 
-    <!-- Feedback: -->
+    <!-- Feedback -->
     <string name="feedback_cancelled_change">Cancelled! No changes were made.</string>
     <string name="feedback_success_change">Success! Changes have been saved!</string>
     <string name="feedback_deleted_change">Item has been removed!</string>
@@ -110,6 +181,8 @@
     <string name="action_save">Save</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_delete">Delete</string>
+    <string name="action_search">Search</string>
+    <string name="action_clear">Clear</string>
 
     <!-- Settings for Pocket Kitchen colours -->
     <string name="pref_header_my_kitchen">My Pocket Kitchen</string>
@@ -131,10 +204,14 @@
     <string name="pref_dietary_vegetarian_hint">Exclude non-vegetarian results from searched recipes.</string>
     <string name="pref_dietary_vegan">Vegan</string>
     <string name="pref_dietary_vegan_hint">Exclude non-vegan results from searched recipes.</string>
+    <string name="pref_dietary_pescetarian">Pescetarian</string>
+    <string name="pref_dietary_pescetarian_hint">Exclude non-pescetarian results from searched recipes.</string>
 
     <string name="pref_dietary_cat_allergens">Allergens or Other Preferences</string>
     <string name="pref_dietary_dairy">Dairy</string>
     <string name="pref_dietary_dairy_hint">Exclude dairy from searched recipes.</string>
+    <string name="pref_dietary_eggs">Eggs</string>
+    <string name="pref_dietary_eggs_hint">Exclude eggs from searched recipes.</string>
     <string name="pref_dietary_gluten">Gluten</string>
     <string name="pref_dietary_gluten_hint">Exclude gluten from searched recipes.</string>
     <string name="pref_dietary_nuts">Nuts</string>

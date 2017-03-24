@@ -1,13 +1,16 @@
 package sammobewick.pocketkitchen.data_objects;
 
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Sam on 09/02/2017.
  */
+@DynamoDBTable(tableName = "PK_Recipes_Short")
 public class Recipe_Short implements Serializable {
     // Matches: Search > GET Search Recipes
     // Usage: represents the brief amount of information gotten from text searches. This is what
@@ -44,26 +47,59 @@ public class Recipe_Short implements Serializable {
         this.title = recipe_short.getTitle();
     }
 
+    public String getJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    // ****************************************************************************************** //
+    //                                      COMPARISON OVERRIDES:                                 //
+    // ****************************************************************************************** //
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        // This is only reached when we know it's the same class!
+        Recipe_Short that = (Recipe_Short) obj;
+        return Objects.equals(id, that.getId()) &&
+                Objects.equals(image, that.getImage()) &&
+                Objects.equals(imageUrls, that.getImageUrls()) &&
+                Objects.equals(readyInMinutes, that.getReadyInMinutes()) &&
+                Objects.equals(title, that.getTitle());    // END-RETURN
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, image, imageUrls, readyInMinutes, title);
+    }
+
     // ****************************************************************************************** //
     //                                      GETTERS:                                              //
     // ****************************************************************************************** //
 
+    @DynamoDBHashKey(attributeName = "ID")
     public int getId() {
         return id;
     }
 
+    @DynamoDBAttribute(attributeName = "IMAGE")
     public String getImage() {
         return image;
     }
 
+    @DynamoDBAttribute(attributeName = "IMAGEURLS")
     public List<String> getImageUrls() {
         return imageUrls;
     }
 
+    @DynamoDBAttribute(attributeName = "READYINMINUTES")
     public int getReadyInMinutes() {
         return readyInMinutes;
     }
 
+    @DynamoDBIndexRangeKey(attributeName = "TITLE")
     public String getTitle() {
         return title;
     }
@@ -72,5 +108,14 @@ public class Recipe_Short implements Serializable {
     //                                      toString():                                           //
     // ****************************************************************************************** //
 
-    // TODO: Not worth having the full toString so create your own essential information version!
+    @Override
+    public String toString() {
+        return "Recipe_Short{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", readyInMinutes=" + readyInMinutes +
+                ", image='" + image + '\'' +
+                ", imageUrls=" + imageUrls +
+                '}';
+    }
 }

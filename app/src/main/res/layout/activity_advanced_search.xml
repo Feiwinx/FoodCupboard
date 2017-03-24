@@ -1,0 +1,414 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/sv_adv_search"
+    tools:context="sammobewick.pocketkitchen.core.AdvancedSearchActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Progress Spinner for Loading -->
+        <ProgressBar
+            android:id="@+id/recipe_adv_search_progress"
+            android:visibility="gone"
+
+            style="?android:progressBarStyleLarge"
+            android:progressDrawable="@drawable/progress"
+            android:indeterminateDrawable="@drawable/progress"
+            android:layout_gravity="center"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <!-- Search Terms: -->
+        <TextView android:id="@+id/lbl_search_terms"
+            android:text="@string/lbl_adv_search_terms"
+
+            android:gravity="center_vertical"
+            android:background="@color/colourPrimLight"
+            android:textSize="@dimen/hdr_text_size"
+            android:paddingStart="15dp"
+            android:paddingEnd="30dp"
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp"
+
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText android:id="@+id/edit_search_terms"
+            android:contentDescription="@string/hint_adv_search_search"
+            android:layout_margin="5dp"
+            android:maxLines="1"
+            android:inputType="textShortMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <View android:background="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp" />
+
+        <!-- Type of recipe: -->
+        <TextView android:id="@+id/lbl_recipe_type"
+            android:text="@string/lbl_adv_search_type"
+            android:contentDescription="@string/hint_adv_search_type"
+
+            android:gravity="center_vertical"
+            android:background="@color/colourPrimLight"
+            android:drawableEnd="@drawable/ic_arrow_down"
+            android:textSize="@dimen/hdr_text_size"
+            android:paddingStart="15dp"
+            android:paddingEnd="30dp"
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp"
+
+            android:textStyle="bold"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <GridLayout android:id="@+id/grid_recipe_types"
+            android:columnCount="3"
+            android:alignmentMode="alignMargins"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox android:id="@+id/check_starter"
+                android:text="@string/lbl_adv_search_check_starter"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_side"
+                android:text="@string/lbl_adv_search_check_side"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_main"
+                android:text="@string/lbl_adv_search_check_main"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_salad"
+                android:text="@string/lbl_adv_search_check_salad"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_bread"
+                android:text="@string/lbl_adv_search_check_bread"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_dessert"
+                android:text="@string/lbl_adv_search_check_dessert"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_breakfast"
+                android:text="@string/lbl_adv_search_check_breakfast"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_soup"
+                android:text="@string/lbl_adv_search_check_soup"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_sauce"
+                android:text="@string/lbl_adv_search_check_sauce"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_drink"
+                android:text="@string/lbl_adv_search_check_drink"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </GridLayout>
+
+        <View android:background="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp" />
+
+        <!-- Type of cuisine: -->
+        <TextView
+            android:id="@+id/lbl_recipe_cuisine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/lbl_adv_search_cuisine"
+            android:contentDescription="@string/hint_adv_search_cuisines"
+
+            android:gravity="center_vertical"
+            android:background="@color/colourPrimLight"
+            android:drawableEnd="@drawable/ic_arrow_down"
+            android:textSize="@dimen/hdr_text_size"
+            android:paddingStart="15dp"
+            android:paddingEnd="30dp"
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp"
+            android:textStyle="bold" />
+
+        <GridLayout android:id="@+id/grid_recipe_cuisine"
+            android:columnCount="3"
+            android:alignmentMode="alignMargins"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox android:id="@+id/check_african"
+                android:text="@string/lbl_adv_search_cuisine_african"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_american"
+                android:text="@string/lbl_adv_search_cuisine_american"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_british"
+                android:text="@string/lbl_adv_search_cuisine_british"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_caribbean"
+                android:text="@string/lbl_adv_search_cuisine_caribbean"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_chinese"
+                android:text="@string/lbl_adv_search_cuisine_chinese"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_french"
+                android:text="@string/lbl_adv_search_cuisine_french"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_german"
+                android:text="@string/lbl_adv_search_cuisine_german"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_greek"
+                android:text="@string/lbl_adv_search_cuisine_greek"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_jewish"
+                android:text="@string/lbl_adv_search_cuisine_jewish"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_indian"
+                android:text="@string/lbl_adv_search_cuisine_indian"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_italian"
+                android:text="@string/lbl_adv_search_cuisine_italian"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_irish"
+                android:text="@string/lbl_adv_search_cuisine_irish"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_japanese"
+                android:text="@string/lbl_adv_search_cuisine_japanese"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_korean"
+                android:text="@string/lbl_adv_search_cuisine_korean"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_mexican"
+                android:text="@string/lbl_adv_search_cuisine_mexican"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_middleeastern"
+                android:text="@string/lbl_adv_search_cuisine_middleeastern"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_spanish"
+                android:text="@string/lbl_adv_search_cuisine_spanish"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_southern"
+                android:text="@string/lbl_adv_search_cuisine_southern"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_thai"
+                android:text="@string/lbl_adv_search_cuisine_thai"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_vietnamese"
+                android:text="@string/lbl_adv_search_cuisine_vietnamese"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </GridLayout>
+
+        <View android:background="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp" />
+
+        <!-- Dietary Restrictions -->
+        <TextView android:id="@+id/lbl_dietary_restrictions"
+            android:text="@string/lbl_adv_search_dietary"
+            android:contentDescription="@string/hint_adv_search_restrictions"
+
+            android:gravity="center_vertical"
+            android:background="@color/colourPrimLight"
+            android:drawableEnd="@drawable/ic_arrow_down"
+            android:textSize="@dimen/hdr_text_size"
+            android:paddingStart="15dp"
+            android:paddingEnd="30dp"
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp"
+
+            android:textStyle="bold"
+            android:layout_marginTop="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <GridLayout android:id="@+id/grid_dietary_restrictions"
+            android:columnCount="3"
+            android:alignmentMode="alignMargins"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox android:id="@+id/check_diet_vegan"
+                android:text="@string/pref_dietary_vegan"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_diet_vegetarian"
+                android:text="@string/pref_dietary_vegetarian"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_diet_pescatarian"
+                android:text="@string/pref_dietary_pescetarian"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <CheckBox android:id="@+id/check_diet_eggs"
+                android:text="@string/pref_dietary_eggs"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_diet_dairy"
+                android:text="@string/pref_dietary_dairy"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_diet_gluten"
+                android:text="@string/pref_dietary_gluten"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_diet_nuts"
+                android:text="@string/pref_dietary_nuts"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_diet_seafood"
+                android:text="@string/pref_dietary_seafood"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_diet_shellfish"
+                android:text="@string/pref_dietary_shellfish"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox android:id="@+id/check_diet_soy"
+                android:text="@string/pref_dietary_soy"
+                android:layout_columnWeight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </GridLayout>
+
+        <View android:background="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp" />
+
+        <!-- Other Exclusions: -->
+        <TextView android:id="@+id/lbl_search_exclusions"
+            android:text="@string/lbl_adv_search_exclusions"
+            android:contentDescription="@string/hint_adv_search_exclusions"
+
+            android:gravity="center_vertical"
+            android:background="@color/colourPrimLight"
+            android:textSize="@dimen/hdr_text_size"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp"
+
+            android:textStyle="bold"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText android:id="@+id/edit_search_exclusions"
+            android:hint="@string/hint_adv_search_exclusions"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/rl_add_custom_recipe"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="3dip"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Static Bottom Bar: -->
+    <LinearLayout android:id="@+id/ll_add_custom_recipe"
+        android:orientation="horizontal"
+        android:background="@color/colourSecondDark"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button android:id="@+id/btn_add_custom_recipe"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_btn_add_custom_recipe" />
+
+        <Space android:layout_weight="2"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <CheckBox android:id="@+id/check_cr_custom_recipe_privacy"
+            android:text="@string/lbl_check_custom_recipe_privacy"
+            android:textStyle="italic"
+            android:layoutDirection="rtl"
+            android:checked="false"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <!-- Scroll View: -->
+    <android.support.v4.widget.NestedScrollView android:id="@+id/sv_add_custom_recipe"
+        android:descendantFocusability="afterDescendants"
+        android:fillViewport="false"
+        android:layout_above="@id/ll_add_custom_recipe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <!-- Relative Layout -->
+        <RelativeLayout android:id="@+id/sv_rl_add_recipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView android:id="@+id/lbl_add_custom_recipe"
+                android:visibility="gone"
+                android:focusable="false"
+                android:textStyle="italic"
+                android:textAlignment="center"
+                android:textColor="@color/red"
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Recipe Image -->
+            <ImageView android:id="@+id/img_custom_recipe"
+                android:src="@drawable/ps_question_mark"
+                android:layout_marginBottom="3dp"
+                android:clickable="true"
+                android:layout_below="@id/lbl_add_custom_recipe"
+                android:adjustViewBounds="true"
+                android:maxHeight="150dp"
+                android:maxWidth="150dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp" />
+
+            <!-- Recipe Title + Author -->
+            <TextView android:id="@+id/lbl_add_custom_recipe_title"
+                android:text="@string/lbl_custom_recipe_section_title"
+                android:background="@color/colourPrimLight"
+                android:textSize="@dimen/lrg_text_size"
+                android:textStyle="bold"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingStart="10dp"
+                android:layout_toEndOf="@id/img_custom_recipe"
+                android:layout_below="@id/lbl_add_custom_recipe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText android:id="@+id/edit_add_custom_recipe_title"
+                android:hint="@string/hint_custom_recipe_enter_title"
+                android:textSize="@dimen/def_text_size"
+                android:inputType="textShortMessage|textCapWords|textImeMultiLine"
+                android:maxLines="3"
+
+                android:layout_below="@id/lbl_add_custom_recipe_title"
+                android:layout_toEndOf="@id/img_custom_recipe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Recipe Ingredients List -->
+            <ImageButton android:id="@+id/btn_custom_recipe_ing"
+                android:scaleX="1.375"
+                android:scaleY="1.375"
+                android:src="@drawable/ic_arrow_down"
+                style="@style/primLight_ImgBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/img_custom_recipe"
+                android:layout_alignParentEnd="true" />
+
+            <TextView android:id="@+id/lbl_add_custom_recipe_ingredients"
+                android:background="@color/colourPrimLight"
+                android:drawableEnd="@drawable/ic_add"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:clickable="true"
+                android:text="@string/lbl_custom_recipe_section_ingredients"
+                android:textSize="@dimen/lrg_text_size"
+                android:textColor="@color/colourAccentDark"
+                android:textStyle="bold"
+
+                android:gravity="center_vertical"
+                android:layout_below="@id/img_custom_recipe"
+                android:layout_toLeftOf="@id/btn_custom_recipe_ing"
+                android:layout_alignTop="@id/btn_custom_recipe_ing"
+                android:layout_alignParentStart="true"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <android.support.v7.widget.RecyclerView android:id="@+id/rv_add_custom_recipe_ingredients"
+                android:layout_below="@id/lbl_add_custom_recipe_ingredients"
+                android:focusable="true"
+                android:scrollbars="vertical"
+                android:nestedScrollingEnabled="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Recipe Instructions: -->
+            <TextView android:id="@+id/lbl_add_custom_recipe_instructions"
+
+                android:gravity="center_vertical"
+                android:background="@color/colourPrimLight"
+                android:drawableEnd="@drawable/ic_arrow_down"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+
+                android:clickable="true"
+                android:text="@string/lbl_custom_recipe_section_instructions"
+                android:textSize="@dimen/lrg_text_size"
+                android:textColor="@color/colourAccentDark"
+                android:textStyle="bold"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@id/rv_add_custom_recipe_ingredients"
+                android:layout_alignParentStart="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText android:id="@+id/edit_add_custom_recipe_instructions"
+                android:gravity="start"
+                android:focusable="true"
+                android:inputType="textLongMessage|textAutoCorrect|textMultiLine"
+                android:textIsSelectable="true"
+                android:scrollbars="vertical"
+                android:lines="6"
+                android:layout_below="@id/lbl_add_custom_recipe_instructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Recipe Dietary Information: -->
+            <TextView android:id="@+id/lbl_add_custom_recipe_dietary"
+
+                android:gravity="center_vertical"
+                android:background="@color/colourPrimLight"
+                android:drawableEnd="@drawable/ic_arrow_down"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+
+                android:clickable="true"
+                android:text="@string/lbl_custom_recipe_section_dietary"
+                android:textSize="@dimen/lrg_text_size"
+                android:textColor="@color/colourAccentDark"
+                android:textStyle="bold"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_below="@id/edit_add_custom_recipe_instructions"
+                android:layout_alignParentStart="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <GridLayout android:id="@+id/grid_custom_recipe_dietary"
+                android:layout_below="@id/lbl_add_custom_recipe_dietary"
+                android:columnCount="3"
+                android:alignmentMode="alignMargins"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <CheckBox android:id="@+id/check_cr_diet_vegan"
+                    android:text="@string/pref_dietary_vegan"
+                    android:layout_columnWeight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <CheckBox android:id="@+id/check_cr_diet_vegetarian"
+                    android:text="@string/pref_dietary_vegetarian"
+                    android:layout_columnWeight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <CheckBox android:id="@+id/check_cr_diet_pescatarian"
+                    android:text="@string/pref_dietary_pescetarian"
+                    android:layout_columnWeight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <CheckBox android:id="@+id/check_cr_diet_eggs"
+                    android:text="@string/pref_dietary_eggs"
+                    android:layout_columnWeight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <CheckBox android:id="@+id/check_cr_diet_dairy"
+                    android:text="@string/pref_dietary_dairy"
+                    android:layout_columnWeight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <CheckBox android:id="@+id/check_cr_diet_gluten"
+                    android:text="@string/pref_dietary_gluten"
+                    android:layout_columnWeight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <CheckBox android:id="@+id/check_cr_diet_nuts"
+                    android:text="@string/pref_dietary_nuts"
+                    android:layout_columnWeight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <CheckBox android:id="@+id/check_cr_diet_seafood"
+                    android:text="@string/pref_dietary_seafood"
+                    android:layout_columnWeight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <CheckBox android:id="@+id/check_cr_diet_shellfish"
+                    android:text="@string/pref_dietary_shellfish"
+                    android:layout_columnWeight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <CheckBox android:id="@+id/check_cr_diet_soy"
+                    android:text="@string/pref_dietary_soy"
+                    android:layout_columnWeight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </GridLayout>
+
+        </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
+</RelativeLayout>

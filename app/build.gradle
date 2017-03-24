@@ -43,5 +43,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-drive:10.2.0'
     compile 'com.google.android.gms:play-services-auth:10.2.0'
     compile 'com.github.clans:fab:1.6.4'
+    compile 'com.amazonaws:aws-android-sdk-core:2.2.+'
+    compile 'com.amazonaws:aws-android-sdk-s3:2.2.+'
+    compile 'com.amazonaws:aws-android-sdk-ddb-mapper:2.2.+'
     testCompile 'junit:junit:4.12'
 }

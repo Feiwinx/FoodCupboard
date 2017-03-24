@@ -42,9 +42,9 @@ public class TabbedActivity extends AppCompatActivity implements
     private static final String TAG = "TabbedActivity";
 
     // ID values for the various fragments:
-    private static final int KITCHEN_FRAG_ID = 0;
+    private static final int KITCHEN_FRAG_ID = 2;
     private static final int LIST_FRAG_ID = 1;
-    private static final int RECIPE_FRAG_ID = 2;
+    private static final int RECIPE_FRAG_ID = 0;
 
     private static final String SHARED_PREFERENCES = "pocketKitchenPreferences";
 
@@ -54,6 +54,8 @@ public class TabbedActivity extends AppCompatActivity implements
     private int lastFragmentId;
 
     private SharedPreferences sharedPreferences;
+
+    private com.github.clans.fab.FloatingActionMenu menu;
 
     // API Controller for calls to Spoonacular:
     private APIController controller;
@@ -102,8 +104,11 @@ public class TabbedActivity extends AppCompatActivity implements
         fab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_view_saved);
         fab.setOnClickListener(this);
 
+        menu = (com.github.clans.fab.FloatingActionMenu) findViewById(R.id.fab);
+
         // Initialise this method with the first fragment:
-        this.fragmentSelected(KITCHEN_FRAG_ID);
+        mViewPager.setCurrentItem(lastFragmentId);
+        fragmentSelected(lastFragmentId);
     }
 
     @Override
@@ -245,12 +250,13 @@ public class TabbedActivity extends AppCompatActivity implements
     private void fragmentSelected(int type) {
         Log.d(TAG, "Fragment selected. ID of " + type);
         this.lastFragmentId = type;
+        menu.close(true);
         switch (type) {
             case KITCHEN_FRAG_ID:   // Kitchen Fragment
                 //findViewById(R.id.fab_scan_receipts).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_add_list).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_view_saved).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_search_recipes).setVisibility(View.GONE);
+                findViewById(R.id.fab_search_recipes).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_add_recipe).setVisibility(View.GONE);
                 break;
 
@@ -258,7 +264,7 @@ public class TabbedActivity extends AppCompatActivity implements
                 //findViewById(R.id.fab_scan_receipts).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_add_list).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_view_saved).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_search_recipes).setVisibility(View.GONE);
+                findViewById(R.id.fab_search_recipes).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_add_recipe).setVisibility(View.GONE);
                 break;
 
@@ -279,7 +285,7 @@ public class TabbedActivity extends AppCompatActivity implements
         // Check network connectivity on resume:
         if (!ActivityHelper.isConnected(getApplicationContext())) {
             Log.i(TAG, "No connection onPostResume!");
-            ActivityHelper.displaySnackBarNoAction(getApplicationContext(), R.id.main_content, R.string.wifi_warning_short);
+            ActivityHelper.displaySnackBarNoAction(TabbedActivity.this, R.id.main_content, R.string.wifi_warning_short);
         }
 
         // Return to last fragment selected:
@@ -296,6 +302,7 @@ public class TabbedActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()) {
             case R.id.fab_add_list:         // Adding to the Shopping List:
                 if (lastFragmentId == LIST_FRAG_ID)
@@ -310,23 +317,27 @@ public class TabbedActivity extends AppCompatActivity implements
                 // END-DEBUG */
                 break;
             case R.id.fab_add_recipe:       // Adding recipes:
-                ///* DEBUG:
-                ActivityHelper.displaySnackBarNoAction(getApplicationContext(), R.id.main_content, R.string.snackbar_wip_feature);
+                intent = new Intent(this, AddRecipeActivity.class);
+                startActivity(intent);
+                /* DEBUG:
+                ActivityHelper.displaySnackBarNoAction(TabbedActivity.this, R.id.main_content, R.string.snackbar_wip_feature);
                 // END-DEBUG */
                 break;
             case R.id.fab_scan_receipts:    // Scanning Receipts:
                 ///* DEBUG:
-                ActivityHelper.displaySnackBarNoAction(getApplicationContext(), R.id.main_content, R.string.snackbar_wip_feature);
+                ActivityHelper.displaySnackBarNoAction(TabbedActivity.this, R.id.main_content, R.string.snackbar_wip_feature);
                 // END-DEBUG */
                 break;
             case R.id.fab_search_recipes:   // Search Recipes [advanced]:
-                ///* DEBUG:
-                ActivityHelper.displaySnackBarNoAction(getApplicationContext(), R.id.main_content, R.string.snackbar_wip_feature);
+                intent = new Intent(this, AdvancedSearchActivity.class);
+                startActivity(intent);
+                /* DEBUG:
+                ActivityHelper.displaySnackBarNoAction(TabbedActivity.this, R.id.main_content, R.string.snackbar_wip_feature);
                 // END-DEBUG */
                 break;
 
             case R.id.fab_view_saved:       // View saved recipes.
-                Intent intent = new Intent(this, MySavedRecipesActivity.class);
+                intent = new Intent(this, MySavedRecipesActivity.class);
                 startActivity(intent);
                 /* DEBUG:
                 helper.displaySnackBarNoAction(R.id.main_content, R.string.snackbar_wip_feature);
@@ -350,15 +361,15 @@ public class TabbedActivity extends AppCompatActivity implements
             Fragment fragment;
 
             switch (position) {
-                case 0:
+                case KITCHEN_FRAG_ID:
                     fragment = MyKitchenFragment.newInstance();
                     break;
 
-                case 1:
+                case LIST_FRAG_ID:
                     fragment = MyListFragment.newInstance();
                     break;
 
-                case 2:
+                case RECIPE_FRAG_ID:
                     fragment = SearchRecipesFragment.newInstance();
                     break;
 
@@ -377,6 +388,10 @@ public class TabbedActivity extends AppCompatActivity implements
                     boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_dairy), false);
                     bundle.putBoolean(getString(R.string.pref_dietary_dairy), value);
                 }
+                if (sharedPreferences.contains(getString(R.string.pref_dietary_eggs))) {
+                    boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_eggs), false);
+                    bundle.putBoolean(getString(R.string.pref_dietary_eggs), value);
+                }
                 if (sharedPreferences.contains(getString(R.string.pref_dietary_gluten))) {
                     boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_gluten), false);
                     bundle.putBoolean(getString(R.string.pref_dietary_gluten), value);
@@ -388,6 +403,10 @@ public class TabbedActivity extends AppCompatActivity implements
                 if (sharedPreferences.contains(getString(R.string.pref_dietary_vegan))) {
                     boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_vegan), false);
                     bundle.putBoolean(getString(R.string.pref_dietary_vegan), value);
+                }
+                if (sharedPreferences.contains(getString(R.string.pref_dietary_pescetarian))) {
+                    boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_pescetarian), false);
+                    bundle.putBoolean(getString(R.string.pref_dietary_pescetarian), value);
                 }
                 if (sharedPreferences.contains(getString(R.string.pref_dietary_nuts))) {
                     boolean value = sharedPreferences.getBoolean(getString(R.string.pref_dietary_nuts), false);

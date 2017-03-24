@@ -7,6 +7,7 @@
     <SearchView
         android:id="@+id/recipe_search"
 
+        android:focusable="true"
         android:queryHint="@string/hint_search_recipes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -25,17 +26,19 @@
     <TextView
         android:id="@+id/empty_recipe"
         android:text="@string/empty_recipes"
+        android:textSize="@dimen/hdr_text_size"
+        android:textAlignment="center"
 
         android:layout_below="@id/recipe_search"
 
-        android:gravity="center"
+        android:layout_centerHorizontal="true"
         android:textStyle="italic"
         android:layout_margin="10dp"
         android:focusable="false"
         android:clickable="false"
 
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 
     <!-- Progress Spinner for Loading -->
     <ProgressBar
@@ -44,7 +47,7 @@
         style="?android:progressBarStyleLarge"
         android:progressDrawable="@drawable/progress"
         android:indeterminateDrawable="@drawable/progress"
-        android:layout_below="@id/recipe_search"
+        android:layout_below="@id/empty_recipe"
         android:layout_centerHorizontal="true"
 
         android:layout_width="wrap_content"

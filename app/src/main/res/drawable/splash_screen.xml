@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@color/blue_grey" />
+    <item android:drawable="@color/white_light_blue" />
 
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/pocket_kitchen_img" />
+            android:src="@drawable/ps_pocket_kitchen_img" />
     </item>
 
 </layer-list>

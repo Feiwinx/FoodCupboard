@@ -1,35 +1,43 @@
 <resources>
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/red</item>
-        <item name="colorPrimaryDark">@color/deep_red</item>
-        <item name="colorAccent">@color/deep_red</item>
-        <item name="android:windowBackground">@color/gray</item>
+        <item name="colorPrimary">@color/colourPrim</item>
+        <item name="colorPrimaryDark">@color/colourPrimDark</item>
+        <item name="colorAccent">@color/colourAccent</item>
+        <item name="android:windowBackground">@color/colourPrimaryBackground</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
-        <item name="colorPrimary">@color/red</item>
-        <item name="colorPrimaryDark">@color/deep_red</item>
-        <item name="colorAccent">@color/deep_red</item>
-        <item name="android:windowBackground">@color/gray</item>
+        <item name="colorPrimary">@color/colourPrim</item>
+        <item name="colorPrimaryDark">@color/colourPrimDark</item>
+        <item name="colorAccent">@color/colourAccent</item>
+        <item name="android:windowBackground">@color/colourPrimaryBackground</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/red</item>
-        <item name="colorPrimaryDark">@color/deep_red</item>
-        <item name="colorAccent">@color/deep_red</item>
-        <item name="android:windowBackground">@color/gray</item>
+        <item name="colorPrimary">@color/colourPrim</item>
+        <item name="colorPrimaryDark">@color/colourPrimDark</item>
+        <item name="colorAccent">@color/colourAccent</item>
+        <item name="android:windowBackground">@color/colourPrimaryBackground</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <!-- Theme for basic dialogs: -->
     <style name="myDialog" parent="Theme.AppCompat.Dialog.Alert" />
+
+    <!-- Theme for all buttons: -->
+    <style name="primLight_ImgBtn" parent="Widget.AppCompat.ImageButton">
+        <item name="backgroundTint">@color/colourPrimLight</item>
+    </style>
+
+    <style name="transparent_ImgBtn" parent="Base.Widget.AppCompat.ImageButton">
+        <item name="backgroundTint">@color/transparent</item>
+    </style>
 
     <!-- We use a style for our Splash Screen so it loads instantly -->
     <style name="SplashScreen" parent="Theme.AppCompat.NoActionBar">

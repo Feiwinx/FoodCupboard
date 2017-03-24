@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -61,10 +62,12 @@ public class ViewSingleRecipeActivity extends AppCompatActivity {
 
         // Insert a check for if the user wanted to cook this previously!
         if (pkData.checkForSetOfIngredients(recipe_short)) {
+            Log.d(TAG, "recipe found in list");
             btnPressed = true;
             mainButton.setText(R.string.lbl_btn_rem_recipe);
             mainButton.setHint(R.string.hint_btn_rem_recipe);
         } else {
+            Log.d(TAG, "recipe not found in list");
             btnPressed = false;
         }
 
@@ -118,6 +121,18 @@ public class ViewSingleRecipeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // The entire reason for this is to return to the recipe list rather than resetting the
+            // TabbedActivity to fragment 1.
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * Here we load the recipe data into the view, showing/hiding images and setting text.
      *
@@ -130,8 +145,10 @@ public class ViewSingleRecipeActivity extends AppCompatActivity {
 
         // ***** MAIN RECIPE IMAGE:             ***** //
         String url = urlStart + recipe_short.getImage();
-        ImageView recipe_img = (ImageView) this.findViewById(R.id.recipe_image_f);
-        new DownloadImageAsync(recipe_img).execute(url);
+        if (url != urlStart) {
+            ImageView recipe_img = (ImageView) this.findViewById(R.id.recipe_image_f);
+            new DownloadImageAsync(recipe_img).execute(url);
+        } else { this.findViewById(R.id.recipe_image_f).setContentDescription(getString(R.string.hint_img_not_provided));}
 
         // ***** RIGHT-HAND INFORMATION PANE:   ***** //
         if (recipe_full.isVegan()) {
@@ -168,12 +185,6 @@ public class ViewSingleRecipeActivity extends AppCompatActivity {
         } else {
             this.findViewById(R.id.dietary_cheap_f).setVisibility(View.GONE);
         }
-
-        /* TODO: Optional information that is not yet displayable!
-        if (view_single_recipe.isKetogenic()) {}
-        if (view_single_recipe.isLowFodmap()) {}
-        if (view_single_recipe.isWhole30()) {}
-        */
 
         // ***** BENEATH IMAGE AREA FOR INFORMATION:    ***** //
         TextView recipe_time = (TextView) findViewById(R.id.recipe_time_f);

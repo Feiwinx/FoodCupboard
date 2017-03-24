@@ -199,10 +199,14 @@ public class LoginActivity extends AppCompatActivity implements
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(@NonNull Status status) {
+                        // Only on success do we delete the data:
+                        LocalFileHelper helper = new LocalFileHelper(LoginActivity.this);
+                        helper.deleteAllNoDialog();
+
                         // Set up the UI for signed out and action complete:
                         updateUI(false);
                         hideProgressDialog();
-                        ActivityHelper.displaySnackBarNoAction(LoginActivity.this, R.id.login_form_ll, R.string.snackbar_wip_feature);
+                        ActivityHelper.displaySnackBarNoAction(LoginActivity.this, R.id.login_form_ll, R.string.snackbar_revoke_success);
                     }
                 }
         );
@@ -321,8 +325,10 @@ public class LoginActivity extends AppCompatActivity implements
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (!ActivityHelper.isConnected(getApplicationContext())) {
-            ActivityHelper.displayNetworkWarning(getApplicationContext());
+        if (!ActivityHelper.isConnected(LoginActivity.this)) {
+            //ActivityHelper.displayNetworkWarning(LoginActivity.this);
+            Log.i(TAG, "No connection onPostResume!");
+            ActivityHelper.displaySnackBarNoAction(LoginActivity.this, R.id.main_content, R.string.wifi_warning_short);
         }
     }
 }

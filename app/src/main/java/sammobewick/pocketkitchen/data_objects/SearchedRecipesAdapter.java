@@ -11,6 +11,7 @@ import java.util.List;
 
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.communication.DownloadImageAsync;
+import sammobewick.pocketkitchen.supporting.DataListener;
 
 /**
  * This is the custom ListAdapter for displaying Recipe_Short objects.
@@ -18,10 +19,17 @@ import sammobewick.pocketkitchen.communication.DownloadImageAsync;
  * called from those places.
  * Created by Sam on 31/01/2017.
  */
-public class SearchedRecipesAdapter extends BaseAdapter {
+public class SearchedRecipesAdapter extends BaseAdapter implements DataListener {
 
     private List<Recipe_Short> data;
     private String urlStart;
+
+    @Override
+    public void dataUpdate() {
+        PocketKitchenData pkData = PocketKitchenData.getInstance(this);
+        data = pkData.getRecipesDisplayed();
+        this.notifyDataSetChanged();
+    }
 
     // Here we use this inner class to hold our views for this item:
     private class ViewHolder {
@@ -32,8 +40,7 @@ public class SearchedRecipesAdapter extends BaseAdapter {
 
     public SearchedRecipesAdapter(String urlStart) {
         this.urlStart = urlStart;
-        PocketKitchenData pkData = PocketKitchenData.getInstance();
-        data = pkData.getRecipesDisplayed();
+        dataUpdate();
     }
 
     @Override
@@ -83,8 +90,10 @@ public class SearchedRecipesAdapter extends BaseAdapter {
 
         vh.recipeTitle.setText(recipe.getTitle());
 
-        String desc = "This tasty recipe can be made in " + recipe.getReadyInMinutes() + " minutes!";
-        vh.recipeDesc.setText(desc);
+        // TODO: Establish whether or not to include the below? It's not really useful!
+        //String desc = "This tasty recipe can be made in " + recipe.getReadyInMinutes() + " minutes!";
+        //vh.recipeDesc.setText(desc);
+        vh.recipeDesc.setVisibility(View.GONE);
 
         // Load the images using aSync task:
         String url = urlStart + recipe.getImage();
@@ -96,11 +105,6 @@ public class SearchedRecipesAdapter extends BaseAdapter {
         new DownloadImageAsync(vh.recipeImg).execute(url);
 
         return v;
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
     }
 
     // ****************************************************************************************** //

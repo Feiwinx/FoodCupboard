@@ -101,6 +101,7 @@ public final class PocketKitchenData {
 
     public void setRecipesDisplayed(List<Recipe_Short> recipesDisplayed) {
         this.recipesDisplayed = recipesDisplayed;
+        updateListeners();
     }
 
     public Map<Integer, List<Ingredient>> getRecipe_ingredients() {

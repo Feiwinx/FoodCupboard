@@ -134,8 +134,7 @@ public class MyKitchenAdapter extends BaseAdapter implements Filterable, DataLis
         if (url.length() > 0) {
             new DownloadImageAsync(vh.kitchenImage).execute(url);
         } else {
-            // TODO: Set image to a custom one, showing that the user added it.
-            vh.kitchenImage.setVisibility(View.INVISIBLE);
+            vh.kitchenImage.setContentDescription(parent.getResources().getString(R.string.hint_img_for_custom));
         }
 
         vh.kitchenMeasurement.setText(ingredient.getUnitShort());

@@ -27,14 +27,16 @@
     <TextView
         android:id="@+id/empty_kitchen"
         android:text="@string/empty_kitchen"
+        android:textSize="@dimen/hdr_text_size"
 
         android:layout_below="@id/kitchen_search"
         android:textStyle="italic"
-        android:gravity="center"
+        android:textAlignment="center"
+        android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
         android:focusable="false"
         android:clickable="false"
 
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 </RelativeLayout>

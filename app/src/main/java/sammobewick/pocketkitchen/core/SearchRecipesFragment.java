@@ -1,6 +1,7 @@
 package sammobewick.pocketkitchen.core;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -95,9 +96,19 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
                     dietQuery += "vegetarian, ";
                 }
             }
+            if (args.containsKey(getString(R.string.pref_dietary_pescetarian))) {
+                if (args.getBoolean(getString(R.string.pref_dietary_pescetarian))) {
+                    dietQuery += "pescetarian, ";
+                }
+            }
             if (args.containsKey(getString(R.string.pref_dietary_dairy))) {
                 if (args.getBoolean(getString(R.string.pref_dietary_dairy))) {
                     intolerances += "dairy, ";
+                }
+            }
+            if (args.containsKey(getString(R.string.pref_dietary_eggs))) {
+                if (args.getBoolean(getString(R.string.pref_dietary_eggs))) {
+                    intolerances += "egg, ";
                 }
             }
             if (args.containsKey(getString(R.string.pref_dietary_gluten))) {
@@ -169,6 +180,12 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        setProgressBar(false);
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
@@ -206,8 +223,8 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
                 dietQuery,   // diet                 - optional.
                 "",   // excludeIngredients   - optional.
                 intolerances,   // intolerance         - optional.
-                true,   // limitLicense         - optional.
-                20,   // number               - optional, but default to 10 for now
+                false,   // limitLicense         - optional.
+                20,   // number               - optional, but default to 20 for now
                 0,   // offset               - optional, returns number of results from result 0.
                 "",   // type                 - optional.
                 null,   // queryParameters      - optional.
@@ -226,8 +243,10 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
                             PocketKitchenData pkData = PocketKitchenData.getInstance();
                             pkData.setRecipesDisplayed(data);
 
+                            /* [OLD] Before listeners were used, this was.
                             // Pass to adapter:
                             mAdapter.setData(pkData.getRecipesDisplayed());
+                            //*/
 
                             // Provides proper feedback when no results are returned:
                             if (data.size() == 0) {

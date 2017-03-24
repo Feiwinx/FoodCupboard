@@ -54,10 +54,10 @@
         fab:menu_shadowRadius="4dp"
         fab:menu_shadowXOffset="1dp"
         fab:menu_shadowYOffset="3dp"
-        fab:menu_colorNormal="#DA4336"
-        fab:menu_colorPressed="#E75043"
-        fab:menu_colorRipple="#99FFFFFF"
-        fab:menu_animationDelayPerItem="100"
+        fab:menu_colorNormal="@color/colourAccent"
+        fab:menu_colorPressed="@color/colourAccentDark"
+        fab:menu_colorRipple="@color/colourEffect"
+        fab:menu_animationDelayPerItem="75"
         fab:menu_icon="@drawable/ic_more_vert"
         fab:menu_buttonSpacing="0dp"
         fab:menu_labels_margin="0dp"
@@ -88,6 +88,9 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_add"
             android:visibility="gone"
+            fab:fab_colorNormal="@color/colourAccent"
+            fab:fab_colorPressed="@color/colourAccentDark"
+            fab:fab_colorRipple="@color/colourEffect"
             fab:fab_size="mini"
             fab:fab_label="@string/lbl_fab_add_recipe" />
 
@@ -97,6 +100,9 @@
             android:layout_width="wrap_content"
             android:src="@drawable/ic_add"
             android:visibility="gone"
+            fab:fab_colorNormal="@color/colourAccent"
+            fab:fab_colorPressed="@color/colourAccentDark"
+            fab:fab_colorRipple="@color/colourEffect"
             fab:fab_size="mini"
             fab:fab_label="@string/lbl_fab_add_item" />
 
@@ -106,6 +112,9 @@
             android:layout_width="wrap_content"
             android:src="@drawable/ic_search"
             android:visibility="gone"
+            fab:fab_colorNormal="@color/colourAccent"
+            fab:fab_colorPressed="@color/colourAccentDark"
+            fab:fab_colorRipple="@color/colourEffect"
             fab:fab_size="mini"
             fab:fab_label="@string/lbl_fab_search" />
 
@@ -115,6 +124,9 @@
             android:layout_width="wrap_content"
             android:src="@drawable/ic_star"
             android:visibility="gone"
+            fab:fab_colorNormal="@color/colourAccent"
+            fab:fab_colorPressed="@color/colourAccentDark"
+            fab:fab_colorRipple="@color/colourEffect"
             fab:fab_size="mini"
             fab:fab_label="@string/lbl_fab_view_saved" />
 
@@ -124,6 +136,9 @@
             android:layout_width="wrap_content"
             android:src="@drawable/ic_camera"
             android:visibility="gone"
+            fab:fab_colorNormal="@color/colourAccent"
+            fab:fab_colorPressed="@color/colourAccentDark"
+            fab:fab_colorRipple="@color/colourEffect"
             fab:fab_size="mini"
             fab:fab_label="@string/lbl_fab_scan" />
 

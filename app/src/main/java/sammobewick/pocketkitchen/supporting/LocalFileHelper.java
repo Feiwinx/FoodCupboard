@@ -2,6 +2,8 @@ package sammobewick.pocketkitchen.supporting;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -82,6 +84,11 @@ public class LocalFileHelper {
         ConfirmRunnable("Are you sure you want to delete all locally-stored files?", run);
     }
 
+    public void deleteAllNoDialog() {
+        RunDeleteFiles run = new RunDeleteFiles();
+        run.run();
+    }
+
     public void saveIngredientsRequired() {
         RunSaveIngredients run = new RunSaveIngredients();
         run.run();
@@ -115,6 +122,11 @@ public class LocalFileHelper {
     private class RunDeleteFiles implements Runnable {
         @Override
         public void run() {
+            // Clear our preferences:
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            prefs.edit().clear().apply();
+
+            // Clear the local data:
             PocketKitchenData pkData = PocketKitchenData.getInstance();
             pkData.setIngredientsRequired(null);
             pkData.setInCupboards(null);

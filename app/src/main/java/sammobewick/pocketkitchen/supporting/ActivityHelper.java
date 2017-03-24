@@ -261,6 +261,10 @@ public class ActivityHelper {
             edit_name.setEnabled(ingredient.isCustom());
             edit_qty.setEnabled(true);
 
+            // Display warning if non-custom:
+            if (ingredient.isCustom())
+                dialog.findViewById(R.id.txt_item_kitchen_edit_warning).setVisibility(View.VISIBLE);
+
             // Insert existing text:
             edit_qty_name.setText(ingredient.getUnitShort());
             edit_name.setText(ingredient.getName());
@@ -303,6 +307,7 @@ public class ActivityHelper {
             @Override
             public void onClick(View v) {
                 pkData.removeFromCupboard(ingredient);
+                dialog.dismiss();
             }
         });
 

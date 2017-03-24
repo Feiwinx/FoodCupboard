@@ -15,6 +15,19 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/txt_item_kitchen_edit_warning"
+            android:text="@string/lbl_add_item_warning"
+            android:textStyle="italic"
+            android:textColor="@color/red"
+            android:visibility="gone"
+
+            android:layout_margin="5dp"
+            android:gravity="center"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
             android:id="@+id/txt_item_requirements"
             android:text="@string/lbl_add_item_requirements"
             android:textStyle="italic"
@@ -131,7 +144,6 @@
         <Button
             android:id="@+id/btn_discard_kitchen_itm"
             android:text="@string/action_cancel"
-            android:textColor="@color/white"
             android:hint="@string/hint_btn_cancel"
 
             android:gravity="center"
@@ -148,7 +160,6 @@
             android:id="@+id/btn_remove_kitchen_itm"
             android:contentDescription="@string/hint_btn_delete"
 
-            android:textColor="@color/white"
             android:src="@drawable/ic_delete"
 
             android:gravity="center"
@@ -163,7 +174,6 @@
         <Button
             android:id="@+id/btn_save_kitchen_itm"
             android:text="@string/action_save"
-            android:textColor="@color/white"
             android:hint="@string/hint_btn_save"
 
             android:gravity="center"
