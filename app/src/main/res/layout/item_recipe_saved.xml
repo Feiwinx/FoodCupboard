@@ -16,9 +16,11 @@
         android:contentDescription="@string/hint_btn_delete"
 
         android:src="@drawable/ic_delete"
+        style="@style/primLight_ImgBtn"
 
         android:focusable="false"
         android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -43,6 +45,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
 
+        android:layout_centerVertical="true"
         android:layout_toStartOf="@id/recipe_saved_del_btn"
         android:layout_toEndOf="@id/recipe_saved_img"
         android:layout_margin="5dp"

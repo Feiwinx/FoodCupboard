@@ -1,5 +1,7 @@
 package sammobewick.pocketkitchen.data_objects;
 
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBDocument;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
@@ -8,6 +10,7 @@ import java.util.Objects;
 /**
  * Created by Sam on 01/02/2017.
  */
+@DynamoDBDocument
 public class Ingredient implements Serializable {
     // Matches: Data > GET Get Recipe Information
     // Usage: represents an ingredient from a recipe.
@@ -134,38 +137,47 @@ public class Ingredient implements Serializable {
     //                                      GETTERS:                                              //
     // ****************************************************************************************** //
 
+    @DynamoDBAttribute(attributeName = "amount")
     public float getAmount() {
         return amount;
     }
 
+    @DynamoDBAttribute(attributeName = "id")
     public int getId() {
         return id;
     }
 
+    @DynamoDBAttribute(attributeName = "name")
     public String getName() {
         return name;
     }
 
+    @DynamoDBAttribute(attributeName = "unitShort")
     public String getUnitShort() {
         return unitShort;
     }
 
+    @DynamoDBAttribute(attributeName = "aisle")
     public String getAisle() {
         return aisle;
     }
 
+    @DynamoDBAttribute(attributeName = "image")
     public String getImage() {
         return image;
     }
 
+    @DynamoDBAttribute(attributeName = "originalString")
     public String getOriginalString() {
         return originalString;
     }
 
+    @DynamoDBAttribute(attributeName = "unitLong")
     public String getUnitLong() {
         return unitLong;
     }
 
+    @DynamoDBAttribute(attributeName = "custom")
     public boolean isCustom() {
         return custom;
     }

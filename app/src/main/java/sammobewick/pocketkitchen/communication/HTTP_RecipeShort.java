@@ -7,9 +7,10 @@ import java.util.List;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 
 /**
+ * This class is meant to support the Spoonacular API to collect the response data in an object.
+ * This is used when fetching sets of recipes (searching).
  * Created by Sam on 09/02/2017.
  */
-
 public class HTTP_RecipeShort {
     private List<Recipe_Short> results;
     private String baseUri;

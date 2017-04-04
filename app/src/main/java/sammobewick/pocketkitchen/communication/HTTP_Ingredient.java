@@ -7,6 +7,8 @@ import java.util.List;
 import sammobewick.pocketkitchen.data_objects.Ingredient;
 
 /**
+ * This class is meant to support the Spoonacular API to collect the response data in an object.
+ * Currently I am not fetching ingredients so this is unused.
  * Created by Sam on 06/02/2017.
  */
 public class HTTP_Ingredient {

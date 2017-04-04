@@ -6,6 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar android:id="@+id/save_recipe_progress"
+        style="?android:progressBarStyleLarge"
+        android:progressDrawable="@drawable/progress"
+        android:indeterminateDrawable="@drawable/progress"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <!-- Static Bottom Bar: -->
     <LinearLayout android:id="@+id/ll_add_custom_recipe"
         android:orientation="horizontal"
@@ -26,6 +34,7 @@
             android:layout_height="match_parent" />
 
         <CheckBox android:id="@+id/check_cr_custom_recipe_privacy"
+            android:enabled="false"
             android:text="@string/lbl_check_custom_recipe_privacy"
             android:textStyle="italic"
             android:layoutDirection="rtl"
@@ -71,7 +80,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp" />
 
-            <!-- Recipe Title + Author -->
+            <!-- Recipe Title + Details -->
             <TextView android:id="@+id/lbl_add_custom_recipe_title"
                 android:text="@string/lbl_custom_recipe_section_title"
                 android:background="@color/colourPrimLight"
@@ -89,11 +98,35 @@
                 android:hint="@string/hint_custom_recipe_enter_title"
                 android:textSize="@dimen/def_text_size"
                 android:inputType="textShortMessage|textCapWords|textImeMultiLine"
-                android:maxLines="3"
+                android:lines="2"
+                android:maxLines="2"
 
                 android:layout_below="@id/lbl_add_custom_recipe_title"
                 android:layout_toEndOf="@id/img_custom_recipe"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText android:id="@+id/edit_add_custom_recipe_servings"
+                android:hint="@string/hint_custom_recipe_enter_servings"
+                android:textSize="@dimen/def_text_size"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+
+                android:layout_marginEnd="10dp"
+                android:layout_below="@id/edit_add_custom_recipe_title"
+                android:layout_toEndOf="@id/img_custom_recipe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <EditText android:id="@+id/edit_add_custom_recipe_minutes"
+                android:hint="@string/hint_custom_recipe_enter_minutes"
+                android:textSize="@dimen/def_text_size"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+
+                android:layout_below="@id/edit_add_custom_recipe_title"
+                android:layout_toEndOf="@id/edit_add_custom_recipe_servings"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <!-- Recipe Ingredients List -->
@@ -212,12 +245,6 @@
                     android:layout_columnWeight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
-
-                <CheckBox android:id="@+id/check_cr_diet_pescatarian"
-                    android:text="@string/pref_dietary_pescetarian"
-                    android:layout_columnWeight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
 
                 <CheckBox android:id="@+id/check_cr_diet_eggs"
                     android:text="@string/pref_dietary_eggs"

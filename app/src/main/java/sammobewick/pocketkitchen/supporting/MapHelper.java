@@ -17,7 +17,7 @@ import sammobewick.pocketkitchen.data_objects.Ingredient;
  * Created by Sam on 25/02/2017.
  */
 
-public class MapHelper {
+public abstract class MapHelper {
 
     public static List<Ingredient> mergeIngredients(Map<Integer, List<Ingredient>> map) {
         List<Ingredient> mergedList = new ArrayList<>();

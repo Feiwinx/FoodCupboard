@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/sv_adv_search"
-    tools:context="sammobewick.pocketkitchen.core.AdvancedSearchActivity">
+    tools:context="sammobewick.pocketkitchen.activities_fragments.AdvancedSearchActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

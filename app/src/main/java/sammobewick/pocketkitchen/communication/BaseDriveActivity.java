@@ -13,6 +13,10 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
 
+/**
+ * Base Drive Activity
+ * We use this to build the load/save drive activities, as the code is shared.
+ */
 public abstract class BaseDriveActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {

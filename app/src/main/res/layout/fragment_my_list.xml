@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="sammobewick.pocketkitchen.core.MyListFragment">
+    tools:context="sammobewick.pocketkitchen.activities_fragments.MyListFragment">
 
     <SearchView
         android:id="@+id/shopping_search"

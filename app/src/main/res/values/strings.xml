@@ -50,6 +50,7 @@
     <string name="lbl_fab_add_item">Add Item</string>
     <string name="lbl_fab_add_recipe">Add Recipe</string>
     <string name="lbl_fab_view_saved">View Saved Recipes</string>
+    <string name="lbl_fab_view_my_recipes">View My Recipes</string>
 
     <!-- Dialogs -->
     <string name="lbl_dialog_edit_item">Edit List Item</string>
@@ -68,12 +69,16 @@
     <string name="lbl_custom_recipe_section_ingredients">Ingredients:</string>
     <string name="lbl_custom_recipe_section_instructions">Instructions:</string>
     <string name="lbl_custom_recipe_section_dietary">Dietary Information:</string>
-    <string name="lbl_custom_recipe_section_title">Recipe Title:</string>
+    <string name="lbl_custom_recipe_section_title">Recipe Details:</string>
 
     <string name="hint_custom_recipe_enter_title">Enter your recipe title here…</string>
+    <string name="hint_custom_recipe_enter_servings"># of Servings…</string>
+    <string name="hint_custom_recipe_enter_minutes">Time Required…</string>
     <string name="hint_item_ingredient_name">name</string>
     <string name="hint_item_ingredient_qty">amount</string>
     <string name="hint_item_ingredient_qty_name">unit</string>
+
+    <string name="custom_recipe_source_url">Created in Pocket Kitchen!</string>
 
     <!-- Advanced Search -->
     <string name="lbl_adv_search_terms">Recipe Search:</string>
@@ -173,7 +178,7 @@
     <string name="test_shopping_measure">items</string>
 
     <string name="wifi_warning">Warning: No active network found. Go to Settings to enable one!</string>
-    <string name="wifi_warning_short">Oops! No network connection found!</string>
+    <string name="wifi_warning_short">Warning! No network connection found!</string>
 
     <!-- Actions -->
     <string name="action_settings">Preferences</string>

@@ -145,6 +145,7 @@
             android:id="@+id/btn_discard_kitchen_itm"
             android:text="@string/action_cancel"
             android:hint="@string/hint_btn_cancel"
+            style="@style/primLight_Btn"
 
             android:gravity="center"
 
@@ -161,6 +162,7 @@
             android:contentDescription="@string/hint_btn_delete"
 
             android:src="@drawable/ic_delete"
+            style="@style/primLight_ImgBtn"
 
             android:gravity="center"
             android:layout_weight="0.5"
@@ -175,6 +177,7 @@
             android:id="@+id/btn_save_kitchen_itm"
             android:text="@string/action_save"
             android:hint="@string/hint_btn_save"
+            style="@style/primLight_Btn"
 
             android:gravity="center"
 

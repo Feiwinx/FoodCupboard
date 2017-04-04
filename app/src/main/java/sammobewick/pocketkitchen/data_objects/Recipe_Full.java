@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Here we implement Serializable so we can pass this object between activities!
+ * It also allows for it to be written to file.
  * Created by Sam on 01/02/2017.
  */
 @DynamoDBTable(tableName = "PK_Recipes_Full")
@@ -66,7 +67,6 @@ public class Recipe_Full implements Serializable {
         this.veryPopular = veryPopular;
     }
 
-
     // ****************************************************************************************** //
     //                                      JSON CONVERSIONS:                                     //
     // ****************************************************************************************** //
@@ -95,6 +95,8 @@ public class Recipe_Full implements Serializable {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
+
+
 
     // ****************************************************************************************** //
     //                                      GETTERS:                                              //

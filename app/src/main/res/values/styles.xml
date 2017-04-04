@@ -35,6 +35,11 @@
         <item name="backgroundTint">@color/colourPrimLight</item>
     </style>
 
+    <style name="primLight_Btn" parent="Base.Widget.AppCompat.Button">
+        <item name="backgroundTint">@color/colourPrimLight</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <style name="transparent_ImgBtn" parent="Base.Widget.AppCompat.ImageButton">
         <item name="backgroundTint">@color/transparent</item>
     </style>

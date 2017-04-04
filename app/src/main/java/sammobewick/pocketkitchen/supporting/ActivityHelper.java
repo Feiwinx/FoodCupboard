@@ -11,6 +11,7 @@ import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +32,7 @@ import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
  * Created by Sam on 25/02/2017.
  */
 public class ActivityHelper {
+    private static final String TAG = "ActivityHelper";
 
     /**
      * Helper method to establish if the device has a data connection (of any sort).
@@ -74,16 +76,28 @@ public class ActivityHelper {
      * @param context Context - required to display the dialog.
      * @param errorMessage String - error message to display [multi-purpose]
      */
-    public static void displayErrorDialog(final Context context, String errorMessage) {
+    public static void displayUnknownError(final Context context, final String errorMessage) {
         new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.myDialog))
                 .setTitle("Oops! Something went wrong:")
                 .setMessage("Error: " + errorMessage + "\nYou may want to try again or report the error!")
                 .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // TODO: add any feature required here.
-                        // TODO: In an ideal world, we'd log the error to a central server or email.
-                        // TODO: So we'd set the buttons up as DONT SEND / SEND.
+                        Log.e(TAG, "Unknown Error: " + errorMessage);
+                        // TODO: Possibly send this error to Amazon error table for fixing?
+                    }
+                })
+                .show();
+    }
+
+    public static void displayKnownError(final Context context, final String errorMessage) {
+        new AlertDialog.Builder(new android.view.ContextThemeWrapper(context, R.style.myDialog))
+                .setTitle("Oops! There's a problem:")
+                .setMessage(errorMessage)
+                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i(TAG, "Known Error: " + errorMessage);
                     }
                 })
                 .show();

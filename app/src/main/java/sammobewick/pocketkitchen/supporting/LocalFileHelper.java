@@ -22,15 +22,11 @@ import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 
 /**
- * TODO: May want to add some sort of error handling for the user's end?
+ * TODO: May want to add some sort of error handling for the user's end - i.e. in the runnables.
  * Created by Sam on 07/03/2017.
  */
 public class LocalFileHelper {
-    private static final String TAG             = "LocalFileHelper";
-    private static final String IN_CUPBOARDS    = "inCupboards.pk";
-    private static final String RECIPES         = "recipesToCook.pk";
-    private static final String INGREDIENTS     = "ingredientsRequired.pk";
-
+    private static final String TAG = "LocalFileHelper";
     private final Context context;
 
     public LocalFileHelper(Context context) {
@@ -70,12 +66,14 @@ public class LocalFileHelper {
         this.saveInCupboards();
         this.saveIngredientsRequired();
         this.saveRecipesToCook();
+        this.saveMyRecipes();
     }
 
     public void loadAll() {
         this.loadInCupboards();
         this.loadIngredientsRequired();
         this.loadRecipesToCook();
+        this.loadMyRecipes();
     }
 
     // NOTE: So far as DRIVE data does not exist, this is only local!
@@ -104,6 +102,11 @@ public class LocalFileHelper {
         run.run();
     }
 
+    public void saveMyRecipes() {
+        RunSaveMyRecipes run = new RunSaveMyRecipes();
+        run.run();
+    }
+
     public void loadIngredientsRequired() {
         RunLoadIngredients run = new RunLoadIngredients();
         run.run();
@@ -116,6 +119,11 @@ public class LocalFileHelper {
 
     public void loadInCupboards() {
         RunLoadInCupboards run = new RunLoadInCupboards();
+        run.run();
+    }
+
+    public void loadMyRecipes() {
+        RunLoadMyRecipes run = new RunLoadMyRecipes();
         run.run();
     }
 
@@ -132,9 +140,10 @@ public class LocalFileHelper {
             pkData.setInCupboards(null);
             pkData.setRecipesToCook(null);
 
-            context.deleteFile(INGREDIENTS);
-            context.deleteFile(IN_CUPBOARDS);
-            context.deleteFile(RECIPES);
+            context.deleteFile(Constants.INGREDIENTS);
+            context.deleteFile(Constants.IN_CUPBOARDS);
+            context.deleteFile(Constants.RECIPES);
+            context.deleteFile(Constants.MY_RECIPES);
         }
     }
 
@@ -147,7 +156,7 @@ public class LocalFileHelper {
             data = pkData.getRecipe_ingredients();
 
             try {
-                FileOutputStream fos = context.openFileOutput(INGREDIENTS, Context.MODE_PRIVATE);
+                FileOutputStream fos = context.openFileOutput(Constants.INGREDIENTS, Context.MODE_PRIVATE);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(data);
                 oos.close();
@@ -168,7 +177,7 @@ public class LocalFileHelper {
             data = pkData.getRecipesToCook();
 
             try {
-                FileOutputStream fos = context.openFileOutput(RECIPES, Context.MODE_PRIVATE);
+                FileOutputStream fos = context.openFileOutput(Constants.RECIPES, Context.MODE_PRIVATE);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(data);
                 oos.close();
@@ -189,7 +198,28 @@ public class LocalFileHelper {
             data = pkData.getInCupboards();
 
             try {
-                FileOutputStream fos = context.openFileOutput(IN_CUPBOARDS, Context.MODE_PRIVATE);
+                FileOutputStream fos = context.openFileOutput(Constants.IN_CUPBOARDS, Context.MODE_PRIVATE);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(data);
+                oos.close();
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e(TAG, e.getLocalizedMessage());
+            }
+        }
+    }
+
+    private class RunSaveMyRecipes implements Runnable {
+        @Override
+        public void run() {
+            List<Recipe_Short> data;
+
+            PocketKitchenData pkData = PocketKitchenData.getInstance();
+            data = pkData.getMyCustomRecipes();
+
+            try {
+                FileOutputStream fos = context.openFileOutput(Constants.MY_RECIPES, Context.MODE_PRIVATE);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(data);
                 oos.close();
@@ -207,7 +237,7 @@ public class LocalFileHelper {
             PocketKitchenData pkData = PocketKitchenData.getInstance();
 
             try {
-                FileInputStream fis = context.openFileInput(IN_CUPBOARDS);
+                FileInputStream fis = context.openFileInput(Constants.IN_CUPBOARDS);
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 List<Ingredient> list = (List<Ingredient>) ois.readObject();
 
@@ -227,7 +257,7 @@ public class LocalFileHelper {
             PocketKitchenData pkData = PocketKitchenData.getInstance();
 
             try {
-                FileInputStream fis = context.openFileInput(RECIPES);
+                FileInputStream fis = context.openFileInput(Constants.RECIPES);
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 List<Recipe_Short> list = (List<Recipe_Short>) ois.readObject();
 
@@ -247,12 +277,32 @@ public class LocalFileHelper {
             PocketKitchenData pkData = PocketKitchenData.getInstance();
 
             try {
-                FileInputStream fis = context.openFileInput(INGREDIENTS);
+                FileInputStream fis = context.openFileInput(Constants.INGREDIENTS);
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 Map<Integer, List<Ingredient>> map = (Map<Integer, List<Ingredient>>) ois.readObject();
 
                 if (map != null)
                     pkData.setIngredientsRequired(map);
+
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+                Log.e(TAG, e.getLocalizedMessage());
+            }
+        }
+    }
+
+    private class RunLoadMyRecipes implements Runnable {
+        @Override
+        public void run() {
+            PocketKitchenData pkData = PocketKitchenData.getInstance();
+
+            try {
+                FileInputStream fis = context.openFileInput(Constants.MY_RECIPES);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                List<Recipe_Short> list = (List<Recipe_Short>) ois.readObject();
+
+                if (list != null)
+                    pkData.setMyCustomRecipes(list);
 
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();

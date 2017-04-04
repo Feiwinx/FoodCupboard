@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="sammobewick.pocketkitchen.core.TabbedActivity">
+    tools:context="sammobewick.pocketkitchen.activities_fragments.TabbedActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -129,6 +129,18 @@
             fab:fab_colorRipple="@color/colourEffect"
             fab:fab_size="mini"
             fab:fab_label="@string/lbl_fab_view_saved" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_view_my_recipes"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_my_recipes"
+            android:visibility="gone"
+            fab:fab_colorNormal="@color/colourAccent"
+            fab:fab_colorPressed="@color/colourAccentDark"
+            fab:fab_colorRipple="@color/colourEffect"
+            fab:fab_size="mini"
+            fab:fab_label="@string/lbl_fab_view_my_recipes" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_scan_receipts"

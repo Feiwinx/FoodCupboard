@@ -28,6 +28,8 @@ public final class PocketKitchenData {
     // Saved list of ingredients in their cupboards.
     private List<Ingredient> inCupboards;
 
+    private List<Recipe_Short> myCustomRecipes;
+
     // This shouldn't be stored to file, but is a runtime calculated list of things they need.
     private List<Ingredient> toBuy;
 
@@ -116,6 +118,10 @@ public final class PocketKitchenData {
         return inCupboards;
     }
 
+    public List<Recipe_Short> getMyCustomRecipes() {
+        return myCustomRecipes;
+    }
+
     public List<Ingredient> getToBuy() {
         return toBuy;
     }
@@ -123,6 +129,8 @@ public final class PocketKitchenData {
     public void updateToBuy() {
         this.toBuy = MapHelper.mergeIngredients(ingredientsRequired);
     }
+
+    // SETTERS - for loading data into the application:
 
     public void setRecipesToCook(List<Recipe_Short> recipesToCook) {
         this.recipesToCook = recipesToCook;
@@ -134,6 +142,10 @@ public final class PocketKitchenData {
 
     public void setInCupboards(List<Ingredient> inCupboards) {
         this.inCupboards = inCupboards;
+    }
+
+    public void setMyCustomRecipes(List<Recipe_Short> myCustomRecipes) {
+        this.myCustomRecipes = myCustomRecipes;
     }
 
     // ****************************************************************************************** //
@@ -263,9 +275,8 @@ public final class PocketKitchenData {
     // ****************************************************************************************** //
 
     public boolean addCustomIngredient(Ingredient item) {
-        if (ingredientsRequired == null) {
+        if (ingredientsRequired == null)
             ingredientsRequired = new HashMap<>();
-        }
 
         List<Ingredient> customSet;
 
@@ -297,12 +308,9 @@ public final class PocketKitchenData {
                 ingredientsRequired.put(0, customSet);
                 updateListeners();
                 return true;
-            } else {
-                return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     public boolean updateCustomIngredient(Ingredient old, Ingredient item) {
@@ -320,12 +328,9 @@ public final class PocketKitchenData {
                 ingredientsRequired.put(0, customSet);
                 updateListeners();
                 return true;
-            } else {
-                return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     // ****************************************************************************************** //
@@ -333,9 +338,8 @@ public final class PocketKitchenData {
     // ****************************************************************************************** //
 
     public boolean addToCupboard(Ingredient item) {
-        if (inCupboards == null) {
+        if (inCupboards == null)
             inCupboards = new ArrayList<>();
-        }
 
         inCupboards.add(item);
         updateListeners();
@@ -349,12 +353,9 @@ public final class PocketKitchenData {
                 inCupboards.remove(item);
                 updateListeners();
                 return !inCupboards.contains(item);
-            } else {
-                return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     public boolean updateInCupbaord(Ingredient existing, Ingredient replacement) {
@@ -363,11 +364,45 @@ public final class PocketKitchenData {
                 inCupboards.set(inCupboards.indexOf(existing), replacement);
                 updateListeners();
                 return inCupboards.contains(replacement);
-            } else {
-                return false;
             }
-        } else {
-            return false;
         }
+        return false;
+    }
+
+    // ****************************************************************************************** //
+    //                                      MY CUSTOM RECIPES:                                    //
+    // ****************************************************************************************** //
+
+    public boolean addToMyRecipes(Recipe_Short item) {
+        if (myCustomRecipes == null)
+            myCustomRecipes = new ArrayList<>();
+
+        myCustomRecipes.add(item);
+        updateListeners();
+
+        return myCustomRecipes.contains(item);
+    }
+
+    public boolean removeFromMyRecipes(Recipe_Short item) {
+        this.removeRecipeFromCookList(item);
+        if (myCustomRecipes != null) {
+            if (myCustomRecipes.contains(item)) {
+                myCustomRecipes.remove(item);
+                updateListeners();
+                return !myCustomRecipes.contains(item);
+            }
+        }
+        return false;
+    }
+
+    public boolean updateInMyRecipes(Recipe_Short existing, Recipe_Short replacement) {
+        if (myCustomRecipes != null) {
+            if (myCustomRecipes.contains(existing)) {
+                myCustomRecipes.set(myCustomRecipes.indexOf(existing), replacement);
+                updateListeners();
+                return myCustomRecipes.contains(replacement);
+            }
+        }
+        return false;
     }
 }

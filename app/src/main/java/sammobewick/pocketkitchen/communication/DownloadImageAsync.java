@@ -7,7 +7,6 @@ import android.widget.ImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -17,7 +16,7 @@ import java.net.URL;
  * Created by Sam on 09/02/2017.
  */
 public final class DownloadImageAsync extends AsyncTask<String, Void, Bitmap> {
-    ImageView bitmapImg;
+    private ImageView   bitmapImg;
 
     public DownloadImageAsync(ImageView bitmapImg) {
         this.bitmapImg = bitmapImg;
@@ -35,6 +34,7 @@ public final class DownloadImageAsync extends AsyncTask<String, Void, Bitmap> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return img;
     }
 
