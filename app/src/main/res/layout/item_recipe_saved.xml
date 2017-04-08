@@ -25,6 +25,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <!-- Edit Recipe -->
+    <ImageButton
+        android:id="@+id/recipe_saved_edit_btn"
+        android:contentDescription="@string/hint_btn_edit"
+
+        android:src="@drawable/ic_edit"
+        style="@style/primLight_ImgBtn"
+
+        android:focusable="false"
+        android:layout_toStartOf="@id/recipe_saved_del_btn"
+        android:layout_centerVertical="true"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <!-- Recipe Image -->
     <ImageView
         android:id="@+id/recipe_saved_img"
@@ -46,7 +61,7 @@
         android:textStyle="bold"
 
         android:layout_centerVertical="true"
-        android:layout_toStartOf="@id/recipe_saved_del_btn"
+        android:layout_toStartOf="@id/recipe_saved_edit_btn"
         android:layout_toEndOf="@id/recipe_saved_img"
         android:layout_margin="5dp"
         android:layout_width="fill_parent"

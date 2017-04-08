@@ -1,3 +1,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <Preference android:icon="@drawable/ic_help"
+        android:title="@string/pref_tutorial_title"
+        android:key="@string/pref_tutorial_title" />
+
+    <Preference android:icon="@drawable/ic_info_outline_holo"
+        android:title="@string/pref_about_title"
+        android:key="@string/pref_about_title" />
+
 </PreferenceScreen>

@@ -1,5 +1,6 @@
 package sammobewick.pocketkitchen.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,52 +10,57 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.Objects;
 
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.aws_intents.DownloadAWSImageAsync;
-import sammobewick.pocketkitchen.communication.DownloadImageAsync;
 import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
-import sammobewick.pocketkitchen.supporting.Constants;
 import sammobewick.pocketkitchen.supporting.DataListener;
 
 /**
- * Created by Sam on 12/03/2017.
+ * Created by Sam on 04/04/2017.
  */
-public class SavedRecipesAdapter_C extends BaseAdapter implements DataListener {
+
+public class CustomRecipeAdapter extends BaseAdapter implements DataListener {
     //********************************************************************************************//
     //  VARIABLES / HANDLERS FOR THIS ACTIVITY:                                                   //
     //********************************************************************************************//
+    private AdapterParent       adapterParent;
     private List<Recipe_Short>  data;
-    private String              urlStart;
 
     @Override
     public void dataUpdate() {
         PocketKitchenData pkData = PocketKitchenData.getInstance(this);
-        data = pkData.getRecipesToCook();
+        data = pkData.getMyCustomRecipes();
         this.notifyDataSetChanged();
     }
 
-    // Here we use this inner class to hold our views for this item:
+    public CustomRecipeAdapter(Context context) {
+
+        if (context instanceof AdapterParent) {
+            adapterParent = (AdapterParent) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+
+        // Fetch data:
+        dataUpdate();
+    }
+
     private class ViewHolder {
         ImageView   recipeImg;
         TextView    recipeTitle;
         ImageButton removeBtn;
-    }
-
-    public SavedRecipesAdapter_C(String urlStart) {
-        this.urlStart = urlStart;
-        this.dataUpdate();
+        ImageButton editBtn;
     }
 
     @Override
     public int getCount() {
-        if (data != null) {
-            return data.size();
-        } else {
+        if (data == null)
             return 0;
-        }
+
+        return data.size();
     }
 
     @Override
@@ -68,7 +74,7 @@ public class SavedRecipesAdapter_C extends BaseAdapter implements DataListener {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View v = convertView;
         ViewHolder vh = new ViewHolder();
 
@@ -80,39 +86,47 @@ public class SavedRecipesAdapter_C extends BaseAdapter implements DataListener {
             vh.recipeImg    = (ImageView)   v.findViewById(R.id.recipe_saved_img);
             vh.recipeTitle  = (TextView)    v.findViewById(R.id.recipe_saved_title);
             vh.removeBtn    = (ImageButton) v.findViewById(R.id.recipe_saved_del_btn);
+            vh.editBtn      = (ImageButton) v.findViewById(R.id.recipe_saved_edit_btn);
+
+            // Show the extra button (reusable view):
+            v.findViewById(R.id.recipe_saved_edit_btn).setVisibility(View.VISIBLE);
+
+            // This listener is only needed to be called on creation:
+            vh.editBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    adapterParent.OnEditButtonPressed(position);
+                }
+            });
 
             // Save the holder as a tag on the view:
             v.setTag(vh);
         } else {
-            // If not null, then we have a tag already!
             vh = (ViewHolder) v.getTag();
         }
 
+        // Get ViewHolder details:
         final Recipe_Short recipe = getItem(position);
 
         vh.recipeTitle.setText(recipe.getTitle());
 
-        // Load the images using aSync task:
-        String url = recipe.getImage();
-        if (!Objects.equals(url, Constants.INTENT_CUSTOM_ID)) {
-            // LOAD IMAGE FROM URL:
-            url = urlStart + recipe.getImage();
-            new DownloadImageAsync(vh.recipeImg).execute(url);
-        } else {
-            // LOAD IMAGE FROM AWS-S3:
-            new DownloadAWSImageAsync(v.getContext(), vh.recipeImg)
-                    .execute(String.valueOf(recipe.getId()));
-        }
+        String url = String.valueOf(recipe.getId());
+        new DownloadAWSImageAsync((Context)adapterParent, vh.recipeImg).execute(url);
 
-        // Listener for the button:
+        // Removal listener requires recipe information:
         vh.removeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PocketKitchenData pkData = PocketKitchenData.getInstance();
-                pkData.removeRecipeFromCookList(recipe);
+                pkData.removeFromMyRecipes(recipe);
             }
         });
 
+        // Return our view:
         return v;
+    }
+
+    public interface AdapterParent {
+        void OnEditButtonPressed(int position);
     }
 }

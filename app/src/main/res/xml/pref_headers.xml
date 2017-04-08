@@ -4,17 +4,17 @@
 
     <header
         android:fragment="sammobewick.pocketkitchen.activities_fragments.MySettingsActivity$MyPocketKitchenPreferences"
-        android:icon="@drawable/ic_face_black_24dp"
+        android:icon="@drawable/ic_pocket_kitchen_logo"
         android:title="@string/pref_header_my_kitchen" />
 
     <header
         android:fragment="sammobewick.pocketkitchen.activities_fragments.MySettingsActivity$MyDataPreferences"
-        android:icon="@drawable/ic_info_black_24dp"
+        android:icon="@drawable/ic_my_files"
         android:title="@string/pref_header_files" />
 
     <header
         android:fragment="sammobewick.pocketkitchen.activities_fragments.MySettingsActivity$MyDietaryPreferences"
-        android:icon="@drawable/ic_sync_black_24dp"
+        android:icon="@drawable/ic_preferences"
         android:title="@string/pref_header_dietary_preferences" />
 
 </preference-headers>

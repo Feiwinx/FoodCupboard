@@ -17,12 +17,13 @@
     <!-- Static Bottom Bar: -->
     <LinearLayout android:id="@+id/ll_add_custom_recipe"
         android:orientation="horizontal"
-        android:background="@color/colourSecondDark"
+        android:background="@color/colourAccent"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button android:id="@+id/btn_add_custom_recipe"
+            style="@style/primLight_Btn"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +37,7 @@
         <CheckBox android:id="@+id/check_cr_custom_recipe_privacy"
             android:enabled="false"
             android:text="@string/lbl_check_custom_recipe_privacy"
-            android:textStyle="italic"
+            android:textStyle="italic|bold"
             android:layoutDirection="rtl"
             android:checked="false"
             android:layout_width="wrap_content"

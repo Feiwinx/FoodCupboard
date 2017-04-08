@@ -1,5 +1,7 @@
 package sammobewick.pocketkitchen.data_objects;
 
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +16,8 @@ import sammobewick.pocketkitchen.supporting.MapHelper;
 
 public final class PocketKitchenData {
 
-    private static PocketKitchenData instance;
+    private static PocketKitchenData        instance;
+    private static ArrayList<DataListener>  listeners = new ArrayList<>();
 
     // Temporary list of last search results, prevents results being destroyed. Not saved to file!
     private List<Recipe_Short> recipesDisplayed;
@@ -25,6 +28,8 @@ public final class PocketKitchenData {
     // Saved list of ingredients from the recipes they want to cook AND custom ingredients.
     private Map<Integer, List<Ingredient>> ingredientsRequired;
 
+    private static Map<String, Bitmap> cachedDrawables;
+
     // Saved list of ingredients in their cupboards.
     private List<Ingredient> inCupboards;
 
@@ -32,8 +37,6 @@ public final class PocketKitchenData {
 
     // This shouldn't be stored to file, but is a runtime calculated list of things they need.
     private List<Ingredient> toBuy;
-
-    private static ArrayList<DataListener> listeners = new ArrayList<>();
 
     // ****************************************************************************************** //
     //                                      CONSTRUCTOR + INSTANCE:                               //
@@ -84,7 +87,7 @@ public final class PocketKitchenData {
         return false;
     }
 
-    public void updateListeners() {
+    private void updateListeners() {
         updateToBuy();
         if (!listeners.isEmpty()) {
             for (int d = 0; d < listeners.size(); d++) {
@@ -99,11 +102,6 @@ public final class PocketKitchenData {
 
     public List<Recipe_Short> getRecipesDisplayed() {
         return recipesDisplayed;
-    }
-
-    public void setRecipesDisplayed(List<Recipe_Short> recipesDisplayed) {
-        this.recipesDisplayed = recipesDisplayed;
-        updateListeners();
     }
 
     public Map<Integer, List<Ingredient>> getRecipe_ingredients() {
@@ -149,8 +147,48 @@ public final class PocketKitchenData {
     }
 
     // ****************************************************************************************** //
+    //                                     RECIPES TO DISPLAY:                                    //
+    // ****************************************************************************************** //
+
+    public void addRecipesDisplayed(List<Recipe_Short> recipes) {
+        if (recipesDisplayed == null)
+            recipesDisplayed = new ArrayList<>();
+
+        recipesDisplayed.addAll(recipes);
+        updateListeners();
+    }
+
+    public void setRecipesDisplayed(List<Recipe_Short> recipes) {
+        recipesDisplayed = recipes;
+        updateListeners();
+    }
+
+    // ****************************************************************************************** //
     //                                      RECIPES-TO-COOK:                                      //
     // ****************************************************************************************** //
+
+    public boolean addOnlyRecipe(Recipe_Short recipe) {
+        if (recipesToCook == null)
+            recipesToCook = new ArrayList<>();
+
+        if (!recipesToCook.contains(recipe))
+            recipesToCook.add(recipe);
+
+        updateListeners();
+
+        return (recipesToCook.contains(recipe));
+    }
+
+    public boolean removeOnlyRecipe(Recipe_Short recipe) {
+        if (recipesToCook != null) {
+            if (recipesToCook.contains(recipe)) {
+                recipesToCook.remove(recipe);
+                updateListeners();
+                return !recipesToCook.contains(recipe);
+            }
+        }
+        return false;
+    }
 
     public boolean addRecipeToCookList(Recipe_Short recipe, List<Ingredient> ingredient_set) {
         int id = recipe.getId();
@@ -162,8 +200,11 @@ public final class PocketKitchenData {
             recipesToCook = new ArrayList<>();
         }
 
-        ingredientsRequired.put(id, ingredient_set);
-        recipesToCook.add(recipe);
+        if (!ingredientsRequired.containsKey(id))
+            ingredientsRequired.put(id, ingredient_set);
+
+        if (!recipesToCook.contains(recipe))
+            recipesToCook.add(recipe);
 
         updateListeners();
 
@@ -218,6 +259,10 @@ public final class PocketKitchenData {
 
     public boolean checkForSetOfIngredients(Recipe_Short recipe) {
         return ingredientsRequired != null & recipesToCook != null && (ingredientsRequired.containsKey(recipe.getId()) & recipesToCook.contains(recipe));
+    }
+
+    public boolean checkForSavedRecipe(Recipe_Short recipe) {
+        return recipesToCook != null && (recipesToCook.contains(recipe));
     }
 
     // ****************************************************************************************** //
@@ -404,5 +449,34 @@ public final class PocketKitchenData {
             }
         }
         return false;
+    }
+
+    // ****************************************************************************************** //
+    //                                   CACHED DRAWABLES:                                        //
+    // ****************************************************************************************** //
+
+    private static boolean checkForDrawable(String url) {
+        return cachedDrawables != null && cachedDrawables.containsKey(url);
+
+    }
+
+    public static Bitmap getDrawable(String url) {
+        if (checkForDrawable(url)) {
+            return cachedDrawables.get(url);
+        }
+        return null;
+    }
+
+    public static void putDrawable(String url, Bitmap drawable) {
+        if (cachedDrawables == null)
+            cachedDrawables = new HashMap<>();
+
+        if (!checkForDrawable(url))
+            cachedDrawables.put(url, drawable);
+    }
+
+    public static void clearDrawables() {
+        if (cachedDrawables != null)
+            cachedDrawables.clear();
     }
 }

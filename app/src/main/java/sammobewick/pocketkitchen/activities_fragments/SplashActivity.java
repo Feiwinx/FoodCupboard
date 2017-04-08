@@ -13,9 +13,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, LoginActivity.class);
-
         // Launch the login activity + exit this one:
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }

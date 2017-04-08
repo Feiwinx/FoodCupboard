@@ -1,36 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="3dip"
     android:id="@+id/recipe_full_content"
     android:focusable="false"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Button Layout -->
-    <LinearLayout
-        android:id="@+id/ll_recipe_f"
+    <!-- Static Bottom Bar: -->
+    <LinearLayout android:id="@+id/ll_view_recipe_bar"
+        android:orientation="horizontal"
+        android:background="@color/colourAccent"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- This should handle both inputs in ViewSingleRecipeActivity: -->
         <Button
             android:id="@+id/btn_do_recipe_f"
+            android:drawableLeft="@drawable/ic_star"
 
             android:text="@string/lbl_btn_add_recipe"
-            android:hint="@string/hint_btn_add_recipe"
-            style="@style/Widget.AppCompat.Button.Colored"
+            android:contentDescription="@string/hint_btn_add_recipe"
+            style="@style/primLight_Btn"
 
             android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
 
-            android:layout_gravity="center_horizontal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btn_do_recipe_ing"
+            android:drawableLeft="@drawable/ic_basket"
+
+            android:text="@string/lbl_btn_add_recipe_ings"
+            android:contentDescription="@string/hint_btn_add_recipe_ings"
+
+            style="@style/primLight_Btn"
+
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
     <!-- Scrollable Recipe Layout -->
     <ScrollView
-        android:layout_above="@id/ll_recipe_f"
+        android:layout_above="@id/ll_view_recipe_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

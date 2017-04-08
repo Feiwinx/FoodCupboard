@@ -23,9 +23,9 @@ import java.text.ParseException;
 import java.util.List;
 
 import sammobewick.pocketkitchen.R;
+import sammobewick.pocketkitchen.adapters.SearchedRecipesAdapter;
 import sammobewick.pocketkitchen.communication.HTTP_RecipeShort;
 import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
-import sammobewick.pocketkitchen.adapters.SearchedRecipesAdapter;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
 
@@ -37,11 +37,12 @@ import sammobewick.pocketkitchen.supporting.ActivityHelper;
  * Use the {@link SearchRecipesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchRecipesFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class SearchRecipesFragment extends Fragment implements SearchView.OnQueryTextListener, AbsListView.OnScrollListener {
     //********************************************************************************************//
     //  VARIABLES / HANDLERS FOR THIS FRAGMENT:                                                   //
     //********************************************************************************************//
     private static final String TAG = "SearchRecipesFragment";
+    private static final int    RESULT_COUNT = 20;
 
     private AbsListView             mListView;
     private SearchedRecipesAdapter  mAdapter;
@@ -50,6 +51,8 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
     private APIController           controller;
     private String                  intolerances;
     private String                  dietQuery;
+    private String                  lastQuery;
+    private int                     offsetCount;
 
     private OnFragmentInteractionListener mListener;
 
@@ -73,10 +76,10 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Fetch our arguments:
+        // Prepare our arguments:
         String urlStart = "";
-        intolerances = "";
-        dietQuery = "";
+        intolerances    = "";
+        dietQuery       = "";
 
         if (getArguments() != null) {
             Bundle args = getArguments();
@@ -158,14 +161,16 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
         // Prepare our ListView:
         mListView = (AbsListView) view.findViewById(R.id.recipe_list);
         mListView.setAdapter(mAdapter);
+        mListView.setOnScrollListener(this);
         mListView.setEmptyView(view.findViewById(R.id.empty_recipe));
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                             @Override
-                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                 setProgressBar(true);
-                                                 mListener.onRecipeFragmentInteraction(mAdapter.getItem(position));
-                                             }
-                                         }
+        mListView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        setProgressBar(true);
+                        mListener.onRecipeFragmentInteraction(mAdapter.getItem(position));
+                    }
+                }
         );
 
         // Prepare our SearchView:
@@ -217,19 +222,31 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        mAdapter.setData(null);
+        lastQuery = query;
+        return runSearch(false);
+    }
+
+    public boolean runSearch(final boolean nextSet) {
+        if (nextSet) {
+            offsetCount += RESULT_COUNT;
+        } else {
+            PocketKitchenData.clearDrawables();
+            mAdapter.setData(null);
+            offsetCount = 0;
+        }
+
         setProgressBar(true);
         // Make the API call using the submitted data:
         controller.searchRecipesAsync(
-                query,  // query                - required. The natural language recipe query.
-                "",   // cuisine              - optional.
-                dietQuery,   // diet                 - optional.
-                "",   // excludeIngredients   - optional.
-                intolerances,   // intolerance         - optional.
-                false,   // limitLicense         - optional.
-                20,   // number               - optional, but default to 20 for now
-                0,   // offset               - optional, returns number of results from result 0.
-                "",   // type                 - optional.
+                lastQuery,  // query            - required. The natural language recipe query.
+                "",   // cuisine                - optional.
+                dietQuery,   // diet            - optional.
+                "",   // excludeIngredients     - optional.
+                intolerances,   // intolerance  - optional.
+                false,   // limitLicense        - optional.
+                RESULT_COUNT,   // number       - optional. set to 10 to reduce the load on API, but any lower would mean constant loading.
+                offsetCount,   // offset        - optional, returns number of results from result 0.
+                "",   // type                   - optional.
                 null,   // queryParameters      - optional.
                 new APICallBack<DynamicResponse>() {
                     @Override
@@ -244,12 +261,11 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
 
                             // Load data in handler:
                             PocketKitchenData pkData = PocketKitchenData.getInstance();
-                            pkData.setRecipesDisplayed(data);
-
-                            /* [OLD] Before listeners were used, this was.
-                            // Pass to adapter:
-                            mAdapter.setData(pkData.getRecipesDisplayed());
-                            //*/
+                            if (!nextSet) {
+                                pkData.setRecipesDisplayed(data);
+                            } else {
+                                pkData.addRecipesDisplayed(data);
+                            }
 
                             // Provides proper feedback when no results are returned:
                             if (data.size() == 0) {
@@ -266,6 +282,8 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
                     public void onFailure(HttpContext context, Throwable error) {
                         ActivityHelper.displayUnknownError(getActivity(), error.getLocalizedMessage());
                         Log.e(TAG, "Recipe query failed!\n" + error.getLocalizedMessage());
+                        error.printStackTrace();
+                        error.fillInStackTrace();
                     }
                 });
 
@@ -281,7 +299,21 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (mListener != null) {
-            mListener.onRecipeFragementSelected(isVisibleToUser);
+            mListener.onRecipeFragmentSelected(isVisibleToUser);
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        // DO NOTHING. Required by interface.
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (lastQuery != null) {
+            if ((firstVisibleItem + visibleItemCount) == totalItemCount) {
+                runSearch(true);
+            }
         }
     }
 
@@ -294,6 +326,6 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
     public interface OnFragmentInteractionListener {
         void onRecipeFragmentInteraction(Recipe_Short recipe_short);
 
-        void onRecipeFragementSelected(boolean visible);
+        void onRecipeFragmentSelected(boolean visible);
     }
 }

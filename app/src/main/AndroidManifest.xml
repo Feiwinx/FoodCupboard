@@ -44,9 +44,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities_fragments.TutorialActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/title_activity_tutorial" />
         <activity
             android:name=".activities_fragments.TabbedActivity"
-            android:icon="@drawable/ic_pocket_kitchen_full"
+            android:icon="@drawable/ic_pocket_kitchen_logo"
             android:label="@string/title_activity_tabbed"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

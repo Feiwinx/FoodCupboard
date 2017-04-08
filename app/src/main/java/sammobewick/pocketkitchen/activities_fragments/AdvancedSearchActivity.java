@@ -158,6 +158,9 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
                 });
     }
 
+    /**
+     * Simple method to reset all fields.
+     */
     private void clear() {
         ((EditText) findViewById(R.id.edit_search_terms)).setText("");
         ((EditText) findViewById(R.id.edit_search_exclusions)).setText("");
@@ -207,6 +210,10 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
         ((CheckBox) findViewById(R.id.check_diet_soy)).setChecked(false);
     }
 
+    /**
+     * This creates our search criteria by checking what is ticked and adding it to the relevant
+     * part of the query.
+     */
     private void setSearchData() {
         // ***** QUERY: ***** //
         query = ((EditText) findViewById(R.id.edit_search_terms)).getText().toString();
@@ -354,6 +361,11 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
         }
     }
 
+    /**
+     * Standard method to create our options menu.
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -361,6 +373,12 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
         return true;
     }
 
+    /**
+     * This activity implements OnClickListener therefore we need this method.
+     * Here we handle showing/hiding the gists related to the title areas. The basic logic here
+     * is just to show/hide chunks of data to make it a bit nicer. We also change the image.
+     * @param v View - the view which is clicked on.
+     */
     @Override
     public void onClick(View v) {
         View gist;

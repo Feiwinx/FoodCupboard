@@ -51,7 +51,13 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="deep_red">#d50000</color>
+
     <color name="white_light_blue">#B3E5FC</color>
-    <color name="white_green">#C8E6C9</color>
+    <color name="white_green">#b2fcb7</color>
+    <color name="white_red">#fcb2b2</color>
+    <color name="white_yellow">#fcfab1</color>
+    <color name="white_orange">#fcd2b1</color>
+    <color name="white_purple">#fcb1d1</color>
+
     <color name="transparent">#00000000</color>
 </resources>

@@ -11,8 +11,8 @@ import android.widget.AdapterView;
 import android.widget.SearchView;
 
 import sammobewick.pocketkitchen.R;
-import sammobewick.pocketkitchen.data_objects.Ingredient;
 import sammobewick.pocketkitchen.adapters.MyKitchenAdapter;
+import sammobewick.pocketkitchen.data_objects.Ingredient;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,7 +26,6 @@ public class MyKitchenFragment extends Fragment implements SearchView.OnQueryTex
     //********************************************************************************************//
     //  VARIABLES / HANDLERS FOR THIS FRAGMENT:                                                   //
     //********************************************************************************************//
-
     private AbsListView mListView;
     private MyKitchenAdapter mAdapter;
     private SearchView mSearchView;

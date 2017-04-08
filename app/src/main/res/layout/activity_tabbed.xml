@@ -143,6 +143,18 @@
             fab:fab_label="@string/lbl_fab_view_my_recipes" />
 
         <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_export_list"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_share"
+            android:visibility="gone"
+            fab:fab_colorNormal="@color/colourAccent"
+            fab:fab_colorPressed="@color/colourAccentDark"
+            fab:fab_colorRipple="@color/colourEffect"
+            fab:fab_size="mini"
+            fab:fab_label="@string/lbl_fab_export_list" />
+
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_scan_receipts"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"

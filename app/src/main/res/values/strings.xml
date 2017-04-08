@@ -6,6 +6,7 @@
     <string name="title_activity_saved">Saved Recipes</string>
     <string name="title_activity_search">Advanced Search</string>
     <string name="title_activity_add_recipe">Add Your Own Recipe</string>
+    <string name="title_activity_tutorial">Welcome!</string>
 
     <string name="snackbar_wip_feature">Sorry! This feature is still WIP!</string>
     <string name="snackbar_revoke_success">Success! The access has been revoked.</string>
@@ -14,6 +15,8 @@
     <string name="section_recipes">Recipes</string>
     <string name="section_list">Shopping List</string>
     <string name="section_kitchen">My Kitchen</string>
+
+    <string name="lbl_btn_load_more_recipes">Load more recipes</string>
 
     <string name="lbl_item">Item:</string>
     <string name="lbl_ingredient">Ingredient:</string>
@@ -36,13 +39,27 @@
     <string name="lbl_recipe_ing_title_f">Ingredients Required:</string>
     <string name="lbl_recipe_ins_title_f">Instructions:</string>
 
-    <string name="lbl_recipe_popular_f">Popular!</string>
-    <string name="lbl_btn_add_recipe">I want to cook this!</string>
-    <string name="lbl_btn_rem_recipe">I no longer want to cook this!</string>
-
     <string name="lbl_btn_sign_out">Sign Out of Google Account</string>
     <string name="lbl_btn_disconnect">Revoke Google Account Access</string>
     <string name="lbl_btn_proceed">Go To Pocket Kitchen</string>
+
+   <!-- Viewing Recipe Details -->
+    <string name="lbl_recipe_popular_f">Popular!</string>
+
+    <string name="lbl_btn_add_recipe">Save</string>
+    <string name="lbl_btn_rem_recipe">Un-save</string>
+    <string name="lbl_btn_add_recipe_ings">Add to List</string>
+    <string name="lbl_btn_rem_recipe_ings">Remove from List</string>
+
+    <string name="hint_btn_add_recipe">Add the recipe to your saved list.</string>
+    <string name="hint_btn_rem_recipe">Remove the recipe from your saved list.</string>
+    <string name="hint_btn_add_recipe_ings">Add the ingredients to your shopping list.</string>
+    <string name="hint_btn_rem_recipe_ings">Remove the ingredients from your shopping list.</string>
+
+    <string name="feedback_added_recipe">Recipe has been saved!</string>
+    <string name="feedback_removed_recipe">Recipe has been un-saved!</string>
+    <string name="feedback_added_ings">Ingredients have been added to your list!</string>
+    <string name="feedback_removed_ings">Ingredients have been removed from your list!</string>
 
     <!-- Floating Action Button -->
     <string name="lbl_fab_search">Advanced Recipe Search</string>
@@ -50,7 +67,8 @@
     <string name="lbl_fab_add_item">Add Item</string>
     <string name="lbl_fab_add_recipe">Add Recipe</string>
     <string name="lbl_fab_view_saved">View Saved Recipes</string>
-    <string name="lbl_fab_view_my_recipes">View My Recipes</string>
+    <string name="lbl_fab_view_my_recipes">View My Custom Recipes</string>
+    <string name="lbl_fab_export_list">Export List</string>
 
     <!-- Dialogs -->
     <string name="lbl_dialog_edit_item">Edit List Item</string>
@@ -132,20 +150,67 @@
     <string name="hint_btn_save">Save your changes</string>
     <string name="hint_btn_cancel">Undo any changes made</string>
     <string name="hint_btn_delete">Delete this item entirely</string>
+    <string name="hint_btn_edit">Edit this item</string>
     <string name="hint_btn_purchase">Move this item to your kitchen</string>
     <string name="hint_search_recipes">Search for recipes…</string>
     <string name="hint_search_shopping">Filter your list…</string>
     <string name="hint_search_kitchen">Filter your kitchen…</string>
     <string name="hint_enter_measurement">kg/g/etc.</string>
-    <string name="hint_edit_quantity">Enter the amount</string>
-    <string name="hint_edit_item_name">Enter the item name</string>
-    <string name="hint_btn_add_recipe">Add the recipe to your shopping &amp; cooking lists</string>
-    <string name="hint_btn_rem_recipe">Remove the recipe from your shopping &amp; cooking lists</string>
+    <string name="hint_edit_quantity">amount</string>
+    <string name="hint_edit_item_name">item name</string>
     <string name="hint_btn_sign_out">Sign out from Pocket Kitchen</string>
     <string name="hint_btn_disconnect">Revoke Pocket Kitchen\'s access to your Google account</string>
     <string name="hint_btn_proceed">Click to proceed to the Pocket Kitchen application</string>
     <string name="hint_img_not_provided">No image provided by Spoonacular for this!</string>
     <string name="hint_img_for_custom">No image has been provided for this custom ingredient!</string>
+
+    <!-- Intro Slide Text -->
+    <string name="intro_welcome_title">Welcome to Pocket Kitchen!</string>
+    <string name="intro_welcome_desc">
+        Here\'s a quick introduction to your kitchen, but feel free to skip it and explore instead!
+    </string>
+
+    <string name="intro_preferences_title">Setting your Diet</string>
+    <string name="intro_preferences_step1">
+        You can customise your dietary preferences in the settings menu:
+    </string>
+    <string name="intro_preferences_step1_2">
+        These are applied when quick-searching, and help you keep avoid allergens without digging
+        through tonnes of information.
+    </string>
+
+    <string name="intro_searching_title">Searching for Recipes</string>
+    <string name="intro_searching_desc">
+        With your dietary preferences set, you can use the Recipe pane to quickly search for
+        whatever your stomach desires!
+    </string>
+
+    <string name="intro_viewing_title">Viewing Recipes</string>
+    <string name="intro_viewing_desc">
+        Selecting a recipe allows you to view the ingredients, and how to make it.
+        You can then save it the recipe, or add the ingredients to your shopping list.
+    </string>
+
+    <string name="intro_shopping_list_title">Your Shopping List</string>
+    <string name="intro_shopping_list_desc">
+        Now you\'ve got a shopping list of ingredients, you can use Pocket Kitchen to keep tabs on
+        your shopping, moving items to your cupboards as you pick them up in store!
+    </string>
+
+    <string name="intro_extras_title">Plenty of Features</string>
+    <string name="intro_extras_desc">
+        That\'s the basics, but you\'ll find lots of other features in the floating menu.
+        \n\nGive them a go, it\'s your kitchen!
+    </string>
+
+    <!-- Dietary Key -->
+    <string name="key_vegan">The recipe is Vegan.</string>
+    <string name="key_vegetarian">The recipe is Vegetarian.</string>
+    <string name="key_healthy">The recipe is Very Healthy.</string>
+    <string name="key_dairy">The recipe contains no dairy.</string>
+    <string name="key_gluten">The recipe contains no Gluten.</string>
+    <string name="key_popular">The recipe is Popular right now.</string>
+    <string name="key_cheap">The recipe can be made with little cost.</string>
 
     <!-- ListView Empty Texts -->
     <string name="empty_recipes">Welcome!\nYou can use the search box to find yourself some tasty options!</string>
@@ -157,15 +222,18 @@
         this could mean you have restricted the search too much!
     </string>
 
-    <!-- Feedback -->
+    <!-- General Feedback -->
     <string name="feedback_cancelled_change">Cancelled! No changes were made.</string>
     <string name="feedback_success_change">Success! Changes have been saved!</string>
+    <string name="feedback_success_add_recipe">Success! Your recipe has been created.</string>
     <string name="feedback_deleted_change">Item has been removed!</string>
     <string name="feedback_failed_change">Oh no! Failed to save changes!</string>
-    <string name="feedback_added_recipe">Recipe has been added to your list!</string>
-    <string name="feedback_removed_recipe">Recipe has been removed from your list!</string>
 
     <string name="feedback_unknown_problem">Oh dear. Something unexpected went wrong, this may be down to the values entered!</string>
+    <string name="feedback_unknown_problem_add_recipe">
+        Oh no! Something went wrong when getting the response from the server.\n
+        The recipe will be saved locally, and an error sent to the server.
+    </string>
 
     <!-- Test String for XML Views: -->
     <string name="test_recipe_title">Tasty Cottage Pie</string>
@@ -188,20 +256,20 @@
     <string name="action_delete">Delete</string>
     <string name="action_search">Search</string>
     <string name="action_clear">Clear</string>
+    <string name="action_export">Export</string>
 
-    <!-- Settings for Pocket Kitchen colours -->
+    <string name="action_export_intent_recipe">Share recipe details…</string>
+    <string name="action_export_intent_list">Share list details…</string>
+
+    <!-- Settings for Pocket Kitchen -->
     <string name="pref_header_my_kitchen">My Pocket Kitchen</string>
-
-    <string name="pref_primary_colour">Primary Kitchen Colour</string>
-    <string name="pref_primary_colour_hint">This is the accent colour for your kitchen.</string>
-    <string name="pref_secondary_colour">Secondary Kitchen Colour</string>
-    <string name="pref_secondary_colour_hint">This is the background colour for your kitchen.</string>
-    <string name="pref_primary_text_colour">Primary Text Colour</string>
-    <string name="pref_primary_text_colour_hint">This is the main text colour for your kitchen.</string>
-    <string name="pref_secondary_text_colour">Secondary Text Colour</string>
-    <string name="pref_secondary_text_colour_hint">This is the secondary text colour for your kitchen.</string>
+    <string name="pref_tutorial_title">View Tutorial</string>
+    <string name="pref_about_title">About</string>
 
     <!-- Settings for Dietary Preferences -->
+    <string name="pref_dietary_view_key">View Dietary Symbols</string>
+    <string name="title_dietary_view_key">View Key</string>
+
     <string name="pref_header_dietary_preferences">Dietary Preferences</string>
 
     <string name="pref_dietary_cat_veg">Vegetarian or Vegan</string>

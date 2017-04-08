@@ -201,4 +201,39 @@ public class Recipe_Full implements Serializable {
                 ", instructions='" + instructions + '\'' +
                 '}';
     }
+
+    /**
+     * Helper method to allow exporting of the Recipe to an Intent.
+     * @return String - produce a readable + exportable Recipe string.
+     */
+    public String toExportableString() {
+        String result = "";
+
+        result += "Title: " + title;
+
+        result += "Ingredients: ";
+        for (Ingredient i: extendedIngredients) {
+            result += (i.getAmount() + " " + i.getUnitShort() + " of " + i.getName() + "\n");
+        }
+
+        result += "Instructions: " + instructions + "\n";
+
+        result += "Serves " + servings + " portions.\n";
+
+        result += "Takes " + readyInMinutes + " minutes to make.";
+
+        result += "Additional Information:\n"       +
+                "Cheap: "           + cheap         +
+                "\nVegetarian: "    + vegetarian    +
+                "\nVegan: "         + vegan         +
+                "\nGluten Free: "   + glutenFree    +
+                "\nDairy Free: "    + dairyFree     +
+                "\nHealthy: "       + veryHealthy   +
+                "\nPopular: "       + veryPopular;
+
+        result += "\n\nBy " + creditText;
+        result += "\nAvailable: " + spoonacularSourceUrl;
+
+        return result;
+    }
 }

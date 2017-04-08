@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.gson.Gson;
 import com.mashape.p.spoonacularrecipefoodnutritionv1.SpoonacularAPIClient;
 import com.mashape.p.spoonacularrecipefoodnutritionv1.controllers.APIController;
@@ -26,9 +27,11 @@ import com.mashape.p.spoonacularrecipefoodnutritionv1.http.client.HttpContext;
 import com.mashape.p.spoonacularrecipefoodnutritionv1.models.DynamicResponse;
 
 import java.text.ParseException;
+import java.util.List;
 
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.data_objects.Ingredient;
+import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.data_objects.Recipe_Full;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
@@ -47,12 +50,11 @@ public class TabbedActivity extends AppCompatActivity implements
     private static final int LIST_FRAG_ID = 1;
     private static final int RECIPE_FRAG_ID = 0;
 
-    private static final String SHARED_PREFERENCES = "pocketKitchenPreferences";
-
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
     private int lastFragmentId;
+    private boolean firstTimeUsage;
 
     private SharedPreferences sharedPreferences;
 
@@ -67,6 +69,11 @@ public class TabbedActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_tabbed);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (sharedPreferences.contains("firstTimeUsage")) {
+            firstTimeUsage = sharedPreferences.getBoolean("firstTimeUsage", false);
+        }
+        sharedPreferences.edit().putBoolean("firstTimeUsage", true).apply();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,11 +112,22 @@ public class TabbedActivity extends AppCompatActivity implements
         fab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_view_saved);
         fab.setOnClickListener(this);
 
+        fab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_view_my_recipes);
+        fab.setOnClickListener(this);
+
+        fab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_export_list);
+        fab.setOnClickListener(this);
+
         menu = (com.github.clans.fab.FloatingActionMenu) findViewById(R.id.fab);
 
         // Initialise this method with the first fragment:
         mViewPager.setCurrentItem(lastFragmentId);
         fragmentSelected(lastFragmentId);
+
+        if (!firstTimeUsage) {
+            Intent introIntent = new Intent(this, TutorialActivity.class);
+            startActivity(introIntent);
+        }
     }
 
     @Override
@@ -139,6 +157,17 @@ public class TabbedActivity extends AppCompatActivity implements
                 startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        FloatingActionMenu fam = (FloatingActionMenu) findViewById(R.id.fab);
+        if (fam.isOpened()) {
+            fam.close(true);
+            return;
+        }
+
+        super.onBackPressed();
     }
 
     @Override
@@ -206,7 +235,7 @@ public class TabbedActivity extends AppCompatActivity implements
      * Here we get an update from the Recipe fragment, and adjust our selected fragment.
      */
     @Override
-    public void onRecipeFragementSelected(boolean visible) {
+    public void onRecipeFragmentSelected(boolean visible) {
         this.fragmentSelected(RECIPE_FRAG_ID);
     }
 
@@ -260,6 +289,7 @@ public class TabbedActivity extends AppCompatActivity implements
                 findViewById(R.id.fab_view_my_recipes).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_search_recipes).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_add_recipe).setVisibility(View.GONE);
+                findViewById(R.id.fab_export_list).setVisibility(View.VISIBLE);
                 break;
 
             case LIST_FRAG_ID:      // Shopping Fragment
@@ -269,6 +299,7 @@ public class TabbedActivity extends AppCompatActivity implements
                 findViewById(R.id.fab_view_my_recipes).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_search_recipes).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_add_recipe).setVisibility(View.GONE);
+                findViewById(R.id.fab_export_list).setVisibility(View.VISIBLE);
                 break;
 
             case RECIPE_FRAG_ID:    // Recipe Fragment:
@@ -277,9 +308,32 @@ public class TabbedActivity extends AppCompatActivity implements
                 findViewById(R.id.fab_view_saved).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_view_my_recipes).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_add_list).setVisibility(View.GONE);
+                findViewById(R.id.fab_export_list).setVisibility(View.GONE);
                 //findViewById(R.id.fab_scan_receipts).setVisibility(View.GONE);
                 break;
         }
+    }
+
+    private String getExportString() {
+        String result = "";
+        List<Ingredient> data;
+        PocketKitchenData pkData = PocketKitchenData.getInstance();
+
+        // Construct our string using one of the following:
+        if (lastFragmentId == LIST_FRAG_ID) {
+            pkData.updateToBuy();
+            data = pkData.getToBuy();
+            result += "Shopping List:\n";
+        } else {
+            data = pkData.getInCupboards();
+            result += "My Cupboards:\n";
+        }
+
+        // Collate information:
+        for (Ingredient i: data) {
+            result += i.getAmount() + " " + i.getUnitShort() + " of " + i.getName() + "\n";
+        }
+        return result + "\n";
     }
 
     @Override
@@ -356,6 +410,13 @@ public class TabbedActivity extends AppCompatActivity implements
                 /* DEBUG:
                 ActivityHelper.displaySnackBarNoAction(TabbedActivity.this, R.id.main_content, R.string.snackbar_wip_feature);
                 // END-DEBUG */
+                break;
+
+            case R.id.fab_export_list:  // Export current list.
+                intent = new Intent(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT, getExportString());
+                intent.setType("text/plain");
+                startActivity(Intent.createChooser(intent, getString(R.string.action_export_intent_list)));
                 break;
         }
     }

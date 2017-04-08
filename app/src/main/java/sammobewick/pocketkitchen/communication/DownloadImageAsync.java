@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
+
 /**
  * Using the comment shown below, this class allows for images to be loaded Asynchronously, so the
  * UI thread is not blocked!
@@ -30,6 +32,12 @@ public final class DownloadImageAsync extends AsyncTask<String, Void, Bitmap> {
         try {
             InputStream in = new URL(urlDisplay).openStream();
             img = BitmapFactory.decodeStream(in);
+
+            // Attempt to save a scaled copy:
+            if (img != null) {
+                img = Bitmap.createScaledBitmap(img, 250, 250, false);
+                PocketKitchenData.putDrawable(urlDisplay, img);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

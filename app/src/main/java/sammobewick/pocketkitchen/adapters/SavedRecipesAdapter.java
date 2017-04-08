@@ -1,12 +1,5 @@
 package sammobewick.pocketkitchen.adapters;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 import sammobewick.pocketkitchen.R;
+import sammobewick.pocketkitchen.aws_intents.DownloadAWSImageAsync;
 import sammobewick.pocketkitchen.communication.DownloadImageAsync;
 import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
@@ -56,11 +50,10 @@ public class SavedRecipesAdapter extends BaseAdapter implements DataListener {
 
     @Override
     public int getCount() {
-        if (data != null) {
-            return data.size();
-        } else {
+        if (data == null)
             return 0;
-        }
+
+        return data.size();
     }
 
     @Override
@@ -87,6 +80,9 @@ public class SavedRecipesAdapter extends BaseAdapter implements DataListener {
             vh.recipeTitle  = (TextView)    v.findViewById(R.id.recipe_saved_title);
             vh.removeBtn    = (ImageButton) v.findViewById(R.id.recipe_saved_del_btn);
 
+            // Hide the unnecessary button:
+            v.findViewById(R.id.recipe_saved_edit_btn).setVisibility(View.GONE);
+
             // Save the holder as a tag on the view:
             v.setTag(vh);
         } else {
@@ -106,7 +102,8 @@ public class SavedRecipesAdapter extends BaseAdapter implements DataListener {
             new DownloadImageAsync(vh.recipeImg).execute(url);
         } else {
             // LOAD IMAGE FROM AWS-S3:
-
+            new DownloadAWSImageAsync(v.getContext(), vh.recipeImg)
+                    .execute(String.valueOf(recipe.getId()));
         }
 
         // Listener for the button:

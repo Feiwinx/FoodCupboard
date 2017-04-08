@@ -39,8 +39,6 @@
         android:textSize="15sp"
         android:textStyle="italic"
 
-        android:text="@string/test_recipe_desc"
-
         android:layout_toEndOf="@id/recipe_search_img"
 
         android:layout_marginStart="5dp"

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sv_dietary_key"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <GridLayout
+        android:columnCount="2"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <!-- VEGAN -->
+        <ImageView
+            android:src="@drawable/ps_vegan_img"
+            android:layout_margin="10dp"
+            android:maxWidth="50dp"
+            android:maxHeight="50dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="@string/key_vegan"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+
+        <!-- VEGETARIAN -->
+        <ImageView
+            android:src="@drawable/ps_vegetarian_img"
+            android:layout_margin="10dp"
+            android:maxWidth="50dp"
+            android:maxHeight="50dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="@string/key_vegetarian"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+
+        <!-- HEALTHY -->
+        <ImageView
+            android:src="@drawable/ps_healthy_img"
+            android:layout_margin="10dp"
+            android:maxWidth="50dp"
+            android:maxHeight="50dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="@string/key_healthy"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+
+        <!-- GLUTEN FREE -->
+        <ImageView
+            android:src="@drawable/ps_gluten_img"
+            android:layout_margin="10dp"
+            android:maxWidth="50dp"
+            android:maxHeight="50dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="@string/key_gluten"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+
+        <!-- DAIRY FREE -->
+        <ImageView
+            android:src="@drawable/ps_dairy_img"
+            android:layout_margin="10dp"
+            android:maxWidth="50dp"
+            android:maxHeight="50dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="@string/key_dairy"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+
+        <!-- POPULAR -->
+        <ImageView
+            android:src="@drawable/ps_popular_img"
+            android:layout_margin="10dp"
+            android:maxWidth="50dp"
+            android:maxHeight="50dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="@string/key_popular"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+
+        <!-- CHEAP -->
+        <ImageView
+            android:src="@drawable/ps_cheap_img"
+            android:layout_margin="10dp"
+            android:maxWidth="50dp"
+            android:maxHeight="50dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="@string/key_cheap"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+
+    </GridLayout>
+</ScrollView>

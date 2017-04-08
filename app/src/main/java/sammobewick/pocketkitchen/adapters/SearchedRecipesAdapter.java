@@ -1,5 +1,6 @@
 package sammobewick.pocketkitchen.adapters;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,6 @@ import sammobewick.pocketkitchen.supporting.DataListener;
  * Created by Sam on 31/01/2017.
  */
 public class SearchedRecipesAdapter extends BaseAdapter implements DataListener {
-
     private List<Recipe_Short> data;
     private String urlStart;
 
@@ -93,18 +93,24 @@ public class SearchedRecipesAdapter extends BaseAdapter implements DataListener 
         vh.recipeTitle.setText(recipe.getTitle());
 
         // TODO: Establish whether or not to include the below? It's not really useful!
-        //String desc = "This tasty recipe can be made in " + recipe.getReadyInMinutes() + " minutes!";
-        //vh.recipeDesc.setText(desc);
-        vh.recipeDesc.setVisibility(View.GONE);
+        String desc = "This can be made in " + recipe.getReadyInMinutes() + " minutes.";
+        vh.recipeDesc.setText(desc);
 
         // Load the images using aSync task:
+        PocketKitchenData pkData = PocketKitchenData.getInstance();
+
         String url = urlStart + recipe.getImage();
 
-        /* DEBUG:
+        ///* DEBUG:
         System.out.println("URL: " + url);
         // END-DEBUG */
 
-        new DownloadImageAsync(vh.recipeImg).execute(url);
+        Bitmap img = pkData.getDrawable(url);
+
+        if (img != null)
+            vh.recipeImg.setImageBitmap(img);
+        else
+            new DownloadImageAsync(vh.recipeImg).execute(url);
 
         return v;
     }

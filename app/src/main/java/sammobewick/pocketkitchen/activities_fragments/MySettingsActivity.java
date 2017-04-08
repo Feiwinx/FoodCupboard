@@ -1,6 +1,5 @@
 package sammobewick.pocketkitchen.activities_fragments;
 
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +18,7 @@ import android.view.MenuItem;
 import java.util.List;
 
 import sammobewick.pocketkitchen.R;
+import sammobewick.pocketkitchen.supporting.ActivityHelper;
 import sammobewick.pocketkitchen.supporting.LocalFileHelper;
 
 /**
@@ -167,6 +167,18 @@ public class MySettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_my_kitchen);
             setHasOptionsMenu(true);
+
+            Preference about = findPreference(getString(R.string.pref_about_title));
+            Preference tutorial = findPreference(getString(R.string.pref_tutorial_title));
+
+            tutorial.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent introIntent = new Intent(getActivity(), TutorialActivity.class);
+                    startActivity(introIntent);
+                    return false;
+                }
+            });
         }
 
 
@@ -243,6 +255,16 @@ public class MySettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_dietary);
             setHasOptionsMenu(true);
+
+            Preference dietaryKey = findPreference(getString(R.string.pref_dietary_view_key));
+
+            dietaryKey.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    ActivityHelper.displayDietaryInfo(getActivity());
+                    return false;
+                }
+            });
         }
 
         @Override

@@ -11,8 +11,8 @@ import android.widget.AdapterView;
 import android.widget.SearchView;
 
 import sammobewick.pocketkitchen.R;
-import sammobewick.pocketkitchen.data_objects.Ingredient;
 import sammobewick.pocketkitchen.adapters.MyListAdapter;
+import sammobewick.pocketkitchen.data_objects.Ingredient;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,11 +26,10 @@ public class MyListFragment extends Fragment implements SearchView.OnQueryTextLi
     //********************************************************************************************//
     //  VARIABLES / HANDLERS FOR THIS FRAGMENT:                                                   //
     //********************************************************************************************//
-
-    private AbsListView mListView;
-    private MyListAdapter mAdapter;
-    private SearchView mSearchView;
-    private OnFragmentInteractionListener mListener;
+    private AbsListView                     mListView;
+    private MyListAdapter                   mAdapter;
+    private SearchView                      mSearchView;
+    private OnFragmentInteractionListener   mListener;
 
     // ****************************************************************************************** //
     //                                 CONSTRUCTORS + SET-UP:                                     //
@@ -66,14 +65,14 @@ public class MyListFragment extends Fragment implements SearchView.OnQueryTextLi
         mListView = (AbsListView) view.findViewById(R.id.shopping_list);
         mListView.setAdapter(mAdapter);
         mListView.setEmptyView(view.findViewById(R.id.empty_shopping));
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                             @Override
-                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                 mListener.onShoppingFragmentInteraction(mAdapter.getItem(position));
-                                             }
-                                         }
+        mListView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        mListener.onShoppingFragmentInteraction(mAdapter.getItem(position));
+                    }
+                }
         );
-
         // Prepare our SearchView:
         mSearchView = (SearchView) view.findViewById(R.id.shopping_search);
         mSearchView.setOnQueryTextListener(this);
@@ -110,8 +109,8 @@ public class MyListFragment extends Fragment implements SearchView.OnQueryTextLi
     public void onResume() {
         super.onResume();
 
-        // TODO: Might be dangerous call!
-        mAdapter.notifyDataSetChanged();
+        if (mAdapter != null)
+            mAdapter.notifyDataSetChanged();
     }
 
     @Override

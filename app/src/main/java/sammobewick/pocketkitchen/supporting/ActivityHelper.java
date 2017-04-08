@@ -72,6 +72,19 @@ public class ActivityHelper {
     }
 
     /**
+     * Helper method to display a basic dialog with dietary/symbol information.
+     * @param context Context - required to display the dialog.
+     */
+    public static void displayDietaryInfo(final Context context) {
+        final Dialog dialog = new Dialog(context);
+
+        dialog.setContentView(R.layout.dialog_dietary_key);
+        dialog.setTitle(R.string.title_dietary_view_key);
+        dialog.findViewById(R.id.sv_dietary_key);
+        dialog.show();
+    }
+
+    /**
      * Helper method to display a unexpected error.
      * @param context Context - required to display the dialog.
      * @param errorMessage String - error message to display [multi-purpose]
@@ -300,6 +313,9 @@ public class ActivityHelper {
             edit_qty_name.setEnabled(true);
             edit_name.setEnabled(true);
             edit_qty.setEnabled(true);
+
+            edit_qty_name.setText("item");
+            edit_qty.setText("1");
 
             // Show the applicable buttons:
             dialog_discard.setVisibility(View.VISIBLE);

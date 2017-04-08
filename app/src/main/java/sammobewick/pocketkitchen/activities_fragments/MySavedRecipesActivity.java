@@ -3,9 +3,9 @@ package sammobewick.pocketkitchen.activities_fragments;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
@@ -22,14 +22,19 @@ import com.mashape.p.spoonacularrecipefoodnutritionv1.models.DynamicResponse;
 import java.text.ParseException;
 
 import sammobewick.pocketkitchen.R;
-import sammobewick.pocketkitchen.adapters.SavedRecipesAdapter_C;
+import sammobewick.pocketkitchen.adapters.CustomRecipeAdapter;
+import sammobewick.pocketkitchen.adapters.SavedRecipesAdapter;
 import sammobewick.pocketkitchen.data_objects.Recipe_Full;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
-import sammobewick.pocketkitchen.adapters.SavedRecipesAdapter;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
 import sammobewick.pocketkitchen.supporting.Constants;
 
-public class MySavedRecipesActivity extends AppCompatActivity {
+/**
+ * This class is for displaying sets of recipes. One set is the custom recipes that the user has
+ * created. The other set will be whatever ones the user has added to their cooklist (usually
+ * Spoonacular ones, but sometimes user-created).
+ */
+public class MySavedRecipesActivity extends AppCompatActivity implements CustomRecipeAdapter.AdapterParent {
     //********************************************************************************************//
     //  VARIABLES / HANDLERS FOR THIS ACTIVITY:                                                   //
     //********************************************************************************************//
@@ -47,7 +52,7 @@ public class MySavedRecipesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_saved_recipes);
         setupActionBar();
 
-        // Get whether custom or not from the Activity arguments:
+        // Get whether we need to only display custom or not from the intent extras:
         customOnly = false;
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -56,27 +61,29 @@ public class MySavedRecipesActivity extends AppCompatActivity {
             }
         }
 
-        // Get the URL start from MetaData:
-        ApplicationInfo ai;
-        try {
-            ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-            if (ai.metaData.containsKey("recipe_image_url")) {
-                urlStart = ai.metaData.getString("recipe_image_url");
+        if (!customOnly) {
+            // Get the URL start from MetaData:
+            ApplicationInfo ai;
+            try {
+                ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+                if (ai.metaData.containsKey("recipe_image_url")) {
+                    urlStart = ai.metaData.getString("recipe_image_url");
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
 
-        SpoonacularAPIClient api_client = new SpoonacularAPIClient();
-        controller = api_client.getClient();
+            SpoonacularAPIClient api_client = new SpoonacularAPIClient();
+            controller = api_client.getClient();
 
-        // Set up adapter (dependant on custom or not):
-        if (customOnly)
-            mAdapter = new SavedRecipesAdapter_C(urlStart);
-        else
             mAdapter = new SavedRecipesAdapter(urlStart);
 
-        // Rest is universal to either adapter:
+        } else {
+            // We only need the other adapter here instead of the other stuff.
+            mAdapter = new CustomRecipeAdapter(this);
+        }
+
+        // UNIVERSAL SETUP OF ADAPTER(S):
         mListView = (AbsListView) findViewById(R.id.saved_recipes_list);
         mListView.setEmptyView(findViewById(R.id.saved_recipes_empty));
         mListView.setAdapter(mAdapter);
@@ -118,25 +125,43 @@ public class MySavedRecipesActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is the preparation method for loading recipes, which then defers to other methods
+     * to transition to the ViewSingleActivity method.
+     * @param recipe_short Recipe_Short - the recipe that was selected from the ListView.
+     */
     private void loadRecipeFull(Recipe_Short recipe_short) {
-        // TODO: account for customOnly here!
         // Check network connectivity:
         if (!ActivityHelper.isConnected(getApplicationContext())) {
             ActivityHelper.displaySnackBarNoAction(getApplicationContext(), R.id.main_content, R.string.wifi_warning_short);
         } else {
-            // Network connectivity exists! Load recipe depending on custom:
+            // Network connectivity exists! Load either type of recipe using other method:
             setProgressBar(true);
-            if (customOnly)
-                loadFromAWS(recipe_short);
-            else
-                loadFromAPI(recipe_short);
+            if (customOnly) { loadFromAWS(recipe_short); }
+            else { loadFromAPI(recipe_short); }
         }
     }
 
+    /**
+     * Method to load an AWS recipe. Passes it to another activity after.
+     * @param recipe_short Recipe_Short - recipe to display.
+     */
     private void loadFromAWS(final Recipe_Short recipe_short) {
         // TODO: this.
     }
 
+    /**
+     * Method to load an AWS recipe, but also set it up for editing.
+     * @param recipe_short Recipe_Short - recipe to display.
+     */
+    private void editFromAWS(final Recipe_Short recipe_short) {
+        // TODO: this.
+    }
+
+    /**
+     * Method to load a recipe from the API. Passes it to another activity after.
+     * @param recipe_short Recipe_Short - recipe to display.
+     */
     private void loadFromAPI(final Recipe_Short recipe_short) {
         controller.getRecipeInformationAsync(recipe_short.getId(), new APICallBack<DynamicResponse>() {
             @Override
@@ -172,11 +197,21 @@ public class MySavedRecipesActivity extends AppCompatActivity {
      * @param r_full  - the full version of the selected recipe.
      */
     private void viewRecipe(Recipe_Short r_short, Recipe_Full r_full) {
-        // TODO: account for custom recipes here!?
         // Call our intent, including the recipe details in it!
         Intent intent = new Intent(this, ViewSingleRecipeActivity.class);
         intent.putExtra("view_single_recipe", r_full);
         intent.putExtra("recipe_short", r_short);
         startActivity(intent);
+    }
+
+    /**
+     * This is passed back from the custom adapter, allowing us to prepare the edit process. The
+     * selection process is handled by the ListView OnClickListener, but as the edit process is a
+     * image button on the row, we need to pass it back up.
+     * @param position
+     */
+    @Override
+    public void OnEditButtonPressed(int position) {
+        editFromAWS((Recipe_Short)mAdapter.getItem(position));
     }
 }

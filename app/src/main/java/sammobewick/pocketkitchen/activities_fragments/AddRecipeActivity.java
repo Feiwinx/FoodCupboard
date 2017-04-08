@@ -51,14 +51,21 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
     //********************************************************************************************//
     private static final String TAG = "AddRecipeActivity";
 
-    private String  user_id;
-    private String  user_name;
+    private String  user_id;    // used for sharedPreference details about Google SignIn
+    private String  user_name;  // same as above.
 
+    // RecyclerView + Adapter for the custom Ingredients:
     private RecyclerView                    mRecyclerView;
     private RvA_Custom_Ingredients          mRvAdapter;
 
+    // Counter for returned requests to AWS:
     private int successCount;
 
+    /**
+     * OnCreate for this Activity.
+     * Performs general setup of the XML and sets OnClickListeners for the areas we want.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,11 +81,11 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
         if (sharedPreferences.contains("user_name"))
             user_name = sharedPreferences.getString("user_name", "unknown");
 
-        // Set up intent filters:
+        // Set up intent filters for getting Broadcasts back from AWS intent-services:
         IntentFilter filter = new IntentFilter(Constants.BC_UPLOAD_NAME);
         LocalBroadcastManager.getInstance(this).registerReceiver(new UploadReceiver(), filter);
 
-        // Set up RecyclerView:
+        // Set up the RecyclerView:
         mRecyclerView   = (RecyclerView) findViewById(R.id.rv_add_custom_recipe_ingredients);
         mRvAdapter      = new RvA_Custom_Ingredients(this);
         mRecyclerView.setAdapter(mRvAdapter);
@@ -92,23 +99,54 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
         findViewById(R.id.btn_custom_recipe_ing).setOnClickListener(this);
         findViewById(R.id.img_custom_recipe).setOnClickListener(this);
 
+        // Hide progress bar:
         setProgressBar(false);
     }
 
+    /**
+     * Clears the fields on the screen. To be used after success.
+     */
+    private void clear() {
+        // TODO: this.
+    }
+
+    /**
+     * Method to run once we have confirmed successful creation.
+     */
     private void saveSuccessful() {
         setProgressBar(false);
-        // TODO: Inform user and clear the activity?
+        ActivityHelper.displaySnackBarNoAction(AddRecipeActivity.this,
+                R.id.sv_add_custom_recipe, R.string.feedback_success_add_recipe);
+        clear();
     }
 
+    /**
+     * Method to inform the user of a problem from Amazon Intent-Services.
+     */
+    private void saveFailed() {
+        setProgressBar(false);
+        ActivityHelper.displayUnknownError(AddRecipeActivity.this,
+                getString(R.string.feedback_unknown_problem_add_recipe));
+    }
+
+    /**
+     * Counts a success from Amazon. Just need to count two but they can be in either order!
+     */
     private void reportSuccess() {
         successCount++;
 
         if (successCount > 1) {
             saveSuccessful();
         }
+        /* DEBUG:    //
         System.out.println("SuccessCount: " + successCount);
+        /* END-DEBUG */
     }
 
+    /**
+     * This method performs our save by reading through the elements on screen, creating Recipe_Full
+     * and Recipe_Short from that, and then calling Amazon Intent Services to upload the data.
+     */
     private void saveRecipe() {
         successCount = 0;
         String error_msg = "";
@@ -116,19 +154,21 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
 
         // We first check ingredients, as this would be the most time consuming!
         if (ingredients != null) {
-            int id = 0;
             // Fetch checkbox data:
             boolean vegan           = ((CheckBox)findViewById(R.id.check_cr_diet_vegan)).isChecked();
             boolean vegetarian      = ((CheckBox)findViewById(R.id.check_cr_diet_vegetarian)).isChecked();
             boolean gluten          = ((CheckBox)findViewById(R.id.check_cr_diet_gluten)).isChecked();
             boolean dairyFree       = ((CheckBox)findViewById(R.id.check_cr_diet_dairy)).isChecked();
 
-            // Unsure how to address these:
+            // TODO: There is no way to address these. Although perhaps not needed?
+            // TODO: Consider just adding some fields to the XML, might be worth fleshing it out?
             boolean cheap           = false;
             boolean popular         = false;
             boolean healthy         = false;
 
             // TODO: the allergens are not stored!
+            // TODO: This means nuts, soy, etc. Could fib and say they are saved but not yet searched
+            // TODO: as custom recipes
 
             // Strings:
             String  title           = ((EditText)findViewById(R.id.edit_add_custom_recipe_title)).getText().toString();
@@ -152,6 +192,7 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
                 }
             } else { error_msg += "Error: We need to know how many SERVINGS this recipe makes!\n"; }
 
+            // Checking for ReadyInMinutes given + of correct format:
             int     readyInMinutes  = 0;
             String  readyIn_s       = ((EditText)findViewById(R.id.edit_add_custom_recipe_minutes)).getText().toString();
             if (readyIn_s.length() > 0) {
@@ -163,11 +204,12 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
                 }
             } else { error_msg += "Error: We need to know how long TIME REQUIRED to cook is!\n"; }
 
-            // Check for errors:
+            // Check for any errors encountered so far before attempting to upload:
             if (error_msg.length() == 0) {
                 // Create our ID using Title + User:
-                id = (user_id + title).hashCode();
-                System.out.println("TEST-ID: " + id);
+                int id = (user_id + title).hashCode();
+
+                /* DEBUG: */ //System.out.println("TEST-ID: " + id); /* END-DEBUG */
 
                 // Create the recipe objects:
                 Recipe_Full rf = new Recipe_Full(
@@ -199,29 +241,36 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
                 PocketKitchenData pkData = PocketKitchenData.getInstance();
                 pkData.addToMyRecipes(rs);
 
-                // Set up a bundle for the JSON:
+                // Set up a bundle for the JSON to be uploaded to DynamoDB:
                 Intent json_intent = new Intent(AddRecipeActivity.this, Dynamo_Upload_Json.class);
                 json_intent.putExtra(Constants.JSON_DYNAMO_KEY, String.valueOf(id));
                 json_intent.putExtra(Constants.JSON_DYNAMO, rf.getJson());
                 this.startService(json_intent);
 
-                // Set up a bundle for the Image:
+                // Set up a bundle for the Image to be uploaded to S3:
                 Intent s3_intent = new Intent(AddRecipeActivity.this, S3_Upload_Image.class);
                 s3_intent.putExtra(Constants.S3_OBJECT_KEY, String.valueOf(id));
                 s3_intent.putExtra(Constants.INTENT_S3_FILE, getImageFile());
                 this.startService(s3_intent);
 
             } else {
+                // Display error due to previous checks & remove the progress spinner.
                 ActivityHelper.displayKnownError(AddRecipeActivity.this, error_msg);
                 setProgressBar(false);
             }
         } else {
+            // Display error due to ingredients table & remove the progress spinner.
             error_msg = "Error: There appears to be a problem with the Ingredients table. Please ensure everything is populated!";
             ActivityHelper.displayKnownError(AddRecipeActivity.this, error_msg);
             setProgressBar(false);
         }
     }
 
+    /**
+     * Helper method to read through the RecyclerView for custom ingredients.
+     * When using this, we should make sure to check for the null return and handle that as an error!
+     * @return List<Ingredient> - being the list of ingredients entered into the RecyclerView.
+     */
     private List<Ingredient> getRecipeIngredients() {
         // Prepare a list for our Ingredients:
         List<Ingredient> ingredientList = new ArrayList<>();
@@ -244,12 +293,17 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
         return  ingredientList;
     }
 
+    /**
+     * This activity is an OnClickListener, and must implement this method.
+     * We use it to handle the events we are listening for!
+     * @param v View - the view that was clicked upon.
+     */
     @Override
     public void onClick(View v) {
         View gist;
         int id  = v.getId();
 
-        // SWITCH VIEW ID:
+        // Switch out id to establish which was clicked:
         switch (id) {
             // ADD BLANK ITEM
             case R.id.lbl_add_custom_recipe_ingredients:
@@ -304,6 +358,10 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    /**
+     * Helper method to save a Bitmap to a temporary file. We need the context to do this.
+     * @param image Bitmap - being the image to temporarily save.
+     */
     private void saveImage(Bitmap image) {
         ((ImageView) findViewById(R.id.img_custom_recipe)).setImageBitmap(image);
 
@@ -321,6 +379,11 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    /**
+     * Helper method to return the file representing the Image for the recipe.
+     * This is taken by the camera intent, but also referenced when uploading to S3.
+     * @return File - being the description of the image we captured.
+     */
     public File getImageFile() {
         String filename = this.getFilesDir() + "/" + Constants.TEMP_IMG_NAME;
         return new File(filename);
@@ -330,6 +393,7 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // We could handle more requests here but there isn't any other ActivityResults to handle.
         switch (requestCode){
             case 0: // ImageResultCode
                 if (resultCode == RESULT_OK) {
@@ -355,6 +419,10 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    /**
+     * Private inner class to get Broadcast responses back in to this Activity.
+     * We register this in the OnCreate but basically this just handles unpacking the intent.
+     */
     private class UploadReceiver extends BroadcastReceiver {
 
         // Prevent instantiation:
@@ -362,17 +430,15 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Unpack Intent:
-            /* Debug:
-            System.out.println("Report: " + intent.getExtras().toString());
-            System.out.println("Report: " + intent.getExtras().get(Constants.BC_UPLOAD_ID).toString());
-            //*/
-
+            // Unpack Intent + pass to Activity:
             boolean result = intent.getExtras().getBoolean(Constants.BC_UPLOAD_ID);
+
             if (result)
                 reportSuccess();
 
-            // else; reportFailire. // TODO: ...
+            // Here is a check for failure:
+            else if (successCount > 0)
+                saveFailed();
         }
     }
 }

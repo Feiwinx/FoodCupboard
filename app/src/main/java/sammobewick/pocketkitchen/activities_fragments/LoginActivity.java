@@ -46,10 +46,10 @@ public class LoginActivity extends AppCompatActivity implements
     private static final String TAG         = "LoginActivity";
     private static final int    RC_SIGN_IN  = 9001;
 
-    private GoogleApiClient mGoogleApiClient;
-    private SharedPreferences sharedPreferences;
-    private boolean signedIn;
-    private boolean connected;
+    private GoogleApiClient     mGoogleApiClient;
+    private SharedPreferences   sharedPreferences;
+    private boolean             signedIn;
+    private boolean             connected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +105,13 @@ public class LoginActivity extends AppCompatActivity implements
         hideProgressDialog();
     }
 
+    /**
+     * Method required when launching an Activity for result. We use it here to deal with the
+     * Google Sign In.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -172,6 +179,10 @@ public class LoginActivity extends AppCompatActivity implements
         );
     }
 
+    /**
+     * Method to show a dialog to the user to confirm they want to disconnect the account,
+     * resulting in deletion of local files.
+     */
     private void confirmDisconnectAccount() {
         AlertDialog dialog = new AlertDialog.Builder(new ContextThemeWrapper(LoginActivity.this, R.style.myDialog)).create();
 
