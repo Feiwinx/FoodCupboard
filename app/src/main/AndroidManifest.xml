@@ -62,7 +62,6 @@
         <activity
             android:name=".activities_fragments.ViewSingleRecipeActivity"
             android:icon="@drawable/ic_my_recipes"
-            android:parentActivityName=".activities_fragments.TabbedActivity"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
@@ -76,7 +75,13 @@
             android:parentActivityName=".activities_fragments.TabbedActivity"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".communication.SaveDriveActivity" />
+
+        <activity android:name=".communication.SaveDriveActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".communication.LoadDriveActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity
             android:name=".activities_fragments.AdvancedSearchActivity"
             android:icon="@drawable/ic_search"

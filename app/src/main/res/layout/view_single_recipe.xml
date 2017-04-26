@@ -9,6 +9,7 @@
     <!-- Static Bottom Bar: -->
     <LinearLayout android:id="@+id/ll_view_recipe_bar"
         android:orientation="horizontal"
+        android:padding="3dip"
         android:background="@color/colourAccent"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
@@ -66,13 +67,12 @@
             <!-- Master Image -->
             <ImageView
                 android:id="@+id/recipe_image_f"
-                android:src="@drawable/ps_question_mark"
                 android:layout_below="@id/recipe_title_f"
                 android:layout_margin="5dp"
                 android:adjustViewBounds="true"
                 android:focusable="false"
-                android:maxHeight="250dp"
-                android:maxWidth="250dp"
+                android:maxHeight="400dp"
+                android:maxWidth="400dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -82,13 +82,12 @@
                 android:id="@+id/dietary_veg_f"
                 android:src="@drawable/ps_vegetarian_img"
                 android:adjustViewBounds="true"
-                android:layout_toEndOf="@id/recipe_image_f"
-                android:layout_alignParentEnd="true"
                 android:layout_below="@id/recipe_title_f"
+                android:layout_toEndOf="@id/recipe_image_f"
                 android:layout_margin="5dp"
                 android:focusable="false"
-                android:maxHeight="50dp"
-                android:maxWidth="50dp"
+                android:maxHeight="35dp"
+                android:maxWidth="35dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -96,41 +95,12 @@
                 android:id="@+id/dietary_vegan_f"
                 android:src="@drawable/ps_vegan_img"
                 android:adjustViewBounds="true"
-                android:layout_toEndOf="@id/recipe_image_f"
-                android:layout_below="@id/dietary_veg_f"
-                android:layout_alignParentEnd="true"
+                android:layout_below="@id/recipe_title_f"
+                android:layout_toEndOf="@id/dietary_veg_f"
                 android:layout_margin="5dp"
                 android:focusable="false"
-                android:maxHeight="50dp"
-                android:maxWidth="50dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <ImageView
-                android:id="@+id/dietary_gluten_f"
-                android:src="@drawable/ps_gluten_img"
-                android:adjustViewBounds="true"
-                android:layout_toEndOf="@id/recipe_image_f"
-                android:layout_below="@id/dietary_vegan_f"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="5dp"
-                android:focusable="false"
-                android:maxHeight="50dp"
-                android:maxWidth="50dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <ImageView
-                android:id="@+id/dietary_dairy_f"
-                android:src="@drawable/ps_dairy_img"
-                android:adjustViewBounds="true"
-                android:layout_toEndOf="@id/recipe_image_f"
-                android:layout_below="@id/dietary_gluten_f"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="5dp"
-                android:focusable="false"
-                android:maxHeight="50dp"
-                android:maxWidth="50dp"
+                android:maxHeight="35dp"
+                android:maxWidth="35dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -138,13 +108,12 @@
                 android:id="@+id/dietary_healthy_f"
                 android:src="@drawable/ps_healthy_img"
                 android:adjustViewBounds="true"
+                android:layout_below="@id/dietary_vegan_f"
                 android:layout_toEndOf="@id/recipe_image_f"
-                android:layout_below="@id/dietary_dairy_f"
-                android:layout_alignParentEnd="true"
                 android:layout_margin="5dp"
                 android:focusable="false"
-                android:maxHeight="50dp"
-                android:maxWidth="50dp"
+                android:maxHeight="35dp"
+                android:maxWidth="35dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -152,13 +121,39 @@
                 android:id="@+id/dietary_cheap_f"
                 android:src="@drawable/ps_cheap_img"
                 android:adjustViewBounds="true"
-                android:layout_toEndOf="@id/recipe_image_f"
-                android:layout_below="@id/dietary_healthy_f"
+                android:layout_below="@id/recipe_title_f"
+                android:layout_toEndOf="@id/dietary_vegan_f"
                 android:layout_alignParentEnd="true"
                 android:layout_margin="5dp"
                 android:focusable="false"
-                android:maxHeight="50dp"
-                android:maxWidth="50dp"
+                android:maxHeight="35dp"
+                android:maxWidth="35dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/dietary_dairy_f"
+                android:src="@drawable/ps_dairy_img"
+                android:adjustViewBounds="true"
+                android:layout_below="@id/dietary_healthy_f"
+                android:layout_toEndOf="@id/recipe_image_f"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:maxHeight="35dp"
+                android:maxWidth="35dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/dietary_gluten_f"
+                android:src="@drawable/ps_gluten_img"
+                android:adjustViewBounds="true"
+                android:layout_below="@id/dietary_healthy_f"
+                android:layout_toEndOf="@id/dietary_dairy_f"
+                android:layout_margin="5dp"
+                android:focusable="false"
+                android:maxHeight="35dp"
+                android:maxWidth="35dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -171,8 +166,8 @@
                 android:layout_below="@id/recipe_image_f"
                 android:layout_margin="5dp"
                 android:focusable="false"
-                android:maxHeight="50dp"
-                android:maxWidth="50dp"
+                android:maxHeight="35dp"
+                android:maxWidth="35dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -184,7 +179,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:gravity="center"
                 android:focusable="false"
                 android:layout_width="wrap_content"
@@ -198,8 +193,8 @@
                 android:layout_toEndOf="@id/recipe_time_f"
                 android:layout_margin="5dp"
                 android:focusable="false"
-                android:maxHeight="50dp"
-                android:maxWidth="50dp"
+                android:maxHeight="35dp"
+                android:maxWidth="35dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -211,7 +206,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:gravity="center"
                 android:focusable="false"
                 android:layout_width="wrap_content"
@@ -225,8 +220,8 @@
                 android:layout_toEndOf="@id/recipe_serves_f"
                 android:layout_margin="5dp"
                 android:focusable="false"
-                android:maxHeight="50dp"
-                android:maxWidth="50dp"
+                android:maxHeight="35dp"
+                android:maxWidth="35dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -239,7 +234,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:focusable="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

@@ -1,16 +1,23 @@
 package sammobewick.pocketkitchen.activities_fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.mashape.p.spoonacularrecipefoodnutritionv1.SpoonacularAPIClient;
@@ -24,6 +31,8 @@ import java.text.ParseException;
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.adapters.CustomRecipeAdapter;
 import sammobewick.pocketkitchen.adapters.SavedRecipesAdapter;
+import sammobewick.pocketkitchen.aws_intents.Dynamo_Download_Json;
+import sammobewick.pocketkitchen.data_objects.DynamoDB_Wrapper;
 import sammobewick.pocketkitchen.data_objects.Recipe_Full;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
@@ -44,7 +53,10 @@ public class MySavedRecipesActivity extends AppCompatActivity implements CustomR
     private AbsListView         mListView;
     private BaseAdapter         mAdapter;
     private APIController       controller;
+
+    private Recipe_Short        last_short;
     private boolean             customOnly;
+    private boolean             editRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +93,11 @@ public class MySavedRecipesActivity extends AppCompatActivity implements CustomR
         } else {
             // We only need the other adapter here instead of the other stuff.
             mAdapter = new CustomRecipeAdapter(this);
+            ((TextView)findViewById(R.id.saved_recipes_empty)).setText(getString(R.string.empty_my_recipes));
+
+            // Set up intent filters for getting Broadcasts back from AWS intent-services:
+            IntentFilter filter = new IntentFilter(Constants.BC_DOWNLOAD_NAME);
+            LocalBroadcastManager.getInstance(this).registerReceiver(new MySavedRecipesActivity.UploadReceiver(), filter);
         }
 
         // UNIVERSAL SETUP OF ADAPTER(S):
@@ -125,16 +142,40 @@ public class MySavedRecipesActivity extends AppCompatActivity implements CustomR
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        if (customOnly)
+            getMenuInflater().inflate(R.menu.menu_my_recipes, menu);
+        else
+            super.onCreateOptionsMenu(menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_custom_recipe:
+                Intent intent = new Intent(this, AddRecipeActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * This method is the preparation method for loading recipes, which then defers to other methods
      * to transition to the ViewSingleActivity method.
      * @param recipe_short Recipe_Short - the recipe that was selected from the ListView.
      */
     private void loadRecipeFull(Recipe_Short recipe_short) {
+        last_short = recipe_short;
         // Check network connectivity:
         if (!ActivityHelper.isConnected(getApplicationContext())) {
             ActivityHelper.displaySnackBarNoAction(getApplicationContext(), R.id.main_content, R.string.wifi_warning_short);
         } else {
+            editRequest = false;
             // Network connectivity exists! Load either type of recipe using other method:
             setProgressBar(true);
             if (customOnly) { loadFromAWS(recipe_short); }
@@ -147,15 +188,10 @@ public class MySavedRecipesActivity extends AppCompatActivity implements CustomR
      * @param recipe_short Recipe_Short - recipe to display.
      */
     private void loadFromAWS(final Recipe_Short recipe_short) {
-        // TODO: this.
-    }
-
-    /**
-     * Method to load an AWS recipe, but also set it up for editing.
-     * @param recipe_short Recipe_Short - recipe to display.
-     */
-    private void editFromAWS(final Recipe_Short recipe_short) {
-        // TODO: this.
+        String jsonKey = String.valueOf(recipe_short.getId());
+        Intent jsonDown = new Intent(MySavedRecipesActivity.this, Dynamo_Download_Json.class);
+        jsonDown.putExtra(Constants.JSON_DYNAMO_KEY, jsonKey);
+        this.startService(jsonDown);
     }
 
     /**
@@ -202,6 +238,24 @@ public class MySavedRecipesActivity extends AppCompatActivity implements CustomR
         intent.putExtra("view_single_recipe", r_full);
         intent.putExtra("recipe_short", r_short);
         startActivity(intent);
+        finish();
+    }
+
+    private void awsDownloaded(Recipe_Full rf) {
+        setProgressBar(false);
+        if (editRequest) {
+            editRecipe(last_short, rf);
+        } else {
+            viewRecipe(last_short, rf);
+        }
+    }
+
+    private void editRecipe(Recipe_Short rs, Recipe_Full rf) {
+        Intent intent = new Intent(this, AddRecipeActivity.class);
+        intent.putExtra("view_single_recipe", rf);
+        intent.putExtra("recipe_short", rs);
+        startActivity(intent);
+        finish();
     }
 
     /**
@@ -212,6 +266,33 @@ public class MySavedRecipesActivity extends AppCompatActivity implements CustomR
      */
     @Override
     public void OnEditButtonPressed(int position) {
-        editFromAWS((Recipe_Short)mAdapter.getItem(position));
+        editRequest = true;
+        loadFromAWS((Recipe_Short)mAdapter.getItem(position));
+    }
+
+    /**
+     * Private inner class to get Broadcast responses back in to this Activity.
+     * We register this in the OnCreate but basically this just handles unpacking the intent.
+     */
+    private class UploadReceiver extends BroadcastReceiver {
+
+        // Prevent instantiation:
+        private UploadReceiver() { /* UPLOAD RECEIVER */ }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Unpack Intent + pass to Activity:
+            boolean result          = intent.getExtras().getBoolean(Constants.BC_DOWNLOAD_ID);
+
+            if (result) {
+                DynamoDB_Wrapper data = (DynamoDB_Wrapper) intent.getExtras().get(Constants.BC_DOWNLOAD_DATA);
+                Recipe_Full recipe = new Recipe_Full(data.getJsonString());
+
+                // Send callback:
+                awsDownloaded(recipe);
+            } else {
+                ActivityHelper.displayUnknownError(context, getString(R.string.feedback_unknown_problem));
+            }
+        }
     }
 }

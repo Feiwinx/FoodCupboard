@@ -175,7 +175,16 @@ public class MySettingsActivity extends AppCompatPreferenceActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     Intent introIntent = new Intent(getActivity(), TutorialActivity.class);
+                    introIntent.putExtra("requested", true);
                     startActivity(introIntent);
+                    return false;
+                }
+            });
+
+            about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    ActivityHelper.displayAboutInfo(getActivity());
                     return false;
                 }
             });
@@ -209,12 +218,12 @@ public class MySettingsActivity extends AppCompatPreferenceActivity {
             final LocalFileHelper helper = new LocalFileHelper(getActivity());
 
             Preference delLocalBtn = findPreference(getString(R.string.pref_files_clear_local));
-            Preference delDriveBtn = findPreference(getString(R.string.pref_files_clear_drive));
+            Preference delDriveBtn = findPreference(getString(R.string.pref_files_clear_drive));;
 
             delLocalBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    helper.deleteAll();
+                    helper.deleteAll(true);
                     return false;
                 }
             });

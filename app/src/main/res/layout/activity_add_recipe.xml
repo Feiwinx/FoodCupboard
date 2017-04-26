@@ -23,7 +23,8 @@
         android:layout_height="wrap_content">
 
         <Button android:id="@+id/btn_add_custom_recipe"
-            style="@style/primLight_Btn"
+            style="Base.Widget.AppCompat.Button"
+            android:theme="@style/primLight_Btn"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,7 +72,6 @@
 
             <!-- Recipe Image -->
             <ImageView android:id="@+id/img_custom_recipe"
-                android:src="@drawable/ps_question_mark"
                 android:layout_marginBottom="3dp"
                 android:clickable="true"
                 android:layout_below="@id/lbl_add_custom_recipe"
@@ -135,7 +135,7 @@
                 android:scaleX="1.375"
                 android:scaleY="1.375"
                 android:src="@drawable/ic_arrow_down"
-                style="@style/primLight_ImgBtn"
+                style="@style/primLight_ImgBtn_AR"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/img_custom_recipe"
@@ -248,43 +248,43 @@
                     android:layout_height="wrap_content" />
 
                 <CheckBox android:id="@+id/check_cr_diet_eggs"
-                    android:text="@string/pref_dietary_eggs"
+                    android:text="@string/pref_dietary_eggs_free"
                     android:layout_columnWeight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <CheckBox android:id="@+id/check_cr_diet_dairy"
-                    android:text="@string/pref_dietary_dairy"
+                    android:text="@string/pref_dietary_dairy_free"
                     android:layout_columnWeight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <CheckBox android:id="@+id/check_cr_diet_gluten"
-                    android:text="@string/pref_dietary_gluten"
+                    android:text="@string/pref_dietary_gluten_free"
                     android:layout_columnWeight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <CheckBox android:id="@+id/check_cr_diet_nuts"
-                    android:text="@string/pref_dietary_nuts"
+                    android:text="@string/pref_dietary_nuts_free"
                     android:layout_columnWeight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <CheckBox android:id="@+id/check_cr_diet_seafood"
-                    android:text="@string/pref_dietary_seafood"
+                    android:text="@string/pref_dietary_seafood_free"
                     android:layout_columnWeight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <CheckBox android:id="@+id/check_cr_diet_shellfish"
-                    android:text="@string/pref_dietary_shellfish"
+                    android:text="@string/pref_dietary_shellfish_free"
                     android:layout_columnWeight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <CheckBox android:id="@+id/check_cr_diet_soy"
-                    android:text="@string/pref_dietary_soy"
+                    android:text="@string/pref_dietary_soy_free"
                     android:layout_columnWeight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />

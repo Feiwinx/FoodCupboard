@@ -42,6 +42,7 @@
 
         <EditText android:id="@+id/edit_search_terms"
             android:contentDescription="@string/hint_adv_search_search"
+            android:hint="@string/hint_adv_search_search"
             android:layout_margin="5dp"
             android:maxLines="1"
             android:inputType="textShortMessage"
@@ -338,43 +339,43 @@
                 android:layout_height="wrap_content"/>
 
             <CheckBox android:id="@+id/check_diet_eggs"
-                android:text="@string/pref_dietary_eggs"
+                android:text="@string/pref_dietary_eggs_free"
                 android:layout_columnWeight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <CheckBox android:id="@+id/check_diet_dairy"
-                android:text="@string/pref_dietary_dairy"
+                android:text="@string/pref_dietary_dairy_free"
                 android:layout_columnWeight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <CheckBox android:id="@+id/check_diet_gluten"
-                android:text="@string/pref_dietary_gluten"
+                android:text="@string/pref_dietary_gluten_free"
                 android:layout_columnWeight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <CheckBox android:id="@+id/check_diet_nuts"
-                android:text="@string/pref_dietary_nuts"
+                android:text="@string/pref_dietary_nuts_free"
                 android:layout_columnWeight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <CheckBox android:id="@+id/check_diet_seafood"
-                android:text="@string/pref_dietary_seafood"
+                android:text="@string/pref_dietary_seafood_free"
                 android:layout_columnWeight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <CheckBox android:id="@+id/check_diet_shellfish"
-                android:text="@string/pref_dietary_shellfish"
+                android:text="@string/pref_dietary_shellfish_free"
                 android:layout_columnWeight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <CheckBox android:id="@+id/check_diet_soy"
-                android:text="@string/pref_dietary_soy"
+                android:text="@string/pref_dietary_soy_free"
                 android:layout_columnWeight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

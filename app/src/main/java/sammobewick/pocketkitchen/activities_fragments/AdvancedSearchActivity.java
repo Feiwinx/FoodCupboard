@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -41,6 +42,7 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
     private APIController       controller;
     private ProgressBar         mProgressBar;
 
+    // Strings for building our search query:
     private String              query;
     private String              cuisine;
     private String              diet;
@@ -48,6 +50,10 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
     private String              type;
     private String              exclusions;
 
+    /**
+     * OnCreate method. Set up our API controller, checkboxes, and listeners:
+     * @param savedInstanceState Bundle - saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +64,6 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
         SpoonacularAPIClient api_client = new SpoonacularAPIClient();
         controller = api_client.getClient();
 
-
         // Set up the Vegan checkbox to disable/enable the vegetarian one:
         CheckBox chkVegan = (CheckBox) findViewById(R.id.check_diet_vegan);
         chkVegan.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -68,7 +73,7 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
             }
         });
 
-        // Click listeners for sections:
+        // Click listeners for drop-down sections:
         findViewById(R.id.lbl_recipe_type).setOnClickListener(this);
         findViewById(R.id.lbl_recipe_cuisine).setOnClickListener(this);
         findViewById(R.id.lbl_dietary_restrictions).setOnClickListener(this);
@@ -89,19 +94,27 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
         }
     }
 
+    /**
+     * Overriden to handle options menu items being pressed. In this case it's our back button (home),
+     * clear button, and search button.
+     * @param item MenuItem - the item that was pressed.
+     * @return boolean - calls super.OnOptionsItemSelected(item)
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // The entire reason for this is to return to the recipe list rather than resetting the
-            // TabbedActivity to fragment 1.
+            // The reason for this is to return to the recipe list rather than resetting the
+            // TabbedActivity the default fragment. Preventing user confusion.
             case android.R.id.home:
                 onBackPressed();
                 return true;
 
+            // Clear button:
             case R.id.action_clear:
                 clear();
                 break;
 
+            // Search button:
             case R.id.action_search:
                 if (!ActivityHelper.isConnected(AdvancedSearchActivity.this)) {
                     ActivityHelper.displaySnackBarNoAction(AdvancedSearchActivity.this, R.id.sv_adv_search, R.string.wifi_warning_short);
@@ -111,6 +124,10 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Method to run our search. As we have our recipes displayed defined in our singleton then
+     * all we need to do is handle the result as usual (using callback), and close this activity.
+     */
     private void search() {
         // Show progress bar, set up the data, make query, then exit the activity:
         setProgressBar(true);
@@ -144,7 +161,7 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
                             // End activity:
                             onBackPressed();
 
-                        } catch (ParseException e) {
+                        } catch (ParseException e) { // Thrown by parseAsString()
                             ActivityHelper.displayUnknownError(AdvancedSearchActivity.this, e.getLocalizedMessage());
                             Log.e(TAG, "Parsing recipe failed!\n" + e.getLocalizedMessage());
                         }
@@ -159,7 +176,7 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
     }
 
     /**
-     * Simple method to reset all fields.
+     * Simple method to reset all fields to their default values (unticked / empty):
      */
     private void clear() {
         ((EditText) findViewById(R.id.edit_search_terms)).setText("");
@@ -356,8 +373,11 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
     private void setProgressBar(boolean visible){
         if (visible) {
             mProgressBar.setVisibility(View.VISIBLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         } else {
             mProgressBar.setVisibility(View.GONE);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     }
 

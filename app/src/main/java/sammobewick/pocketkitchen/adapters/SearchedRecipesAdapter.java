@@ -25,6 +25,7 @@ import sammobewick.pocketkitchen.supporting.DataListener;
 public class SearchedRecipesAdapter extends BaseAdapter implements DataListener {
     private List<Recipe_Short> data;
     private String urlStart;
+    private boolean suggestion;
 
     @Override
     public void dataUpdate() {
@@ -92,8 +93,13 @@ public class SearchedRecipesAdapter extends BaseAdapter implements DataListener 
 
         vh.recipeTitle.setText(recipe.getTitle());
 
-        // TODO: Establish whether or not to include the below? It's not really useful!
-        String desc = "This can be made in " + recipe.getReadyInMinutes() + " minutes.";
+        // Description Text:
+        String desc;
+        if (!suggestion)
+            desc = "This can be made in " + recipe.getReadyInMinutes() + " minutes.";
+        else
+            desc = "This recipe is ranked " + position+1 + " in how likely you can cook it.";
+
         vh.recipeDesc.setText(desc);
 
         // Load the images using aSync task:
@@ -126,10 +132,9 @@ public class SearchedRecipesAdapter extends BaseAdapter implements DataListener 
     public void setData(List<Recipe_Short> data) {
         this.data = data;
         this.notifyDataSetChanged();
+    }
 
-        /* DEBUG
-        for(Recipe_Short r : data) {
-            System.out.println("DATA: " + r.getTitle());
-        } // END-DEBUG */
+    public void setSuggestion(boolean suggestion) {
+        this.suggestion = suggestion;
     }
 }

@@ -87,8 +87,8 @@ public class RvA_Custom_Ingredients extends RecyclerView.Adapter<RvA_Custom_Ingr
      */
     public void addBlankItem() {
         if (data != null) {
-            data.add(new Ingredient((float) 0, "", ""));
-            notifyItemInserted(data.size() - 1);
+            data.add(0, new Ingredient((float) 0, "", ""));
+            notifyItemInserted(0);
             System.out.println("RV-SIZE:" + data.size());
         }
     }
@@ -140,5 +140,10 @@ public class RvA_Custom_Ingredients extends RecyclerView.Adapter<RvA_Custom_Ingr
 
     public List<Ingredient> getData() {
         return data;
+    }
+
+    public void setData(List<Ingredient> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 }

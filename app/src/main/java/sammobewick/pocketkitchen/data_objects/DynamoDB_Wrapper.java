@@ -17,6 +17,9 @@ public class DynamoDB_Wrapper implements Serializable {
     private String jsonKey;
     private String jsonString;
 
+    public DynamoDB_Wrapper() {
+    }
+
     public DynamoDB_Wrapper(String jsonKey, String jsonString) {
         this.jsonKey = jsonKey;
         this.jsonString = jsonString;
@@ -30,5 +33,13 @@ public class DynamoDB_Wrapper implements Serializable {
     @DynamoDBAttribute(attributeName = "json")
     public String getJsonString() {
         return jsonString;
+    }
+
+    public void setJsonKey(String jsonKey) {
+        this.jsonKey = jsonKey;
+    }
+
+    public void setJsonString(String jsonString) {
+        this.jsonString = jsonString;
     }
 }

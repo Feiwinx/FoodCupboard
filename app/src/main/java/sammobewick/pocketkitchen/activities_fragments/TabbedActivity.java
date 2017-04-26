@@ -1,5 +1,6 @@
 package sammobewick.pocketkitchen.activities_fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -11,7 +12,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -118,6 +121,9 @@ public class TabbedActivity extends AppCompatActivity implements
         fab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_export_list);
         fab.setOnClickListener(this);
 
+        fab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_suggest_recipes);
+        fab.setOnClickListener(this);
+
         menu = (com.github.clans.fab.FloatingActionMenu) findViewById(R.id.fab);
 
         // Initialise this method with the first fragment:
@@ -127,6 +133,14 @@ public class TabbedActivity extends AppCompatActivity implements
         if (!firstTimeUsage) {
             Intent introIntent = new Intent(this, TutorialActivity.class);
             startActivity(introIntent);
+        } else {
+            // Only download from Drive if the settings allow for it:
+            if (sharedPreferences.contains(getString(R.string.pref_files_disable_drive))) {
+                if (!sharedPreferences.getBoolean(getString(R.string.pref_files_disable_drive), false)) {
+                    if (ActivityHelper.isConnected(TabbedActivity.this))
+                        ActivityHelper.downloadFromDrive(TabbedActivity.this);
+                }
+            }
         }
     }
 
@@ -157,17 +171,6 @@ public class TabbedActivity extends AppCompatActivity implements
                 startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        FloatingActionMenu fam = (FloatingActionMenu) findViewById(R.id.fab);
-        if (fam.isOpened()) {
-            fam.close(true);
-            return;
-        }
-
-        super.onBackPressed();
     }
 
     @Override
@@ -280,40 +283,52 @@ public class TabbedActivity extends AppCompatActivity implements
     private void fragmentSelected(int type) {
         Log.d(TAG, "Fragment selected. ID of " + type);
         this.lastFragmentId = type;
-        menu.close(true);
+        menu.close(false);
+
+        // These lines here solved the FAB issues that existed before:
+        findViewById(R.id.fab_add_list).setVisibility(View.GONE);
+        findViewById(R.id.fab_export_list).setVisibility(View.GONE);
+
         switch (type) {
             case KITCHEN_FRAG_ID:   // Kitchen Fragment
-                //findViewById(R.id.fab_scan_receipts).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_add_list).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_view_saved).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_view_my_recipes).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_search_recipes).setVisibility(View.VISIBLE);
+                //findViewById(R.id.fab_scan_receipts).setVisibility(View.VISIBLE);
+                //findViewById(R.id.fab_view_saved).setVisibility(View.VISIBLE);
+                //findViewById(R.id.fab_view_my_recipes).setVisibility(View.VISIBLE);
+                //findViewById(R.id.fab_search_recipes).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_add_recipe).setVisibility(View.GONE);
                 findViewById(R.id.fab_export_list).setVisibility(View.VISIBLE);
+                findViewById(R.id.fab_suggest_recipes).setVisibility(View.GONE);
                 break;
 
             case LIST_FRAG_ID:      // Shopping Fragment
-                //findViewById(R.id.fab_scan_receipts).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_add_list).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_view_saved).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_view_my_recipes).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_search_recipes).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_add_recipe).setVisibility(View.GONE);
+                //findViewById(R.id.fab_scan_receipts).setVisibility(View.VISIBLE);
+                //findViewById(R.id.fab_view_saved).setVisibility(View.VISIBLE);
+                //findViewById(R.id.fab_view_my_recipes).setVisibility(View.VISIBLE);
+                //findViewById(R.id.fab_search_recipes).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_export_list).setVisibility(View.VISIBLE);
+                findViewById(R.id.fab_add_recipe).setVisibility(View.GONE);
+                findViewById(R.id.fab_suggest_recipes).setVisibility(View.GONE);
                 break;
 
             case RECIPE_FRAG_ID:    // Recipe Fragment:
-                findViewById(R.id.fab_search_recipes).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_add_recipe).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_view_saved).setVisibility(View.VISIBLE);
-                findViewById(R.id.fab_view_my_recipes).setVisibility(View.VISIBLE);
+                //findViewById(R.id.fab_scan_receipts).setVisibility(View.GONE);
+                //findViewById(R.id.fab_search_recipes).setVisibility(View.VISIBLE);
+                //findViewById(R.id.fab_view_saved).setVisibility(View.VISIBLE);
+                //findViewById(R.id.fab_view_my_recipes).setVisibility(View.VISIBLE);
+                findViewById(R.id.fab_suggest_recipes).setVisibility(View.VISIBLE);
                 findViewById(R.id.fab_add_list).setVisibility(View.GONE);
                 findViewById(R.id.fab_export_list).setVisibility(View.GONE);
-                //findViewById(R.id.fab_scan_receipts).setVisibility(View.GONE);
                 break;
         }
     }
 
+    /**
+     * Helper method which allows us to get the Export String
+     * @return
+     */
     private String getExportString() {
         String result = "";
         List<Ingredient> data;
@@ -340,6 +355,10 @@ public class TabbedActivity extends AppCompatActivity implements
     protected void onPostResume() {
         super.onPostResume();
 
+        // Always a good idea to save:
+        LocalFileHelper helper = new LocalFileHelper(this);
+        helper.saveAll();
+
         // Check network connectivity on resume:
         if (!ActivityHelper.isConnected(getApplicationContext())) {
             Log.i(TAG, "No connection onPostResume!");
@@ -351,6 +370,46 @@ public class TabbedActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void finish() {
+        if (sharedPreferences.contains(getString(R.string.pref_files_disable_drive))) {
+            if (!sharedPreferences.getBoolean(getString(R.string.pref_files_disable_drive), false)) {
+                if (ActivityHelper.isConnected(TabbedActivity.this))
+                    ActivityHelper.uploadToDrive(TabbedActivity.this);
+            }
+        }
+        super.finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        FloatingActionMenu fam = (FloatingActionMenu) findViewById(R.id.fab);
+        if (fam.isOpened()) {
+            fam.close(true);
+            return;
+        }
+
+        final LocalFileHelper helper = new LocalFileHelper(getApplicationContext());
+
+        new AlertDialog.Builder(new ContextThemeWrapper(TabbedActivity.this, R.style.myDialog))
+                .setTitle("Confirm Exit")
+                .setMessage("Are you sure you want to exit?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    /**
+     * Overidden OnPause method for when the Activity is left. Save is called as most changes
+     * will occur from this Activity.
+     */
+    @Override
     protected void onPause() {
         // Save all files:
         LocalFileHelper helper = new LocalFileHelper(this);
@@ -358,9 +417,15 @@ public class TabbedActivity extends AppCompatActivity implements
         super.onPause();
     }
 
+    /**
+     * OnClick as we listen for various clicks in this Activity.
+     * @param v View - being the View which was pressed.
+     */
     @Override
     public void onClick(View v) {
         Intent intent;
+
+        // Switch our View ID:
         switch (v.getId()) {
             case R.id.fab_add_list:         // Adding to the Shopping List:
                 if (lastFragmentId == LIST_FRAG_ID)
@@ -418,7 +483,39 @@ public class TabbedActivity extends AppCompatActivity implements
                 intent.setType("text/plain");
                 startActivity(Intent.createChooser(intent, getString(R.string.action_export_intent_list)));
                 break;
+
+            case R.id.fab_suggest_recipes: // Suggest Recipes
+                suggestRecipes();
+                break;
         }
+    }
+
+    /**
+     * Method for getting recipe suggestions based on cupboards.
+     * Passes the query to the fragment for searching, but handles empty kitchen here.
+     */
+    private void suggestRecipes() {
+        PocketKitchenData pkData = PocketKitchenData.getInstance();
+
+        String query = pkData.getIngredientQuery();
+
+        if (query.length() > 0) {
+            ((SearchRecipesFragment) getSupportFragmentManager().findFragmentByTag(getFragmentTag(RECIPE_FRAG_ID)))
+                    .runSuggestionSearch(query);
+        } else {
+            ActivityHelper.displayKnownError(getApplicationContext(),
+                    "To do this, you'll need some ingredients in your Kitchen first!");
+        }
+    }
+
+    /**
+     * Helper method for identifying a fragment using it's tag. The structure of which is defined
+     * by Android.
+     * @param index int - being the value of the fragment.
+     * @return String - being the tag.
+     */
+    private String getFragmentTag(int index) {
+        return "android:switcher:" + mViewPager.getId() + ":" + index;
     }
 
     /**

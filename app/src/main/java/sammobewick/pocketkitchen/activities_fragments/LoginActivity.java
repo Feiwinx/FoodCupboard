@@ -12,6 +12,7 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -51,23 +52,32 @@ public class LoginActivity extends AppCompatActivity implements
     private boolean             signedIn;
     private boolean             connected;
 
+    /**
+     * OnCreate method. Sets up our default values (i.e. UI, signedIn), and creates our sign-in client.
+     * Also sets up our listeners for the buttons.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // Grab the shared preferences:
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get the bundled extras. These only exist when returning to this activity.
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             if (extras.containsKey("signedIn")) {
                 signedIn = extras.getBoolean("signedIn", false);
+
+                //if (sharedPreferences.contains("user_name")) {
+                    setWelcomeMessage(sharedPreferences.getString("user_name", "Guest"));
+                //}
             }
         } else { signedIn = false; }
 
         Log.i(TAG, "Got signed-in argument of: " + signedIn);
-
-        // Grab the shared preferences:
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Update UI:
         updateUI(signedIn);
@@ -122,8 +132,14 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * OnClick method for our buttons, as we have set our listener to be this class (rather than
+     * creating a pre-defined listener for each).
+     * @param v View - the view that was pressed.
+     */
     @Override
     public void onClick(View v) {
+        // Switch the view ID to establish which was pressed:
         switch (v.getId()) {
             case R.id.btn_google_sign_in:
                 if (!ActivityHelper.isConnected(LoginActivity.this)) {
@@ -174,6 +190,12 @@ public class LoginActivity extends AppCompatActivity implements
                         // Set up the UI for signed out and action complete:
                         updateUI(false);
                         hideProgressDialog();
+
+                        // TODO: something here
+                        //LocalFileHelper helper = new LocalFileHelper(LoginActivity.this);
+                        //helper.deleteAll(true);
+                        //PocketKitchenData pkData = PocketKitchenData.getInstance();
+                        //pkData.setRecipesDisplayed(null);
                     }
                 }
         );
@@ -222,7 +244,7 @@ public class LoginActivity extends AppCompatActivity implements
                     public void onResult(@NonNull Status status) {
                         // Only on success do we delete the data:
                         LocalFileHelper helper = new LocalFileHelper(LoginActivity.this);
-                        helper.deleteAllNoDialog();
+                        helper.deleteAllNoDialog(false);
 
                         // Set up the UI for signed out and action complete:
                         updateUI(false);
@@ -255,6 +277,9 @@ public class LoginActivity extends AppCompatActivity implements
         if (result.isSuccess()) {
             // We will want to reference their name/ID later so save them to the application:
             GoogleSignInAccount acct = result.getSignInAccount();
+
+            setWelcomeMessage(acct != null ? acct.getDisplayName() : "Guest");
+
             sharedPreferences.edit()
                     .putString("user_id", acct != null ? acct.getId() : null)
                     .putString("user_name", acct != null ? acct.getDisplayName() : null)
@@ -264,8 +289,8 @@ public class LoginActivity extends AppCompatActivity implements
             updateUI(true);
 
             // Load local files:
-            LocalFileHelper helper = new LocalFileHelper(this);
-            helper.loadAll();
+            //LocalFileHelper helper = new LocalFileHelper(this);
+            //helper.loadAll();
 
             // Automatically continue when signing in, but not when returning to this activity:
             if (!signedIn & connected) { this.proceed(); }
@@ -276,16 +301,28 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     /**
+     * Sets up our welcome message once logged in.
+     * @param name String - being the name to display.
+     */
+    private void setWelcomeMessage(String name) {
+        TextView welcome    = (TextView) findViewById(R.id.login_welcome);
+        String welcomeText  = String.format(getString(R.string.lbl_welcome_msg), name);
+        welcome.setText(welcomeText);
+    }
+
+    /**
      * Updates our UI depending on signed in or out.
      * @param signedIn boolean - are we signed in?
      */
     private void updateUI(boolean signedIn) {
         if (signedIn) {
+            findViewById(R.id.login_welcome).setVisibility(View.VISIBLE);
             findViewById(R.id.btn_google_disconnect).setVisibility(View.VISIBLE);
             findViewById(R.id.btn_google_sign_out).setVisibility(View.VISIBLE);
             findViewById(R.id.btn_google_sign_in).setVisibility(View.GONE);
             findViewById(R.id.btn_proceed).setVisibility(View.VISIBLE);
         } else {
+            findViewById(R.id.login_welcome).setVisibility(View.GONE);
             findViewById(R.id.btn_google_disconnect).setVisibility(View.GONE);
             findViewById(R.id.btn_google_sign_out).setVisibility(View.GONE);
             findViewById(R.id.btn_google_sign_in).setVisibility(View.VISIBLE);

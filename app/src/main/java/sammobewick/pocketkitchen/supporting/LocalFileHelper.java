@@ -62,77 +62,61 @@ public class LocalFileHelper {
         dialog.show();
     }
 
+
+
     public void saveAll() {
-        this.saveInCupboards();
-        this.saveIngredientsRequired();
-        this.saveRecipesToCook();
-        this.saveMyRecipes();
+        RunSaveIngredients run1 = new RunSaveIngredients();
+        run1.run();
+
+        RunSaveRecipes run2 = new RunSaveRecipes();
+        run2.run();
+
+        RunSaveInCupboards run3 = new RunSaveInCupboards();
+        run3.run();
+
+        RunSaveMyRecipes run4 = new RunSaveMyRecipes();
+        run4.run();
     }
 
     public void loadAll() {
-        this.loadInCupboards();
-        this.loadIngredientsRequired();
-        this.loadRecipesToCook();
-        this.loadMyRecipes();
+        RunLoadIngredients run1 = new RunLoadIngredients();
+        run1.run();
+
+        RunLoadRecipes run2 = new RunLoadRecipes();
+        run2.run();
+
+        RunLoadInCupboards run3 = new RunLoadInCupboards();
+        run3.run();
+
+        RunLoadMyRecipes run4 = new RunLoadMyRecipes();
+        run4.run();
     }
 
-    // NOTE: So far as DRIVE data does not exist, this is only local!
-    public void deleteAll() {
-        RunDeleteFiles run = new RunDeleteFiles();
+    public void deleteAll(boolean revisitTutorial) {
+        RunDeleteFiles run = new RunDeleteFiles(revisitTutorial);
         ConfirmRunnable("Are you sure you want to delete all locally-stored files?", run);
     }
 
-    public void deleteAllNoDialog() {
-        RunDeleteFiles run = new RunDeleteFiles();
-        run.run();
-    }
-
-    public void saveIngredientsRequired() {
-        RunSaveIngredients run = new RunSaveIngredients();
-        run.run();
-    }
-
-    public void saveRecipesToCook() {
-        RunSaveRecipes run = new RunSaveRecipes();
-        run.run();
-    }
-
-    public void saveInCupboards() {
-        RunSaveInCupboards run = new RunSaveInCupboards();
-        run.run();
-    }
-
-    public void saveMyRecipes() {
-        RunSaveMyRecipes run = new RunSaveMyRecipes();
-        run.run();
-    }
-
-    public void loadIngredientsRequired() {
-        RunLoadIngredients run = new RunLoadIngredients();
-        run.run();
-    }
-
-    public void loadRecipesToCook() {
-        RunLoadRecipes run = new RunLoadRecipes();
-        run.run();
-    }
-
-    public void loadInCupboards() {
-        RunLoadInCupboards run = new RunLoadInCupboards();
-        run.run();
-    }
-
-    public void loadMyRecipes() {
-        RunLoadMyRecipes run = new RunLoadMyRecipes();
+    public void deleteAllNoDialog(boolean revisitTutorial) {
+        RunDeleteFiles run = new RunDeleteFiles(revisitTutorial);
         run.run();
     }
 
     private class RunDeleteFiles implements Runnable {
+        private boolean tutorial;
+
+        public RunDeleteFiles(boolean tutorial) {
+            this.tutorial = tutorial;
+        }
+
         @Override
         public void run() {
             // Clear our preferences:
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            prefs.edit().clear().apply();
+            prefs.edit().clear();
+
+            // However, chuck back in the tutorial if required:
+            prefs.edit().putBoolean("firstTimeUsage", tutorial).apply();
 
             // Clear the local data:
             PocketKitchenData pkData = PocketKitchenData.getInstance();
@@ -147,86 +131,119 @@ public class LocalFileHelper {
         }
     }
 
-    private class RunSaveIngredients implements Runnable {
+    public class RunSaveIngredients implements Runnable {
+
+        private Map<Integer, List<Ingredient>> dataToSave;
+
+        public RunSaveIngredients(Map<Integer, List<Ingredient>> dataToSave) {
+            this.dataToSave = dataToSave;
+        }
+
+        public RunSaveIngredients() {
+            PocketKitchenData pkData = PocketKitchenData.getInstance();
+            this.dataToSave = pkData.getRecipe_ingredients();
+        }
+
         @Override
         public void run() {
-            Map<Integer, List<Ingredient>> data;
-
-            PocketKitchenData pkData = PocketKitchenData.getInstance();
-            data = pkData.getRecipe_ingredients();
-
-            try {
-                FileOutputStream fos = context.openFileOutput(Constants.INGREDIENTS, Context.MODE_PRIVATE);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(data);
-                oos.close();
-                fos.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(TAG, e.getLocalizedMessage());
+            if (dataToSave != null) {
+                try {
+                    FileOutputStream fos = context.openFileOutput(Constants.INGREDIENTS, Context.MODE_PRIVATE);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(dataToSave);
+                    oos.close();
+                    fos.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "Error when saving data!", e);
+                }
             }
         }
     }
 
-    private class RunSaveRecipes implements Runnable {
+    public class RunSaveRecipes implements Runnable {
+        private List<Recipe_Short> dataToSave;
+
+        public RunSaveRecipes(List<Recipe_Short> dataToSave) {
+            this.dataToSave = dataToSave;
+        }
+
+        public RunSaveRecipes() {
+            PocketKitchenData pkData = PocketKitchenData.getInstance();
+            this.dataToSave = pkData.getRecipesToCook();
+        }
+
         @Override
         public void run() {
-            List<Recipe_Short> data;
-
-            PocketKitchenData pkData = PocketKitchenData.getInstance();
-            data = pkData.getRecipesToCook();
-
-            try {
-                FileOutputStream fos = context.openFileOutput(Constants.RECIPES, Context.MODE_PRIVATE);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(data);
-                oos.close();
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e(TAG, e.getLocalizedMessage());
+            if (dataToSave != null) {
+                try {
+                    FileOutputStream fos = context.openFileOutput(Constants.RECIPES, Context.MODE_PRIVATE);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(dataToSave);
+                    oos.close();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "Error when saving data!", e);
+                }
             }
         }
     }
 
-    private class RunSaveInCupboards implements Runnable {
+    public class RunSaveInCupboards implements Runnable {
+        private List<Ingredient> dataToSave;
+
+        public RunSaveInCupboards(List<Ingredient> dataToSave) {
+            this.dataToSave = dataToSave;
+        }
+
+        public RunSaveInCupboards() {
+            PocketKitchenData pkData = PocketKitchenData.getInstance();
+            this.dataToSave = pkData.getInCupboards();
+        }
+
         @Override
         public void run() {
-            List<Ingredient> data;
-
-            PocketKitchenData pkData = PocketKitchenData.getInstance();
-            data = pkData.getInCupboards();
-
-            try {
-                FileOutputStream fos = context.openFileOutput(Constants.IN_CUPBOARDS, Context.MODE_PRIVATE);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(data);
-                oos.close();
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e(TAG, e.getLocalizedMessage());
+            if (dataToSave != null) {
+                try {
+                    FileOutputStream fos = context.openFileOutput(Constants.IN_CUPBOARDS, Context.MODE_PRIVATE);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(dataToSave);
+                    oos.close();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "Error when saving data!", e);
+                }
             }
         }
     }
 
-    private class RunSaveMyRecipes implements Runnable {
+    public class RunSaveMyRecipes implements Runnable {
+        private List<Recipe_Short> dataToSave;
+
+        public RunSaveMyRecipes(List<Recipe_Short> dataToSave) {
+            this.dataToSave = dataToSave;
+        }
+
+        public RunSaveMyRecipes() {
+            PocketKitchenData pkData = PocketKitchenData.getInstance();
+            this.dataToSave = pkData.getMyCustomRecipes();
+        }
+
         @Override
         public void run() {
-            List<Recipe_Short> data;
-
-            PocketKitchenData pkData = PocketKitchenData.getInstance();
-            data = pkData.getMyCustomRecipes();
-
-            try {
-                FileOutputStream fos = context.openFileOutput(Constants.MY_RECIPES, Context.MODE_PRIVATE);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(data);
-                oos.close();
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e(TAG, e.getLocalizedMessage());
+            if (dataToSave != null) {
+                try {
+                    FileOutputStream fos = context.openFileOutput(Constants.MY_RECIPES, Context.MODE_PRIVATE);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(dataToSave);
+                    oos.close();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "Error when saving data!", e);
+                }
             }
         }
     }
@@ -235,7 +252,6 @@ public class LocalFileHelper {
         @Override
         public void run() {
             PocketKitchenData pkData = PocketKitchenData.getInstance();
-
             try {
                 FileInputStream fis = context.openFileInput(Constants.IN_CUPBOARDS);
                 ObjectInputStream ois = new ObjectInputStream(fis);
@@ -246,7 +262,7 @@ public class LocalFileHelper {
 
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-                Log.e(TAG, e.getLocalizedMessage());
+                Log.e(TAG, "Error when saving data!", e);
             }
         }
     }
@@ -266,7 +282,7 @@ public class LocalFileHelper {
 
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-                Log.e(TAG, e.getLocalizedMessage());
+                Log.e(TAG, "Error when saving data!", e);
             }
         }
     }

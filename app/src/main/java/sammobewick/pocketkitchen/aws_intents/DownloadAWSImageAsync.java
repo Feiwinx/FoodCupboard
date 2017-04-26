@@ -8,7 +8,9 @@ import android.widget.ImageView;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
@@ -17,8 +19,6 @@ import com.amazonaws.services.s3.AmazonS3Client;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 import sammobewick.pocketkitchen.supporting.Constants;
 
@@ -30,6 +30,7 @@ import sammobewick.pocketkitchen.supporting.Constants;
 public final class DownloadAWSImageAsync extends AsyncTask<String, Void, Bitmap> {
     private Context     mContext;
     private ImageView   bitmapImg;
+    private File        img_file;
 
     public DownloadAWSImageAsync(Context context, ImageView bitmapImg) {
         this.mContext   = context;
@@ -52,12 +53,12 @@ public final class DownloadAWSImageAsync extends AsyncTask<String, Void, Bitmap>
             TransferUtility transferUtility = new TransferUtility(s3, mContext);
 
             File temp_dir = mContext.getCacheDir();
-            File img_file = File.createTempFile("aws_temp_bmp", ".bmp", temp_dir);
+            img_file = File.createTempFile("aws_temp_bmp", ".bmp", temp_dir);
 
             TransferObserver observer = transferUtility.download(
                     Constants.S3_BUCKET_NAME, key, img_file);
 
-            img = BitmapFactory.decodeFile(img_file.getAbsolutePath());
+            observer.setTransferListener(new DownloadListener());
 
         } catch (AmazonServiceException ase) {
             ase.printStackTrace();
@@ -71,5 +72,26 @@ public final class DownloadAWSImageAsync extends AsyncTask<String, Void, Bitmap>
     @Override
     protected void onPostExecute(Bitmap bitmap) {
         bitmapImg.setImageBitmap(bitmap);
+    }
+
+    private class DownloadListener implements TransferListener {
+
+        @Override
+        public void onStateChanged(int id, TransferState state) {
+            if (state == TransferState.COMPLETED) {
+                Bitmap img = BitmapFactory.decodeFile(img_file.getAbsolutePath());
+                bitmapImg.setImageBitmap(img);
+            }
+        }
+
+        @Override
+        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+
+        }
+
+        @Override
+        public void onError(int id, Exception ex) {
+
+        }
     }
 }

@@ -42,6 +42,12 @@
     <string name="lbl_btn_sign_out">Sign Out of Google Account</string>
     <string name="lbl_btn_disconnect">Revoke Google Account Access</string>
     <string name="lbl_btn_proceed">Go To Pocket Kitchen</string>
+    <string name="lbl_welcome_msg">Welcome %1$s!</string>
+
+    <string name="lbl_drive_data">SYNCING DATA…</string>
+
+    <string name="lbl_item_for_dialog">item</string>
+    <string name="lbl_1_for_dialog">1</string>
 
    <!-- Viewing Recipe Details -->
     <string name="lbl_recipe_popular_f">Popular!</string>
@@ -69,6 +75,7 @@
     <string name="lbl_fab_view_saved">View Saved Recipes</string>
     <string name="lbl_fab_view_my_recipes">View My Custom Recipes</string>
     <string name="lbl_fab_export_list">Export List</string>
+    <string name="lbl_fab_suggestion">Get Suggestions</string>
 
     <!-- Dialogs -->
     <string name="lbl_dialog_edit_item">Edit List Item</string>
@@ -137,7 +144,7 @@
     <string name="lbl_adv_search_cuisine_greek">Greek</string>
     <string name="lbl_adv_search_cuisine_german">German</string>
     <string name="lbl_adv_search_cuisine_caribbean">Caribbean</string>
-    <string name="hint_adv_search_search">Search for recipes…</string>
+    <string name="hint_adv_search_search">Optional search terms…</string>
     <string name="hint_adv_search_clear">Reset all fields</string>
     <string name="hint_adv_search_terms">Enter your keywords here!</string>
     <string name="hint_adv_search_type">Narrow your search to a specific recipe type</string>
@@ -163,6 +170,23 @@
     <string name="hint_btn_proceed">Click to proceed to the Pocket Kitchen application</string>
     <string name="hint_img_not_provided">No image provided by Spoonacular for this!</string>
     <string name="hint_img_for_custom">No image has been provided for this custom ingredient!</string>
+
+    <!-- About -->
+    <string name="lbl_about_title">About Pocket Kitchen:</string>
+    <string name="lbl_about_desc">
+        Pocket Kitchen was developed by Sam Bewick as part of a final year University project at Plymouth University.
+        It is intended to be a flexible application to help manage your diet or shopping habits.\n\n
+        The following libraries or SDKs are used to support the application:\n
+        \n- Spoonacular Academic License :\n\t spoonacular.com/food-api/sdk \n
+        \n- Google GSON :\n\t com.google.code.gson:gson \n
+        \n- Google Drive :\n\t com.google.android.gms:play-services-drive \n
+        \n- Google Auth :\n\t com.google.android.gms:play-services-auth \n
+        \n- Paolo Rotolo :\n\t com.github.paolorotolo:appintro \n
+        \n- Clans\' FAB Menu :\n\t com.github.clans:fab \n
+        \n- Amazon SDK :\n\t com.amazonaws:aws-android-sdk-core \n
+        \n- Amazon S3 :\n\t com.amazonaws:aws-android-sdk-s3 \n
+        \n- Amazon DynamoDB :\n\t con.amazonaws:aws-android-sdk-ddb-mapper \n
+    </string>
 
     <!-- Intro Slide Text -->
     <string name="intro_welcome_title">Welcome to Pocket Kitchen!</string>
@@ -217,6 +241,7 @@
     <string name="empty_list">Success!\n\nYou don\'t have to go shopping!</string>
     <string name="empty_kitchen">Oops!\n\nYour cupboards are looking empty, time to go get some shopping!</string>
     <string name="empty_saved_recipes">Nothing to see here! Find something to cook!</string>
+    <string name="empty_my_recipes">You haven\'t created any recipes yet, use the + button if you want to!</string>
     <string name="no_results">
         Oh no! Your search returned no results,\n
         this could mean you have restricted the search too much!
@@ -257,6 +282,7 @@
     <string name="action_search">Search</string>
     <string name="action_clear">Clear</string>
     <string name="action_export">Export</string>
+    <string name="action_add_custom_recipe">Add Recipe</string>
 
     <string name="action_export_intent_recipe">Share recipe details…</string>
     <string name="action_export_intent_list">Share list details…</string>
@@ -283,18 +309,25 @@
     <string name="pref_dietary_cat_allergens">Allergens or Other Preferences</string>
     <string name="pref_dietary_dairy">Dairy</string>
     <string name="pref_dietary_dairy_hint">Exclude dairy from searched recipes.</string>
+    <string name="pref_dietary_dairy_free">Dairy Free</string>
     <string name="pref_dietary_eggs">Eggs</string>
     <string name="pref_dietary_eggs_hint">Exclude eggs from searched recipes.</string>
+    <string name="pref_dietary_eggs_free">No Eggs</string>
     <string name="pref_dietary_gluten">Gluten</string>
     <string name="pref_dietary_gluten_hint">Exclude gluten from searched recipes.</string>
+    <string name="pref_dietary_gluten_free">Gluten Free</string>
     <string name="pref_dietary_nuts">Nuts</string>
     <string name="pref_dietary_nuts_hint">Exclude all types of nuts. You can use advanced search to be more specific!</string>
+    <string name="pref_dietary_nuts_free">No Nuts</string>
     <string name="pref_dietary_seafood">Seafood</string>
     <string name="pref_dietary_seafood_hint">Exclude all seafood from search recipes.</string>
+    <string name="pref_dietary_seafood_free">No Seafood</string>
     <string name="pref_dietary_shellfish">Shellfish</string>
     <string name="pref_dietary_shellfish_hint">Exclude shellfish from search recipes.</string>
+    <string name="pref_dietary_shellfish_free">No Shellfish</string>
     <string name="pref_dietary_soy">Soy</string>
     <string name="pref_dietary_soy_hint">Exclude soy from searched recipes.</string>
+    <string name="pref_dietary_soy_free">No Soy</string>
 
     <!-- Settings for File Data -->
     <string name="pref_header_files">Pocket Kitchen Data</string>

@@ -7,10 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +21,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import sammobewick.pocketkitchen.R;
+import sammobewick.pocketkitchen.communication.LoadDriveActivity;
+import sammobewick.pocketkitchen.communication.SaveDriveActivity;
 import sammobewick.pocketkitchen.data_objects.Ingredient;
 import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 
@@ -34,6 +39,23 @@ import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 public class ActivityHelper {
     private static final String TAG = "ActivityHelper";
 
+    public static void uploadToDrive(Context context) {
+        Intent driveTest = new Intent(context, SaveDriveActivity.class);
+        driveTest.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(driveTest);
+    }
+
+    public static void downloadFromDrive(Context context) {
+        Log.d(TAG, "Download Called");
+        Intent driveTest = new Intent(context, LoadDriveActivity.class);
+        driveTest.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(driveTest);
+    }
+
+    public static void deleteFromDrive(Context context) {
+        // TODO: this.
+    }
+
     /**
      * Helper method to establish if the device has a data connection (of any sort).
      * @param context Context - required to check network connectivity.
@@ -45,6 +67,16 @@ public class ActivityHelper {
         NetworkInfo actNetwork = connMngr.getActiveNetworkInfo();
 
         return actNetwork != null && actNetwork.isConnectedOrConnecting();
+    }
+
+    /**
+     * Placeholder method so that if this feature is implemented, all relevant areas already call
+     * this method and pass the data along.
+     * @param error String - being the error message.
+     * @param extraInfo String - being additional information recorded at the time of the error.
+     */
+    public static void logErrorToServer(String error, String extraInfo) {
+        // TODO: Extra feature to log to AWS somewhere.
     }
 
     /**
@@ -80,7 +112,32 @@ public class ActivityHelper {
 
         dialog.setContentView(R.layout.dialog_dietary_key);
         dialog.setTitle(R.string.title_dietary_view_key);
-        dialog.findViewById(R.id.sv_dietary_key);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.findViewById(R.id.gv_dietary_key).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    /**
+     * Helper method to display the 'About' information box.
+     * @param context Context - required to display the dialog.
+     */
+    public static void displayAboutInfo(final Context context) {
+        final Dialog dialog = new Dialog(context);
+
+        dialog.setContentView(R.layout.dialog_about);
+        dialog.setTitle(R.string.pref_about_title);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.findViewById(R.id.ll_about).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
         dialog.show();
     }
 
@@ -90,6 +147,7 @@ public class ActivityHelper {
      * @param errorMessage String - error message to display [multi-purpose]
      */
     public static void displayUnknownError(final Context context, final String errorMessage) {
+        logErrorToServer(errorMessage, context.getPackageCodePath());
         new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.myDialog))
                 .setTitle("Oops! Something went wrong:")
                 .setMessage("Error: " + errorMessage + "\nYou may want to try again or report the error!")
@@ -97,13 +155,18 @@ public class ActivityHelper {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.e(TAG, "Unknown Error: " + errorMessage);
-                        // TODO: Possibly send this error to Amazon error table for fixing?
                     }
                 })
                 .show();
     }
 
+    /**
+     * Helper method to display a known error (i.e. something that makes sense or can be expected).
+     * @param context Context - required to display the dialog.
+     * @param errorMessage String - the base error message to display.
+     */
     public static void displayKnownError(final Context context, final String errorMessage) {
+        logErrorToServer(errorMessage, context.getPackageCodePath());
         new AlertDialog.Builder(new android.view.ContextThemeWrapper(context, R.style.myDialog))
                 .setTitle("Oops! There's a problem:")
                 .setMessage(errorMessage)
@@ -126,6 +189,23 @@ public class ActivityHelper {
         View layout = ((Activity) context).findViewById(layoutID);
         Snackbar.make(layout, stringResource, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
     }
+
+    /**
+     * Helper method to convert HTML. This should be used for recipe instructions as they can
+     * sometimes include HTML (depending on the source). However, in testing, I can no longer find
+     * and example of this!
+     * @param html String - being the HTML string.
+     * @return Spanned - being the Spanned representation of the original String [HTML-accounted for].
+     */
+    public static Spanned fromHtml(String html) {
+        Spanned result;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            result = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
+        } else result = Html.fromHtml(html);
+        return result;
+    }
+
+                            /*  LENGTHILY DIALOGS BELOW HERE */
 
     /**
      * Dialog method to add a shopping item to PocketKitchenData.
@@ -232,7 +312,7 @@ public class ActivityHelper {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (item != null ? item.isCustom() : false) { // REMOVE CUSTOM INGREDIENT:
+                        if (item != null && item.isCustom()) { // REMOVE CUSTOM INGREDIENT:
                             Ingredient customItem = new Ingredient(
                                     Float.valueOf(edit_qty.getText().toString()),
                                     edit_name.getText().toString(),
@@ -241,10 +321,10 @@ public class ActivityHelper {
                             pkData.removeCustomIngredient(customItem);
                             dialog.dismiss();
                         } else {            // REMOVE STANDARD NON-CUSTOM INGREDIENT:
+                            assert item != null;
                             item.setName(edit_name.getText().toString());
                             item.setAmount(Float.valueOf(edit_qty.getText().toString()));
                             item.setUnitShort(edit_qty_name.getText().toString());
-                            // TODO: does unit long needs to be changed at all?
                             pkData.removeIngredient(item);
                             dialog.dismiss();
                         }
@@ -314,8 +394,8 @@ public class ActivityHelper {
             edit_name.setEnabled(true);
             edit_qty.setEnabled(true);
 
-            edit_qty_name.setText("item");
-            edit_qty.setText("1");
+            edit_qty_name.setText(context.getString(R.string.lbl_item_for_dialog));
+            edit_qty.setText(context.getString(R.string.lbl_1_for_dialog));
 
             // Show the applicable buttons:
             dialog_discard.setVisibility(View.VISIBLE);

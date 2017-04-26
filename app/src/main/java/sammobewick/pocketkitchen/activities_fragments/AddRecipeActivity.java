@@ -2,6 +2,7 @@ package sammobewick.pocketkitchen.activities_fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -10,12 +11,15 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -23,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ import java.util.List;
 
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.adapters.RvA_Custom_Ingredients;
+import sammobewick.pocketkitchen.aws_intents.DownloadAWSImageAsync;
 import sammobewick.pocketkitchen.aws_intents.Dynamo_Upload_Json;
 import sammobewick.pocketkitchen.aws_intents.S3_Upload_Image;
 import sammobewick.pocketkitchen.data_objects.Ingredient;
@@ -51,14 +55,15 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
     //********************************************************************************************//
     private static final String TAG = "AddRecipeActivity";
 
-    private String  user_id;    // used for sharedPreference details about Google SignIn
-    private String  user_name;  // same as above.
+    // Details from sharedPreferences about user:
+    private String  user_id;
+    private String  user_name;
 
     // RecyclerView + Adapter for the custom Ingredients:
     private RecyclerView                    mRecyclerView;
     private RvA_Custom_Ingredients          mRvAdapter;
 
-    // Counter for returned requests to AWS:
+    // Counter for returned requests from AWS:
     private int successCount;
 
     /**
@@ -70,6 +75,28 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe);
+
+        // Get the details from the bundle (for editing):
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            Recipe_Full rf  = null;
+            Recipe_Short rs = null;
+
+            if (extras.containsKey("view_single_recipe")) {
+                rf = extras.getParcelable("view_single_recipe");
+            }
+            if (extras.containsKey("recipe_short")) {
+                rs = extras.getParcelable("recipe_short");
+            }
+
+            if (rf != null & rs != null) {
+                populateFields(rf,rs);
+            } else {
+                // Error message - should never occur:
+                ActivityHelper.displayKnownError(getApplicationContext(),
+                        "Oops, looks like there was an issue sending the recipe data to this activity!");
+            }
+        }
 
         // Get the details from the sharedPreferences:
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(AddRecipeActivity.this);
@@ -99,15 +126,38 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
         findViewById(R.id.btn_custom_recipe_ing).setOnClickListener(this);
         findViewById(R.id.img_custom_recipe).setOnClickListener(this);
 
+        // Show keyboard (fixes a glitch with this view):
+        findViewById(R.id.edit_add_custom_recipe_instructions).setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                InputMethodManager mngr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (hasFocus)
+                    mngr.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+
         // Hide progress bar:
         setProgressBar(false);
     }
 
-    /**
-     * Clears the fields on the screen. To be used after success.
-     */
-    private void clear() {
-        // TODO: this.
+    private void populateFields(Recipe_Full rf, Recipe_Short rs) {
+        ImageView recipeImg = ((ImageView)findViewById(R.id.img_custom_recipe));
+        new DownloadAWSImageAsync(getApplicationContext(), recipeImg);
+
+        mRvAdapter.setData(rf.getExtendedIngredients());
+
+        ((EditText)findViewById(R.id.edit_add_custom_recipe_instructions)).setText(rf.getInstructions());
+
+        ((CheckBox)findViewById(R.id.check_cr_diet_dairy)).setChecked(rf.isDairyFree());
+        ((CheckBox)findViewById(R.id.check_cr_diet_gluten)).setChecked(rf.isGlutenFree());
+        ((CheckBox)findViewById(R.id.check_cr_diet_vegan)).setChecked(rf.isVegan());
+        ((CheckBox)findViewById(R.id.check_diet_vegetarian)).setChecked(rf.isVegetarian());
+
+        ((CheckBox)findViewById(R.id.check_cr_diet_eggs)).setChecked(false); // NOT SAVED
+        ((CheckBox)findViewById(R.id.check_cr_diet_nuts)).setChecked(false); // NOT SAVED
+        ((CheckBox)findViewById(R.id.check_cr_diet_seafood)).setChecked(false); // NOT SAVED
+        ((CheckBox)findViewById(R.id.check_cr_diet_shellfish)).setChecked(false); // NOT SAVED
+        ((CheckBox)findViewById(R.id.check_cr_diet_soy)).setChecked(false); // NOT SAVED
     }
 
     /**
@@ -115,9 +165,16 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
      */
     private void saveSuccessful() {
         setProgressBar(false);
-        ActivityHelper.displaySnackBarNoAction(AddRecipeActivity.this,
-                R.id.sv_add_custom_recipe, R.string.feedback_success_add_recipe);
-        clear();
+        new AlertDialog.Builder(new ContextThemeWrapper(getApplicationContext(), R.style.myDialog))
+                .setTitle("Operation Successful")
+                .setMessage(R.string.feedback_added_recipe)
+                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .show();
     }
 
     /**
@@ -138,7 +195,7 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
         if (successCount > 1) {
             saveSuccessful();
         }
-        /* DEBUG:    //
+        /* DEBUG:
         System.out.println("SuccessCount: " + successCount);
         /* END-DEBUG */
     }
@@ -159,16 +216,18 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
             boolean vegetarian      = ((CheckBox)findViewById(R.id.check_cr_diet_vegetarian)).isChecked();
             boolean gluten          = ((CheckBox)findViewById(R.id.check_cr_diet_gluten)).isChecked();
             boolean dairyFree       = ((CheckBox)findViewById(R.id.check_cr_diet_dairy)).isChecked();
-
-            // TODO: There is no way to address these. Although perhaps not needed?
-            // TODO: Consider just adding some fields to the XML, might be worth fleshing it out?
-            boolean cheap           = false;
             boolean popular         = false;
+
+            // TODO: Add support for these in XML (non-important, as subject to user opinion here):
+            boolean cheap           = false;
             boolean healthy         = false;
 
-            // TODO: the allergens are not stored!
-            // TODO: This means nuts, soy, etc. Could fib and say they are saved but not yet searched
-            // TODO: as custom recipes
+            // TODO: Add support for these in Recipe_Full:
+            boolean eggs        = ((CheckBox)findViewById(R.id.check_cr_diet_eggs)).isChecked();
+            boolean nuts        = ((CheckBox)findViewById(R.id.check_cr_diet_nuts)).isChecked();
+            boolean soy         = ((CheckBox)findViewById(R.id.check_cr_diet_soy)).isChecked();
+            boolean shellfish   = ((CheckBox)findViewById(R.id.check_cr_diet_shellfish)).isChecked();
+            boolean seafood     = ((CheckBox)findViewById(R.id.check_cr_diet_seafood)).isChecked();
 
             // Strings:
             String  title           = ((EditText)findViewById(R.id.edit_add_custom_recipe_title)).getText().toString();
@@ -209,7 +268,7 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
                 // Create our ID using Title + User:
                 int id = (user_id + title).hashCode();
 
-                /* DEBUG: */ //System.out.println("TEST-ID: " + id); /* END-DEBUG */
+                /* DEBUG: */ Log.d(TAG, "ADD-RECIPE ID: " + id); /* END-DEBUG */
 
                 // Create the recipe objects:
                 Recipe_Full rf = new Recipe_Full(
@@ -286,9 +345,7 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
             }
 
             ingredientList.add(ingredient);
-            ///* DEBUG:
-            Log.d(TAG, "Added Ingredient: " + ingredient.toString());
-            /* END-DEBUG */
+            /* DEBUG: */ Log.d(TAG, "Added Ingredient: " + ingredient.toString()); /* END-DEBUG */
         }
         return  ingredientList;
     }
@@ -372,9 +429,8 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
             fos.flush();
             fos.close();
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
             e.printStackTrace();
         }
     }
@@ -395,7 +451,7 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
 
         // We could handle more requests here but there isn't any other ActivityResults to handle.
         switch (requestCode){
-            case 0: // ImageResultCode
+            case 0: // Our default ImageResultCode
                 if (resultCode == RESULT_OK) {
                     Bitmap fromCamera = (Bitmap) data.getExtras().get("data");
                     saveImage(fromCamera);
@@ -405,8 +461,8 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
     }
 
     /**
-     * Helper method to control the window + progress bar:
-     * @param visible
+     * Helper method which displays a progress spinner + enables/disables the Activity:
+     * @param visible boolean - is the spinner visible?
      */
     private void setProgressBar(boolean visible) {
         if (visible) {
@@ -436,7 +492,7 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
             if (result)
                 reportSuccess();
 
-            // Here is a check for failure:
+            // Check for failure (accounting for other IntentService):
             else if (successCount > 0)
                 saveFailed();
         }

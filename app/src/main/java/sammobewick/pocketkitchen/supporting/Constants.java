@@ -31,6 +31,7 @@ public final class Constants {
     public static final String BC_DOWNLOAD_NAME = "AWS_DOWNLOAD_BROADCAST";
     public static final String BC_DOWNLOAD_DATA = "BC_DOWNLOAD_DATA";
 
+    public static final int    FILE_COUNT       = 4;
     public static final String MY_RECIPES       = "myRecipes.pk";
     public static final String IN_CUPBOARDS     = "inCupboards.pk";
     public static final String RECIPES          = "recipesToCook.pk";

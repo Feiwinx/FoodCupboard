@@ -40,7 +40,6 @@ public class ViewSingleRecipeActivity extends AppCompatActivity {
     private static final String TAG = "SingleRecipeActivity";
 
     private String      urlStart;
-    private boolean     btnPressed;
     private boolean     inShoppingList;
     private boolean     inSavedList;
 
@@ -54,8 +53,19 @@ public class ViewSingleRecipeActivity extends AppCompatActivity {
         setupActionBar();
 
         // Load both versions of the recipe from the intent + set the title:
-        recipe_short    = (Recipe_Short)    getIntent().getExtras().get("recipe_short");
-        recipe_full     = (Recipe_Full)     getIntent().getExtras().get("view_single_recipe");
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (extras.containsKey("recipe_short")) {
+                recipe_short = (Recipe_Short) getIntent().getExtras().get("recipe_short");
+            }
+            if (extras.containsKey("view_single_recipe")) {
+                recipe_full = (Recipe_Full) getIntent().getExtras().get("view_single_recipe");
+            }
+        } else {
+            ActivityHelper.displayKnownError(ViewSingleRecipeActivity.this,
+                    "Error: This activity was launched incorrectly. Please try again.");
+            Log.e(TAG, "Error: no bundle sent to ViewSingleRecipeActivity!");
+        }
         initialCheckForSaved();
 
         // Load meta-data:
@@ -76,14 +86,14 @@ public class ViewSingleRecipeActivity extends AppCompatActivity {
         saveRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                invertSaveRecipeButton();
+                invertSaveRecipeButton(true);
             }
         });
 
         saveIngs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                invertSaveIngsButton();
+                invertSaveIngsButton(true);
             }
         });
     }
@@ -95,17 +105,17 @@ public class ViewSingleRecipeActivity extends AppCompatActivity {
         boolean ingsSaved = pkData.checkForSetOfIngredients(recipe_short);
 
         if (recipeSaved) {
-            invertSaveRecipeButton();
+            invertSaveRecipeButton(false);
 
             if (ingsSaved)
-                invertSaveIngsButton();
+                invertSaveIngsButton(false);
         }
 
         inSavedList = recipeSaved;
         inShoppingList = ingsSaved;
     }
 
-    private void invertSaveRecipeButton() {
+    private void invertSaveRecipeButton(boolean snackbars) {
         PocketKitchenData pkData = PocketKitchenData.getInstance();
         Button btn = (Button) findViewById(R.id.btn_do_recipe_f);
 
@@ -114,12 +124,12 @@ public class ViewSingleRecipeActivity extends AppCompatActivity {
                 btn.setText(getString(R.string.lbl_btn_rem_recipe));
                 btn.setContentDescription(getString(R.string.hint_btn_rem_recipe));
 
-                Snackbar.make(findViewById(R.id.recipe_full_content), R.string.feedback_added_recipe, Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
+                if (snackbars)
+                    Snackbar.make(findViewById(R.id.recipe_full_content), R.string.feedback_added_recipe, Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
             } else {
                 ActivityHelper.displayUnknownError(ViewSingleRecipeActivity.this,
-                        "Failed to add this recipe to your cooking list!" +
-                                "\nYou might benefit from reloading the application.");
+                        "Failed to add this recipe to your cooking list!");
                 Log.e(TAG, "Error occurred when adding recipe to cook list!\n" + recipe_short.toString());
             }
         } else {
@@ -127,54 +137,56 @@ public class ViewSingleRecipeActivity extends AppCompatActivity {
                 btn.setText(getString(R.string.lbl_btn_add_recipe));
                 btn.setContentDescription(getString(R.string.hint_btn_add_recipe));
 
-                Snackbar.make(findViewById(R.id.recipe_full_content), R.string.feedback_removed_recipe, Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
+                if (snackbars)
+                    Snackbar.make(findViewById(R.id.recipe_full_content), R.string.feedback_removed_recipe, Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
             } else {
                 ActivityHelper.displayUnknownError(ViewSingleRecipeActivity.this,
-                        "Failed to remove this recipe from your cooking list!" +
-                                "\nYou might benefit from reloading the application.");
+                        "Failed to remove this recipe from your cooking list!");
                 Log.e(TAG, "Unusual error occurred when removing recipe from cook list!\n" + recipe_short.toString());
             }
         }
         inSavedList = !inSavedList;
     }
 
-    private void invertSaveIngsButton() {
+    private void invertSaveIngsButton(boolean snackbars) {
         PocketKitchenData pkData = PocketKitchenData.getInstance();
         Button btn = (Button) findViewById(R.id.btn_do_recipe_ing);
 
         if (!inShoppingList) {
-            invertSaveRecipeButton();
-            findViewById(R.id.btn_do_recipe_f).setEnabled(false);
             if (pkData.addRecipeToCookList(recipe_short, recipe_full != null ? recipe_full.getExtendedIngredients() : null)) {
                 btn.setText(getString(R.string.lbl_btn_rem_recipe_ings));
                 btn.setContentDescription(getString(R.string.hint_btn_rem_recipe_ings));
 
-                Snackbar.make(findViewById(R.id.recipe_full_content), R.string.feedback_added_ings, Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
+                if (!inSavedList)
+                    invertSaveRecipeButton(snackbars);
+
+                if (snackbars)
+                    Snackbar.make(findViewById(R.id.recipe_full_content), R.string.feedback_added_ings, Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
             } else {
                 ActivityHelper.displayUnknownError(ViewSingleRecipeActivity.this,
-                        "Failed to add this recipe to your cooking list!" +
-                                "\nYou might benefit from reloading the application.");
+                        "Failed to add this recipe to your cooking list!");
                 Log.e(TAG, "Error occurred when adding recipe/ingredients to cook list!\n" + recipe_short.toString());
             }
         } else {
-            invertSaveRecipeButton();
-            findViewById(R.id.btn_do_recipe_f).setEnabled(true);
             if (pkData.removeRecipeFromCookList(recipe_short)) {
                 btn.setText(getString(R.string.lbl_btn_add_recipe_ings));
                 btn.setContentDescription(getString(R.string.hint_btn_add_recipe_ings));
 
-                Snackbar.make(findViewById(R.id.recipe_full_content), R.string.feedback_removed_ings, Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
+                invertSaveRecipeButton(snackbars);
+
+                if (snackbars)
+                    Snackbar.make(findViewById(R.id.recipe_full_content), R.string.feedback_removed_ings, Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
             } else {
                 ActivityHelper.displayUnknownError(ViewSingleRecipeActivity.this,
-                        "Failed to remove this recipe from your cooking list!" +
-                                "\nYou might benefit from reloading the application.");
+                        "Failed to remove this recipe from your cooking list!");
                 Log.e(TAG, "Unusual error occurred when removing recipe/ingredients from cook list!\n" + recipe_short.toString());
             }
         }
         inShoppingList = !inShoppingList;
+        findViewById(R.id.btn_do_recipe_f).setEnabled(!inShoppingList);
     }
 
     /**
@@ -288,20 +300,23 @@ public class ViewSingleRecipeActivity extends AppCompatActivity {
 
         // ***** BENEATH IMAGE AREA FOR INFORMATION:    ***** //
         TextView recipe_time = (TextView) findViewById(R.id.recipe_time_f);
-        recipe_time.setText(recipe_full.getReadyInMinutes() + "m");
+        String time = recipe_full.getReadyInMinutes() + "m ";
+        recipe_time.setText(time);
 
-        String plates = " plates";
+        String plates = " plates ";
         int servings = recipe_full.getServings();
         if (servings == 1) {
-            plates = " plate";
+            plates = " plate ";
         }
         TextView recipe_serves = (TextView) findViewById(R.id.recipe_serves_f);
         recipe_serves.setText(recipe_full.getServings() + plates);
 
         if (recipe_full.isVeryPopular()) {
             this.findViewById(R.id.recipe_popular_img_f).setVisibility(View.VISIBLE);
+            this.findViewById(R.id.recipe_popular_f).setVisibility(View.VISIBLE);
         } else {
             this.findViewById(R.id.recipe_popular_img_f).setVisibility(View.GONE);
+            this.findViewById(R.id.recipe_popular_f).setVisibility(View.GONE);
         }
 
         TextView ingredients = (TextView) findViewById(R.id.recipe_ing_f);

@@ -28,11 +28,13 @@ public final class PocketKitchenData {
     // Saved list of ingredients from the recipes they want to cook AND custom ingredients.
     private Map<Integer, List<Ingredient>> ingredientsRequired;
 
+    // Attempt at making images work better:
     private static Map<String, Bitmap> cachedDrawables;
 
     // Saved list of ingredients in their cupboards.
     private List<Ingredient> inCupboards;
 
+    // Saved list of recipe_shorts to allow fetching from Amazon:
     private List<Recipe_Short> myCustomRecipes;
 
     // This shouldn't be stored to file, but is a runtime calculated list of things they need.
@@ -131,19 +133,35 @@ public final class PocketKitchenData {
     // SETTERS - for loading data into the application:
 
     public void setRecipesToCook(List<Recipe_Short> recipesToCook) {
-        this.recipesToCook = recipesToCook;
+        if (recipesToCook == null & this.recipesToCook != null)
+            this.recipesToCook.clear();
+        else
+            this.recipesToCook = recipesToCook;
+        updateListeners();
     }
 
     public void setIngredientsRequired(Map<Integer, List<Ingredient>> ingredientsRequired) {
-        this.ingredientsRequired = ingredientsRequired;
+        if (ingredientsRequired == null & this.ingredientsRequired != null)
+            this.ingredientsRequired.clear();
+        else
+            this.ingredientsRequired = ingredientsRequired;
+        updateListeners();
     }
 
     public void setInCupboards(List<Ingredient> inCupboards) {
-        this.inCupboards = inCupboards;
+        if (inCupboards == null & this.inCupboards != null)
+            this.inCupboards.clear();
+        else
+            this.inCupboards = inCupboards;
+        updateListeners();
     }
 
     public void setMyCustomRecipes(List<Recipe_Short> myCustomRecipes) {
-        this.myCustomRecipes = myCustomRecipes;
+        if (myCustomRecipes == null & this.myCustomRecipes != null)
+            this.myCustomRecipes.clear();
+        else
+            this.myCustomRecipes = myCustomRecipes;
+        updateListeners();
     }
 
     // ****************************************************************************************** //
@@ -159,7 +177,8 @@ public final class PocketKitchenData {
     }
 
     public void setRecipesDisplayed(List<Recipe_Short> recipes) {
-        recipesDisplayed = recipes;
+        if (recipesDisplayed != null & recipes == null) { recipesDisplayed.clear(); }
+        else { recipesDisplayed = recipes; }
         updateListeners();
     }
 
@@ -184,8 +203,8 @@ public final class PocketKitchenData {
             if (recipesToCook.contains(recipe)) {
                 recipesToCook.remove(recipe);
                 updateListeners();
-                return !recipesToCook.contains(recipe);
             }
+            return !recipesToCook.contains(recipe);
         }
         return false;
     }
@@ -217,15 +236,11 @@ public final class PocketKitchenData {
         if (ingredientsRequired != null) {
             if (ingredientsRequired.containsKey(id)) {
                 ingredientsRequired.remove(id);
-            } else {
-                return false;
             }
         }
         if (recipesToCook != null) {
             if (recipesToCook.contains(recipe)) {
                 recipesToCook.remove(recipe);
-            } else {
-                return false;
             }
         }
 
@@ -303,6 +318,10 @@ public final class PocketKitchenData {
 
                 // Exit all iterations if we've reduced amount enough:
                 if (amount < 0) break;
+            }
+            if (ingredientsRequired.get(item.getId()) != null) {
+                System.out.println("NULL RETURN - REMOVING REFERENCE");
+                ingredientsRequired.remove(item.getId());
             }
             updateListeners();
         }
@@ -412,6 +431,17 @@ public final class PocketKitchenData {
             }
         }
         return false;
+    }
+
+    public String getIngredientQuery() {
+        String result = "";
+        if (inCupboards == null)
+            return result;
+
+        for (Ingredient i: inCupboards) {
+            result += i.getName() + ", ";
+        }
+        return result;
     }
 
     // ****************************************************************************************** //

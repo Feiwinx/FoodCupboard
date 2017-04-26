@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView android:id="@+id/drive_text"
+        android:gravity="center"
+        android:text="@string/lbl_drive_data"
+        android:textSize="@dimen/mss_text_size"
+        android:textStyle="italic|bold"
+
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+
+        android:layout_centerInParent="true"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ProgressBar
+        android:id="@+id/drive_progress_bar"
+
+        style="?android:progressBarStyleLarge"
+        android:progressDrawable="@drawable/progress"
+        android:indeterminateDrawable="@drawable/progress"
+
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/drive_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView android:id="@+id/drive_logo"
+        android:src="@drawable/ps_pocket_kitchen_img"
+        android:adjustViewBounds="true"
+        android:maxHeight="150dp"
+        android:maxWidth="150dp"
+
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/drive_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

@@ -17,9 +17,18 @@ import sammobewick.pocketkitchen.R;
  */
 public class TutorialActivity extends AppIntro2 {
 
+    private boolean requested;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (extras.containsKey("requested")) {
+                requested = extras.getBoolean("requested");
+            }
+        }
 
         // Add the slides:
         addSlide(SampleSlide.newInstance(R.layout.slide_intro_1));
@@ -40,16 +49,18 @@ public class TutorialActivity extends AppIntro2 {
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
 
-        new AlertDialog.Builder(new ContextThemeWrapper(TutorialActivity.this, R.style.myDialog))
-                .setTitle("Leaving Tutorial...")
-                .setMessage("Quick note: you can always revisit the tutorial from the Settings menu.")
-                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        onBackPressed();
-                    }
-                })
-                .show();
+        if (!requested) {
+            new AlertDialog.Builder(new ContextThemeWrapper(TutorialActivity.this, R.style.myDialog))
+                    .setTitle("Leaving Tutorial...")
+                    .setMessage("Quick note: you can always revisit the tutorial from the Settings menu.")
+                    .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            onBackPressed();
+                        }
+                    })
+                    .show();
+        } else { onBackPressed(); }
     }
 
     @Override

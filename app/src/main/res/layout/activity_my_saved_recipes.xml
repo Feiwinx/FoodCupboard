@@ -18,6 +18,7 @@
 
     <TextView
         android:id="@+id/saved_recipes_empty"
+        android:textSize="@dimen/hdr_text_size"
         android:text="@string/empty_saved_recipes"
 
         android:textStyle="italic"

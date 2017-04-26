@@ -13,7 +13,6 @@
     -->
     <ImageView
         android:id="@+id/kitchen_image"
-        android:src="@drawable/ps_question_mark"
         android:adjustViewBounds="true"
 
         android:layout_centerVertical="true"
