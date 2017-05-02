@@ -3,6 +3,9 @@ package sammobewick.pocketkitchen.data_objects;
 import com.google.gson.Gson;
 
 /**
+ * Represents an Ingredient. The data is based off what is available from Spoonacular.
+ * This was expected to be used throughout but as the API became more familiar it was found that
+ * individual nutrient data was not always available or easy to query.
  * Created by Sam on 05/02/2017.
  */
 public class Nutrient {

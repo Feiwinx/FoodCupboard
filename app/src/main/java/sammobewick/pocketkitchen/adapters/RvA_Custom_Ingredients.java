@@ -20,8 +20,6 @@ import sammobewick.pocketkitchen.data_objects.Ingredient;
  * application. It basically handles blank rows, and will validate them at request, to produce a
  * list of Ingredients for the recipe.
  *
- * TODO: validation + return list of ingredients
- *
  * Created by Sam on 24/03/2017.
  */
 public class RvA_Custom_Ingredients extends RecyclerView.Adapter<RvA_Custom_Ingredients.ViewHolder>{
@@ -45,7 +43,7 @@ public class RvA_Custom_Ingredients extends RecyclerView.Adapter<RvA_Custom_Ingr
          * Constructor. Requires our inflated view to fetch layouts from.
          * @param v - View to fetch layouts from.
          */
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
 
             edit_name = (EditText)      v.findViewById(R.id.edit_item_ingredient_name);

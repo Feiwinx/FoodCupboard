@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
+ * Represents an Ingredient. The data is based off what is available from Spoonacular, but also has
+ * an identifier for being custom or not.
  * Created by Sam on 01/02/2017.
  */
 @DynamoDBDocument
@@ -56,7 +58,6 @@ public class Ingredient implements Serializable {
         this.image = "";            // UNUSED
         this.custom = true;         // CUSTOM
     }
-
 
     // ****************************************************************************************** //
     //                                      JSON CONVERSIONS:                                     //

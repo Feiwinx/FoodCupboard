@@ -41,6 +41,13 @@ public class Recipe_Full implements Serializable {
     private int readyInMinutes;
     private String instructions;
 
+    // Elements required for custom (but not given in API):
+    private boolean contEggs;
+    private boolean contNuts;
+    private boolean contSoy;
+    private boolean contShellfish;
+    private boolean contSeafood;
+
     // ****************************************************************************************** //
     //                                      CONSTRUCTORS:                                         //
     // ****************************************************************************************** //
@@ -65,6 +72,13 @@ public class Recipe_Full implements Serializable {
         this.vegetarian = vegetarian;
         this.veryHealthy = veryHealthy;
         this.veryPopular = veryPopular;
+
+        // General creation of this object might not require these, so left as false:
+        this.contEggs = false;
+        this.contNuts = false;
+        this.contSeafood = false;
+        this.contShellfish = false;
+        this.contSoy = false;
     }
 
     // ****************************************************************************************** //
@@ -89,6 +103,12 @@ public class Recipe_Full implements Serializable {
         this.vegetarian = recipeFull.isVegetarian();
         this.veryHealthy = recipeFull.isVeryHealthy();
         this.veryPopular = recipeFull.isVeryPopular();
+
+        this.contEggs = recipeFull.isContEggs();
+        this.contNuts = recipeFull.isContNuts();
+        this.contSeafood = recipeFull.isContSeafood();
+        this.contShellfish = recipeFull.isContShellfish();
+        this.contSoy = recipeFull.isContSoy();
     }
 
     public String getJson() {
@@ -176,27 +196,82 @@ public class Recipe_Full implements Serializable {
     }
 
     // ****************************************************************************************** //
+    //                             CUSTOM-FOCUSED GETTERS / SETTERS                               //
+    // ****************************************************************************************** //
+
+    @DynamoDBAttribute(attributeName = "CONTAINS_EGGS")
+    public boolean isContEggs() {
+        return contEggs;
+    }
+
+    @DynamoDBAttribute(attributeName = "CONTAINS_EGGS")
+    public boolean isContNuts() {
+        return contNuts;
+    }
+
+    @DynamoDBAttribute(attributeName = "CONTAINS_SOY")
+    public boolean isContSoy() {
+        return contSoy;
+    }
+
+    @DynamoDBAttribute(attributeName = "CONTAINS_SHELLFISH")
+    public boolean isContShellfish() {
+        return contShellfish;
+    }
+
+    @DynamoDBAttribute(attributeName = "CONTAINS_SEAFOOD")
+    public boolean isContSeafood() {
+        return contSeafood;
+    }
+
+    public void setContEggs(boolean contEggs) {
+        this.contEggs = contEggs;
+    }
+
+    public void setContNuts(boolean contNuts) {
+        this.contNuts = contNuts;
+    }
+
+    public void setContSoy(boolean contSoy) {
+        this.contSoy = contSoy;
+    }
+
+    public void setContShellfish(boolean contShellfish) {
+        this.contShellfish = contShellfish;
+    }
+
+    public void setContSeafood(boolean contSeafood) {
+        this.contSeafood = contSeafood;
+    }
+
+
+    // ****************************************************************************************** //
     //                                      toString():                                           //
     // ****************************************************************************************** //
 
     @Override
     public String toString() {
         return "Recipe_Full{" +
-                "cheap=" + cheap +
-                ", vegetarian=" + vegetarian +
+                "vegetarian=" + vegetarian +
                 ", vegan=" + vegan +
                 ", glutenFree=" + glutenFree +
                 ", dairyFree=" + dairyFree +
                 ", veryHealthy=" + veryHealthy +
+                ", cheap=" + cheap +
                 ", veryPopular=" + veryPopular +
                 ", servings=" + servings +
                 ", spoonacularSourceUrl='" + spoonacularSourceUrl + '\'' +
-                ", creditText=" + creditText +
+                ", creditText='" + creditText + '\'' +
                 ", extendedIngredients=" + extendedIngredients +
                 ", id=" + id +
                 ", title='" + title + '\'' +
                 ", readyInMinutes=" + readyInMinutes +
                 ", instructions='" + instructions + '\'' +
+                ", contEggs=" + contEggs +
+                ", contNuts=" + contNuts +
+                ", contSoy=" + contSoy +
+                ", contShellfish=" + contShellfish +
+                ", contSeafood=" + contSeafood +
                 '}';
     }
 

@@ -77,6 +77,8 @@
     <string name="lbl_fab_export_list">Export List</string>
     <string name="lbl_fab_suggestion">Get Suggestions</string>
 
+    <string name="export_subject_line">Exported Ingredients from my Pocket Kitchen:</string>
+
     <!-- Dialogs -->
     <string name="lbl_dialog_edit_item">Edit List Item</string>
     <string name="lbl_dialog_new_item">New List Item</string>
@@ -248,6 +250,7 @@
     </string>
 
     <!-- General Feedback -->
+    <string name="feedback_files_deleted">Success! Files were deleted.</string>
     <string name="feedback_cancelled_change">Cancelled! No changes were made.</string>
     <string name="feedback_success_change">Success! Changes have been saved!</string>
     <string name="feedback_success_add_recipe">Success! Your recipe has been created.</string>

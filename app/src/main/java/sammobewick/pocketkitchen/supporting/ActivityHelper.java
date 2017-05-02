@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import sammobewick.pocketkitchen.R;
+import sammobewick.pocketkitchen.communication.DeleteDriveActivity;
 import sammobewick.pocketkitchen.communication.LoadDriveActivity;
 import sammobewick.pocketkitchen.communication.SaveDriveActivity;
 import sammobewick.pocketkitchen.data_objects.Ingredient;
@@ -38,22 +39,65 @@ import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
  */
 public class ActivityHelper {
     private static final String TAG = "ActivityHelper";
+    private static final String PREF_FORMAT = "PK_%s";
+    private static String PREF_SET;
 
+    /**
+     * Getter for our PREF_SET. This enables a consistent preference reference for the current
+     * session, but also supports guest usage.
+     * @return String - being the name of the PREF_SET.
+     */
+    public static String getPREF_SET() {
+        if (PREF_SET == null)
+            setPREF_SET("GUEST");
+
+        return PREF_SET;
+    }
+
+    /**
+     * Setter for our PREF_SET. This doesn't just set String = String, but rather formats the
+     * PREF_SET to match the PREF_FORMAT.
+     * @param PREF_SET String - being the addition to the String.
+     */
+    public static void setPREF_SET(String PREF_SET) {
+        ActivityHelper.PREF_SET = String.format(PREF_FORMAT, PREF_SET);
+        Log.i(TAG, "Set PREF_SET to " + getPREF_SET());
+    }
+
+    /**
+     * Helper method to allow Uploading to Drive from multiple sources. It will always want to run
+     * in the same manner as this.
+     * @param context Context - required to launch the intent.
+     */
     public static void uploadToDrive(Context context) {
-        Intent driveTest = new Intent(context, SaveDriveActivity.class);
-        driveTest.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(driveTest);
+        Log.i(TAG, "Upload-Drive called from " + context.getPackageCodePath());
+        Intent upDrive = new Intent(context, SaveDriveActivity.class);
+        upDrive.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(upDrive);
     }
 
+    /**
+     * Helper method to allow Downloading from Drive from multiple sources. It will always want to
+     * run in the same manner as this.
+     * @param context Context - required to launch the intent.
+     */
     public static void downloadFromDrive(Context context) {
-        Log.d(TAG, "Download Called");
-        Intent driveTest = new Intent(context, LoadDriveActivity.class);
-        driveTest.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(driveTest);
+        Log.i(TAG, "Download-Drive called from " + context.getPackageCodePath());
+        Intent downDrive = new Intent(context, LoadDriveActivity.class);
+        downDrive.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(downDrive);
     }
 
+    /**
+     * Helper method to allow Deleting Drive data from multiple sources. It will always want to
+     * run in the same manner as this.
+     * @param context Context - required to launch the intent.
+     */
     public static void deleteFromDrive(Context context) {
-        // TODO: this.
+        Log.i(TAG, "Delete-Drive called from " + context.getPackageCodePath());
+        Intent delDrive = new Intent(context, DeleteDriveActivity.class);
+        delDrive.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(delDrive);
     }
 
     /**
@@ -62,7 +106,7 @@ public class ActivityHelper {
      * @return boolean - is the device connected?
      */
     public static boolean isConnected(final Context context) {
-        // Confirm WiFi is connected:
+        Log.i(TAG, "isConnected called from " + context.getPackageCodePath());
         ConnectivityManager connMngr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo actNetwork = connMngr.getActiveNetworkInfo();
 

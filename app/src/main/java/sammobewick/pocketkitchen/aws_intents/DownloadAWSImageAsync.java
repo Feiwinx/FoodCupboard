@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.amazonaws.AmazonServiceException;
@@ -27,7 +28,9 @@ import sammobewick.pocketkitchen.supporting.Constants;
  * class intends to allow an adapter to download an image for each row from S3.
  * Created by Sam on 09/02/2017.
  */
-public final class DownloadAWSImageAsync extends AsyncTask<String, Void, Bitmap> {
+public final class DownloadAWSImageAsync extends AsyncTask<String, Void, Void> {
+    private static final String TAG = "ASyncAWSDownloader";
+
     private Context     mContext;
     private ImageView   bitmapImg;
     private File        img_file;
@@ -38,9 +41,8 @@ public final class DownloadAWSImageAsync extends AsyncTask<String, Void, Bitmap>
     }
 
     @Override
-    protected Bitmap doInBackground(String... keys) {
+    protected Void doInBackground(String... keys) {
         String key = keys[0];
-        Bitmap img = null;
 
         try {
             // Initialize the Amazon Cognito credentials provider
@@ -60,18 +62,10 @@ public final class DownloadAWSImageAsync extends AsyncTask<String, Void, Bitmap>
 
             observer.setTransferListener(new DownloadListener());
 
-        } catch (AmazonServiceException ase) {
-            ase.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (AmazonServiceException | IOException ase) {
+            Log.e(TAG, "Error downloading! ", ase);
         }
-
-        return img;
-    }
-
-    @Override
-    protected void onPostExecute(Bitmap bitmap) {
-        bitmapImg.setImageBitmap(bitmap);
+        return null;
     }
 
     private class DownloadListener implements TransferListener {
@@ -86,12 +80,12 @@ public final class DownloadAWSImageAsync extends AsyncTask<String, Void, Bitmap>
 
         @Override
         public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-
+            // Do nothing.
         }
 
         @Override
         public void onError(int id, Exception ex) {
-
+            // Do nothing.
         }
     }
 }

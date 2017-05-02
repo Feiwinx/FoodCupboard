@@ -113,10 +113,6 @@ public abstract class BaseDriveActivity extends AppCompatActivity implements
         }
     }
 
-    /**
-     * Required by Listener usage. Logs the action.
-     * @param i
-     */
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "GoogleApiClient connection suspended");
@@ -125,7 +121,7 @@ public abstract class BaseDriveActivity extends AppCompatActivity implements
     /**
      * Required by Listener usage. Sometimes a connection failed can have a resolution attached to
      * it, which is ran if so. Otherwise, the issue is logged and feedback given as required.
-     * @param result
+     * @param result ConnectionResult - information on the connection failure.
      */
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult result) {
@@ -151,7 +147,7 @@ public abstract class BaseDriveActivity extends AppCompatActivity implements
         // Identifier for the query:
         private String identifier;
 
-        public myDriveCallback(String identifier) {
+        myDriveCallback(String identifier) {
             this.identifier = identifier;
         }
 
@@ -209,7 +205,7 @@ public abstract class BaseDriveActivity extends AppCompatActivity implements
 
     /**
      * Getter for MAX_REQUESTS. This must be consistent between children.
-     * @return
+     * @return int - being the MAX_REQUESTS.
      */
     public static int getMaxRequests() {
         return MAX_REQUESTS;
@@ -259,8 +255,8 @@ public abstract class BaseDriveActivity extends AppCompatActivity implements
 
     /**
      * Helper method to refer to each file's data.
-     * @param id
-     * @return
+     * @param id int - the id we want to get the associated data for.
+     * @return Object - being the data.
      */
     public Object getData(int id) {
         PocketKitchenData pkData = PocketKitchenData.getInstance();

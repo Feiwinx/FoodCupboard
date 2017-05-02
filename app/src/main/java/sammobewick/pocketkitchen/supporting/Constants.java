@@ -1,9 +1,10 @@
 package sammobewick.pocketkitchen.supporting;
 
 /**
+ * Helper file to hold a lot of runtime data. This prevents us from bogging down the Strings resource.
+ * It also allows for integer values and such.
  * Created by Sam on 30/03/2017.
  */
-
 public final class Constants {
     public static final String INTENT_CUSTOM_ID = "DISPLAY_CUSTOM";
     // General AWS / IntentService keys:
@@ -26,6 +27,9 @@ public final class Constants {
     // Identifier for Broadcasting:
     public static final String BC_UPLOAD_ID     = "BC_UPLOAD_ID";
     public static final String BC_UPLOAD_NAME   = "AWS_UPLOAD_BROADCAST";
+
+    public static final String BC_DELETE_ID     = "BC_DELETE_ID";
+    public static final String BC_DELETE_NAME   = "BC_DELETE_NAME";
 
     public static final String BC_DOWNLOAD_ID   = "BC_DOWNLOAD_ID";
     public static final String BC_DOWNLOAD_NAME = "AWS_DOWNLOAD_BROADCAST";

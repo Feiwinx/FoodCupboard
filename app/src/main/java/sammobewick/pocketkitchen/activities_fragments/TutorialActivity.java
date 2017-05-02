@@ -17,6 +17,7 @@ import sammobewick.pocketkitchen.R;
  */
 public class TutorialActivity extends AppIntro2 {
 
+    // Helps skipping be more intuitive to the user if they've asked for the tutorial.
     private boolean requested;
 
     @Override

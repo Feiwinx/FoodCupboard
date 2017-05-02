@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -71,7 +70,7 @@ public class TabbedActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabbed);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences = getSharedPreferences(ActivityHelper.getPREF_SET(), MODE_PRIVATE);
 
         if (sharedPreferences.contains("firstTimeUsage")) {
             firstTimeUsage = sharedPreferences.getBoolean("firstTimeUsage", false);
@@ -134,16 +133,33 @@ public class TabbedActivity extends AppCompatActivity implements
             Intent introIntent = new Intent(this, TutorialActivity.class);
             startActivity(introIntent);
         } else {
+            Log.i(TAG, sharedPreferences.getAll().toString());
             // Only download from Drive if the settings allow for it:
+            boolean drive = false;
             if (sharedPreferences.contains(getString(R.string.pref_files_disable_drive))) {
+                boolean pref = sharedPreferences.getBoolean(getString(R.string.pref_files_disable_drive), false);
+                Log.d(TAG, "preference: " + pref);
                 if (!sharedPreferences.getBoolean(getString(R.string.pref_files_disable_drive), false)) {
-                    if (ActivityHelper.isConnected(TabbedActivity.this))
+                    if (ActivityHelper.isConnected(TabbedActivity.this)) {
                         ActivityHelper.downloadFromDrive(TabbedActivity.this);
+                        drive = true;
+                    }
                 }
+            }
+            // If not using Drive, then use local storage:
+            if (!drive) {
+                Log.d(TAG, "Loading data from local as we haven't loaded from Drive");
+                LocalFileHelper helper = new LocalFileHelper(TabbedActivity.this);
+                helper.loadAll();
             }
         }
     }
 
+    /**
+     * Inflates option menu.
+     * @param menu Menu - being the menu.
+     * @return boolean - always true here.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -151,6 +167,11 @@ public class TabbedActivity extends AppCompatActivity implements
         return true;
     }
 
+    /**
+     * Listens for interactions with the options menu (or action bar items).
+     * @param item MenuItem - being the item that was pressed.
+     * @return boolean - being the result (super).
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
@@ -173,6 +194,11 @@ public class TabbedActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Interface from fragment. Notifies us if the fragment has been interacted with (in this case,
+     * an item selected from the ListView).
+     * @param item Ingredient - being the item from the list.
+     */
     @Override
     public void onKitchenFragmentInteraction(final Ingredient item) {
         ActivityHelper.dialogKitchenItem(TabbedActivity.this, item);
@@ -189,6 +215,11 @@ public class TabbedActivity extends AppCompatActivity implements
         this.fragmentSelected(KITCHEN_FRAG_ID);
     }
 
+    /**
+     * Interface from fragment. Notifies us if the fragment has been interacted with (in this case,
+     * if a recipe has been selected from the list, we will want to display it).
+     * @param recipe_short Recipe_Short - being the basic recipe data.
+     */
     @Override
     public void onRecipeFragmentInteraction(final Recipe_Short recipe_short) {
         // Check network connectivity:
@@ -257,6 +288,11 @@ public class TabbedActivity extends AppCompatActivity implements
         startActivity(intent);
     }
 
+    /**
+     * Interface from fragment. Notifies us if the fragment has been interacted with (in this case,
+     * a item in the ListView has been selected).
+     * @param item Ingredient - the item that was selected.
+     */
     @Override
     public void onShoppingFragmentInteraction(final Ingredient item) {
         ActivityHelper.dialogShoppingItem(TabbedActivity.this, item);
@@ -327,7 +363,7 @@ public class TabbedActivity extends AppCompatActivity implements
 
     /**
      * Helper method which allows us to get the Export String
-     * @return
+     * @return String - being the data that will be used when exporting the current list.
      */
     private String getExportString() {
         String result = "";
@@ -351,11 +387,16 @@ public class TabbedActivity extends AppCompatActivity implements
         return result + "\n";
     }
 
+    /**
+     * Allows us to listen for returns to this activity. We will want to save our data as in the
+     * other activities, data can be changed! We will also check for network connections to inform
+     * the user.
+     */
     @Override
     protected void onPostResume() {
         super.onPostResume();
 
-        // Always a good idea to save:
+        // Save our data:
         LocalFileHelper helper = new LocalFileHelper(this);
         helper.saveAll();
 
@@ -369,9 +410,16 @@ public class TabbedActivity extends AppCompatActivity implements
         mViewPager.setCurrentItem(lastFragmentId);
     }
 
+    /**
+     * Overridden. This allows us to sync our data to Drive (if shared preferences state we can).
+     */
     @Override
     public void finish() {
         if (sharedPreferences.contains(getString(R.string.pref_files_disable_drive))) {
+            ///* DEBUG:
+            boolean pref = sharedPreferences.getBoolean(getString(R.string.pref_files_disable_drive), false);
+            Log.d(TAG, "preference: " + pref);
+            //*/ END-DEBUG
             if (!sharedPreferences.getBoolean(getString(R.string.pref_files_disable_drive), false)) {
                 if (ActivityHelper.isConnected(TabbedActivity.this))
                     ActivityHelper.uploadToDrive(TabbedActivity.this);
@@ -380,6 +428,10 @@ public class TabbedActivity extends AppCompatActivity implements
         super.finish();
     }
 
+    /**
+     * Overridden. This allows us to close the FAB menu (user requested feature) if open. Else, it
+     * will show a dialog to confirm exiting was intended.
+     */
     @Override
     public void onBackPressed() {
         FloatingActionMenu fam = (FloatingActionMenu) findViewById(R.id.fab);
@@ -387,8 +439,6 @@ public class TabbedActivity extends AppCompatActivity implements
             fam.close(true);
             return;
         }
-
-        final LocalFileHelper helper = new LocalFileHelper(getApplicationContext());
 
         new AlertDialog.Builder(new ContextThemeWrapper(TabbedActivity.this, R.style.myDialog))
                 .setTitle("Confirm Exit")
@@ -406,7 +456,7 @@ public class TabbedActivity extends AppCompatActivity implements
     }
 
     /**
-     * Overidden OnPause method for when the Activity is left. Save is called as most changes
+     * Overridden. OnPause method for when the Activity is left. Save is called as most changes
      * will occur from this Activity.
      */
     @Override
@@ -480,6 +530,7 @@ public class TabbedActivity extends AppCompatActivity implements
             case R.id.fab_export_list:  // Export current list.
                 intent = new Intent(Intent.ACTION_SEND);
                 intent.putExtra(Intent.EXTRA_TEXT, getExportString());
+                intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.export_subject_line));
                 intent.setType("text/plain");
                 startActivity(Intent.createChooser(intent, getString(R.string.action_export_intent_list)));
                 break;
@@ -522,9 +573,9 @@ public class TabbedActivity extends AppCompatActivity implements
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 

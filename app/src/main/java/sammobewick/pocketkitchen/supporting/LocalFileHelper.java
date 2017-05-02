@@ -22,17 +22,25 @@ import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 
 /**
- * TODO: May want to add some sort of error handling for the user's end - i.e. in the runnables.
  * Created by Sam on 07/03/2017.
  */
 public class LocalFileHelper {
     private static final String TAG = "LocalFileHelper";
     private final Context context;
 
+    /**
+     * File manipulations will required the context.
+     * @param context Context - required by file operations.
+     */
     public LocalFileHelper(Context context) {
         this.context = context;
     }
 
+    /**
+     *
+     * @param message
+     * @param runnable
+     */
     public void ConfirmRunnable(String message, final Runnable runnable) {
         AlertDialog dialog = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.myDialog)).create();
 
@@ -62,8 +70,9 @@ public class LocalFileHelper {
         dialog.show();
     }
 
-
-
+    /**
+     * Collection of save threads in one place. Will save all local files.
+     */
     public void saveAll() {
         RunSaveIngredients run1 = new RunSaveIngredients();
         run1.run();
@@ -78,6 +87,9 @@ public class LocalFileHelper {
         run4.run();
     }
 
+    /**
+     * Collection of load threads in one place. Used when only working with local data.
+     */
     public void loadAll() {
         RunLoadIngredients run1 = new RunLoadIngredients();
         run1.run();
@@ -92,20 +104,32 @@ public class LocalFileHelper {
         run4.run();
     }
 
+    /**
+     * Deletion method which shows a dialog to the user.
+     * @param revisitTutorial boolean - should the tutorial be considered visited already?
+     */
     public void deleteAll(boolean revisitTutorial) {
         RunDeleteFiles run = new RunDeleteFiles(revisitTutorial);
         ConfirmRunnable("Are you sure you want to delete all locally-stored files?", run);
     }
 
+    /**
+     * Deletion method which does NOT show a dialog. Simply runs.
+     * @param revisitTutorial boolean - should the tutorial be considered visited already?
+     */
     public void deleteAllNoDialog(boolean revisitTutorial) {
         RunDeleteFiles run = new RunDeleteFiles(revisitTutorial);
         run.run();
     }
 
+    /**
+     * Runnable deletion process. The process is simpler than writing to files so all are done in
+     * a single process.
+     */
     private class RunDeleteFiles implements Runnable {
         private boolean tutorial;
 
-        public RunDeleteFiles(boolean tutorial) {
+        RunDeleteFiles(boolean tutorial) {
             this.tutorial = tutorial;
         }
 
@@ -131,7 +155,7 @@ public class LocalFileHelper {
         }
     }
 
-    public class RunSaveIngredients implements Runnable {
+    private class RunSaveIngredients implements Runnable {
 
         private Map<Integer, List<Ingredient>> dataToSave;
 
@@ -139,7 +163,7 @@ public class LocalFileHelper {
             this.dataToSave = dataToSave;
         }
 
-        public RunSaveIngredients() {
+        RunSaveIngredients() {
             PocketKitchenData pkData = PocketKitchenData.getInstance();
             this.dataToSave = pkData.getRecipe_ingredients();
         }
@@ -161,14 +185,14 @@ public class LocalFileHelper {
         }
     }
 
-    public class RunSaveRecipes implements Runnable {
+    private class RunSaveRecipes implements Runnable {
         private List<Recipe_Short> dataToSave;
 
         public RunSaveRecipes(List<Recipe_Short> dataToSave) {
             this.dataToSave = dataToSave;
         }
 
-        public RunSaveRecipes() {
+        RunSaveRecipes() {
             PocketKitchenData pkData = PocketKitchenData.getInstance();
             this.dataToSave = pkData.getRecipesToCook();
         }
@@ -190,14 +214,14 @@ public class LocalFileHelper {
         }
     }
 
-    public class RunSaveInCupboards implements Runnable {
+    private class RunSaveInCupboards implements Runnable {
         private List<Ingredient> dataToSave;
 
         public RunSaveInCupboards(List<Ingredient> dataToSave) {
             this.dataToSave = dataToSave;
         }
 
-        public RunSaveInCupboards() {
+        RunSaveInCupboards() {
             PocketKitchenData pkData = PocketKitchenData.getInstance();
             this.dataToSave = pkData.getInCupboards();
         }
@@ -219,14 +243,14 @@ public class LocalFileHelper {
         }
     }
 
-    public class RunSaveMyRecipes implements Runnable {
+    private class RunSaveMyRecipes implements Runnable {
         private List<Recipe_Short> dataToSave;
 
         public RunSaveMyRecipes(List<Recipe_Short> dataToSave) {
             this.dataToSave = dataToSave;
         }
 
-        public RunSaveMyRecipes() {
+        RunSaveMyRecipes() {
             PocketKitchenData pkData = PocketKitchenData.getInstance();
             this.dataToSave = pkData.getMyCustomRecipes();
         }

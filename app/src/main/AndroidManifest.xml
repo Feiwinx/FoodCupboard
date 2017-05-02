@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="sammobewick.pocketkitchen">
 
+    <!-- Permissions: -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -17,11 +18,11 @@
         android:enabled="true"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
-
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <!-- Meta Data -->
         <meta-data
             android:name="xmashapekey"
@@ -44,6 +45,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Other Activities (General): -->
         <activity android:name=".activities_fragments.TutorialActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/title_activity_tutorial" />
@@ -75,13 +77,6 @@
             android:parentActivityName=".activities_fragments.TabbedActivity"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
-
-        <activity android:name=".communication.SaveDriveActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity android:name=".communication.LoadDriveActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
         <activity
             android:name=".activities_fragments.AdvancedSearchActivity"
             android:icon="@drawable/ic_search"
@@ -96,11 +91,23 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateUnchanged"/>
 
+        <!-- Drive Activities: -->
+        <activity android:name=".communication.SaveDriveActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".communication.LoadDriveActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".communication.DeleteDriveActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!-- AWS Intent Services: -->
         <service android:name=".aws_intents.Dynamo_Download_Json" android:enabled="true" />
         <service android:name=".aws_intents.Dynamo_Upload_Json" android:enabled="true" />
-        <service android:name="sammobewick.pocketkitchen.aws_intents.S3_Download_Image" android:enabled="true" />
-        <service android:name="sammobewick.pocketkitchen.aws_intents.S3_Upload_Image" android:enabled="true" />
-
+        <service android:name=".aws_intents.Dynamo_Delete_Json" android:enabled="true" />
+        <service android:name=".aws_intents.S3_Download_Image" android:enabled="true" />
+        <service android:name=".aws_intents.S3_Upload_Image" android:enabled="true" />
+        <service android:name=".aws_intents.S3_Delete_Image" android:enabled="true" />
         <service android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService" android:enabled="true" />
     </application>
 </manifest>

@@ -1,6 +1,9 @@
 package sammobewick.pocketkitchen.data_objects;
 
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexRangeKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
@@ -8,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * Short version of the recipe information. Basically the details shown in a search query.
  * Created by Sam on 09/02/2017.
  */
 @DynamoDBTable(tableName = "PK_Recipes_Short")
@@ -25,6 +29,14 @@ public class Recipe_Short implements Serializable {
     //                                      CONSTRUCTORS:                                         //
     // ****************************************************************************************** //
 
+    /**
+     * Constructor.
+     * @param id int - id value for recipe
+     * @param image String - url or identifying string for the image
+     * @param imageUrls List<String> - list of alternative URLs (unused by me, but used by API).
+     * @param readyInMinutes int - number of minutes.
+     * @param title String - recipe title.
+     */
     public Recipe_Short(int id, String image, List<String> imageUrls, int readyInMinutes, String title) {
         this.id = id;
         this.image = image;
@@ -37,6 +49,10 @@ public class Recipe_Short implements Serializable {
     //                                      JSON CONVERSIONS:                                     //
     // ****************************************************************************************** //
 
+    /**
+     * Constructor. Converts from a JSON String to the object.
+     * @param json String - json formatted String.
+     */
     public Recipe_Short(String json) {
         Gson gson = new Gson();
         Recipe_Short recipe_short = gson.fromJson(json, Recipe_Short.class);

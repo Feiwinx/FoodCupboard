@@ -1,6 +1,7 @@
 package sammobewick.pocketkitchen.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +14,17 @@ import java.util.List;
 
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.aws_intents.DownloadAWSImageAsync;
+import sammobewick.pocketkitchen.aws_intents.Dynamo_Delete_Json;
+import sammobewick.pocketkitchen.aws_intents.S3_Delete_Image;
 import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 import sammobewick.pocketkitchen.supporting.DataListener;
 
 /**
+ * Adapter for displaying custom recipes in the MySavedRecipesActivity. This allows support for the
+ * edit and deletion buttons and slightly different usage when downloading images.
  * Created by Sam on 04/04/2017.
  */
-
 public class CustomRecipeAdapter extends BaseAdapter implements DataListener {
     //********************************************************************************************//
     //  VARIABLES / HANDLERS FOR THIS ACTIVITY:                                                   //
@@ -41,7 +45,7 @@ public class CustomRecipeAdapter extends BaseAdapter implements DataListener {
             adapterParent = (AdapterParent) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement AdapterParent!");
         }
 
         // Fetch data:
@@ -119,6 +123,13 @@ public class CustomRecipeAdapter extends BaseAdapter implements DataListener {
             public void onClick(View v) {
                 PocketKitchenData pkData = PocketKitchenData.getInstance();
                 pkData.removeFromMyRecipes(recipe);
+
+                Context context = ((Context)adapterParent);
+                Intent delJson = new Intent(context, Dynamo_Delete_Json.class);
+                context.startService(delJson);
+
+                Intent delImg = new Intent(context, S3_Delete_Image.class);
+                context.startService(delImg);
             }
         });
 

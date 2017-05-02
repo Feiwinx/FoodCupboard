@@ -86,7 +86,7 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
     /**
      * OnCreate method. Sets up the fragment, including adapter and dietary information to be used
      * in the searches.
-     * @param savedInstanceState
+     * @param savedInstanceState Bundle - saved state.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -391,7 +391,7 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
         // Boolean for the type of query we are making (new or next).
         private boolean nextSet;
 
-        public MyAPICallback(boolean nextSet) {
+        MyAPICallback(boolean nextSet) {
             this.nextSet = nextSet;
         }
 
@@ -444,7 +444,7 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
         // Boolean for the type of query we are making (new or next).
         private boolean nextSet;
 
-        public MyAPICallbackSuggestion(boolean nextSet) {
+        MyAPICallbackSuggestion(boolean nextSet) {
             this.nextSet = nextSet;
         }
 
@@ -503,7 +503,7 @@ public class SearchRecipesFragment extends Fragment implements SearchView.OnQuer
      * to the activity and potentially other fragments contained in that
      * activity.
      */
-    public interface OnFragmentInteractionListener {
+    interface OnFragmentInteractionListener {
         void onRecipeFragmentInteraction(Recipe_Short recipe_short);
         void onRecipeFragmentSelected(boolean visible);
     }

@@ -19,15 +19,18 @@ import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
 import sammobewick.pocketkitchen.supporting.DataListener;
 
 /**
+ * Adapter for items in the kitchen. This differs from the Shopping List as it doesn't support any
+ * buttons.
  * Created by Sam on 31/01/2017.
  */
-
 public class MyKitchenAdapter extends BaseAdapter implements Filterable, DataListener {
-
     private List<Ingredient> filtered;
     private List<Ingredient> data;
     private String urlStart;
 
+    /**
+     * Call required by interface. Allows PocketKitchenData to update this adapter when data changes.
+     */
     @Override
     public void dataUpdate() {
         PocketKitchenData pkData = PocketKitchenData.getInstance(this);
@@ -36,6 +39,9 @@ public class MyKitchenAdapter extends BaseAdapter implements Filterable, DataLis
         this.notifyDataSetChanged();
     }
 
+    /**
+     * Contains our view elements for the row layout.
+     */
     private class ViewHolder {
         ImageView kitchenImage;
         TextView kitchenTitle;
@@ -43,11 +49,19 @@ public class MyKitchenAdapter extends BaseAdapter implements Filterable, DataLis
         TextView kitchenMeasurement;
     }
 
+    /**
+     * Constructor. Needs to fetch the URLStart so that it can retrieve images.
+     * @param urlStart String - being the URLStart.
+     */
     public MyKitchenAdapter(String urlStart) {
         this.urlStart = urlStart;
         dataUpdate();
     }
 
+    /**
+     * Gets the Filter for enabling the SearchView to filter items in the Adapter.
+     * @return Filter - being the Filter details.
+     */
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -69,6 +83,11 @@ public class MyKitchenAdapter extends BaseAdapter implements Filterable, DataLis
         };
     }
 
+    /**
+     * Get the filtered results from our dataset.
+     * @param constraint CharSequence - being the constraining phrase imposed on the data.
+     * @return List<Ingredient> - the resulting data that matches the constraint.
+     */
     private List<Ingredient> getFilteredResults(CharSequence constraint) {
         if (data != null) {
             List<Ingredient> resultList = new ArrayList<>(data);
@@ -84,6 +103,10 @@ public class MyKitchenAdapter extends BaseAdapter implements Filterable, DataLis
         }
     }
 
+    /**
+     * Gets the count of the data we have (references filtered set).
+     * @return int - being the count.
+     */
     @Override
     public int getCount() {
         if (filtered != null) {
@@ -93,18 +116,35 @@ public class MyKitchenAdapter extends BaseAdapter implements Filterable, DataLis
         }
     }
 
+    /**
+     * Gets the Ingredient at position in the filtered data.
+     * @param position int - being the position in the list.
+     * @return Ingredient - being the item at position.
+     */
     @Override
     public Ingredient getItem(int position) {
         return filtered.get(position);
     }
 
+    /**
+     * Get the ID of the Ingredient at position in the filtered data.
+     * @param position int - being the position in the list.
+     * @return long - being the ID of the item.
+     */
     @Override
     public long getItemId(int position) {
         return filtered.get(position).getId();
     }
 
+    /**
+     * Gets the view (i.e. the row) in the list.
+     * @param position int - position.
+     * @param convertView View - being the row's view.
+     * @param parent ViewGroup - the parent of the row.
+     * @return View - the resulting row view.
+     */
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         View v = convertView;
         ViewHolder vh = new ViewHolder();
@@ -146,6 +186,9 @@ public class MyKitchenAdapter extends BaseAdapter implements Filterable, DataLis
         return v;
     }
 
+    /**
+     * Notifies our Adapter that data has changed.
+     */
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
@@ -155,6 +198,10 @@ public class MyKitchenAdapter extends BaseAdapter implements Filterable, DataLis
     //                                      SETTER + GETTER :                                     //
     // ****************************************************************************************** //
 
+    /**
+     * Sets the filter text (allows for this to be set by the parent fragment).
+     * @param filterText String - being the new filter text.
+     */
     public void setFilterText(String filterText) {
         this.getFilter().filter(filterText);
     }

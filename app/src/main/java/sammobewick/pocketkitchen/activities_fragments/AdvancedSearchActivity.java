@@ -383,8 +383,8 @@ public class AdvancedSearchActivity extends AppCompatActivity implements View.On
 
     /**
      * Standard method to create our options menu.
-     * @param menu
-     * @return
+     * @param menu Menu - being the menu.
+     * @return boolean - being the result (always true).
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

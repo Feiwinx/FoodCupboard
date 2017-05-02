@@ -111,7 +111,7 @@ public class SearchedRecipesAdapter extends BaseAdapter implements DataListener 
         System.out.println("URL: " + url);
         // END-DEBUG */
 
-        Bitmap img = pkData.getDrawable(url);
+        Bitmap img = PocketKitchenData.getDrawable(url);
 
         if (img != null)
             vh.recipeImg.setImageBitmap(img);

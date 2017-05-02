@@ -17,6 +17,8 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -35,7 +37,9 @@ import java.util.List;
 import sammobewick.pocketkitchen.R;
 import sammobewick.pocketkitchen.adapters.RvA_Custom_Ingredients;
 import sammobewick.pocketkitchen.aws_intents.DownloadAWSImageAsync;
+import sammobewick.pocketkitchen.aws_intents.Dynamo_Delete_Json;
 import sammobewick.pocketkitchen.aws_intents.Dynamo_Upload_Json;
+import sammobewick.pocketkitchen.aws_intents.S3_Delete_Image;
 import sammobewick.pocketkitchen.aws_intents.S3_Upload_Image;
 import sammobewick.pocketkitchen.data_objects.Ingredient;
 import sammobewick.pocketkitchen.data_objects.PocketKitchenData;
@@ -43,6 +47,7 @@ import sammobewick.pocketkitchen.data_objects.Recipe_Full;
 import sammobewick.pocketkitchen.data_objects.Recipe_Short;
 import sammobewick.pocketkitchen.supporting.ActivityHelper;
 import sammobewick.pocketkitchen.supporting.Constants;
+import sammobewick.pocketkitchen.supporting.LocalFileHelper;
 
 /**
  * Activity for adding a custom recipe to Amazon Dynamo.
@@ -55,6 +60,9 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
     //********************************************************************************************//
     private static final String TAG = "AddRecipeActivity";
 
+    // Recipe identifier:
+    private Recipe_Short recipe;
+
     // Details from sharedPreferences about user:
     private String  user_id;
     private String  user_name;
@@ -66,37 +74,17 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
     // Counter for returned requests from AWS:
     private int successCount;
 
+    private boolean editing;
+
     /**
      * OnCreate for this Activity.
      * Performs general setup of the XML and sets OnClickListeners for the areas we want.
-     * @param savedInstanceState
+     * @param savedInstanceState Bundle - saved state.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe);
-
-        // Get the details from the bundle (for editing):
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            Recipe_Full rf  = null;
-            Recipe_Short rs = null;
-
-            if (extras.containsKey("view_single_recipe")) {
-                rf = extras.getParcelable("view_single_recipe");
-            }
-            if (extras.containsKey("recipe_short")) {
-                rs = extras.getParcelable("recipe_short");
-            }
-
-            if (rf != null & rs != null) {
-                populateFields(rf,rs);
-            } else {
-                // Error message - should never occur:
-                ActivityHelper.displayKnownError(getApplicationContext(),
-                        "Oops, looks like there was an issue sending the recipe data to this activity!");
-            }
-        }
 
         // Get the details from the sharedPreferences:
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(AddRecipeActivity.this);
@@ -112,11 +100,39 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
         IntentFilter filter = new IntentFilter(Constants.BC_UPLOAD_NAME);
         LocalBroadcastManager.getInstance(this).registerReceiver(new UploadReceiver(), filter);
 
+        if (editing) {
+            IntentFilter filter1 = new IntentFilter(Constants.BC_DELETE_NAME);
+            LocalBroadcastManager.getInstance(this).registerReceiver(new DeleteReceiver(), filter1);
+        }
+
         // Set up the RecyclerView:
         mRecyclerView   = (RecyclerView) findViewById(R.id.rv_add_custom_recipe_ingredients);
         mRvAdapter      = new RvA_Custom_Ingredients(this);
         mRecyclerView.setAdapter(mRvAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Get the details from the bundle (for editing):
+        editing = false;
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            Recipe_Full rf  = null;
+            Recipe_Short rs = null;
+
+            if (extras.containsKey("recipe_short")) {
+                rs = (Recipe_Short) extras.get("recipe_short");
+            }
+            if (extras.containsKey("view_single_recipe")) {
+                rf = (Recipe_Full) extras.get("view_single_recipe");
+            }
+
+            if (rf != null & rs != null) {
+                populateFields(rf,rs);
+            } else {
+                // Error message - should never occur:
+                ActivityHelper.displayKnownError(AddRecipeActivity.this,
+                        "Oops, looks like there was an issue sending the recipe data to this activity!");
+            }
+        }
 
         // Set up OnClickListeners:
         findViewById(R.id.btn_add_custom_recipe).setOnClickListener(this);
@@ -140,18 +156,72 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
         setProgressBar(false);
     }
 
+    /**
+     * Creates our options menu using menu resource file.
+     * @param menu Menu - menu
+     * @return boolean - result
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (editing) {
+            Log.i(TAG, "Inflating options menu...");
+            // Inflate the menu; this adds items to the action bar if it is present.
+
+            // Disabled - wasn't quite working as intended as we are deleting what we are viewing!
+            // Also somewhat useless as you would press Edit if you wanted to delete!
+            //getMenuInflater().inflate(R.menu.menu_custom_recipe, menu);
+            return true;
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * Enables use of options menu. The original purpose is to allow deletion from inside of this
+     * window. However, this might not be applicable so can be toggled on/off by inflating the menu.
+     * @param item MenuItem - the menu item pressed.
+     * @return boolean - as in parent method.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_delete_custom:
+                successCount = 0;
+                Intent delJson = new Intent(AddRecipeActivity.this, Dynamo_Delete_Json.class);
+                startService(delJson);
+
+                Intent delImg = new Intent(AddRecipeActivity.this, S3_Delete_Image.class);
+                startService(delImg);
+                return true;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Loads data into the fields + checkboxes.
+     * @param rf Recipe_short - part 1 of data we use.
+     * @param rs Recipe_Full - part 2 of data we use.
+     */
     private void populateFields(Recipe_Full rf, Recipe_Short rs) {
+        Log.i(TAG, "Populating with RS: " + rs.toString());
+        Log.i(TAG, "Populating with RF: " + rf.toString());
+        editing = true;
+        recipe = rs;
         ImageView recipeImg = ((ImageView)findViewById(R.id.img_custom_recipe));
-        new DownloadAWSImageAsync(getApplicationContext(), recipeImg);
+        new DownloadAWSImageAsync(AddRecipeActivity.this, recipeImg).execute(rs.getImage());
 
         mRvAdapter.setData(rf.getExtendedIngredients());
 
+        ((EditText)findViewById(R.id.edit_add_custom_recipe_title)).setText(rf.getTitle());
+        ((EditText)findViewById(R.id.edit_add_custom_recipe_servings)).setText(String.valueOf(rf.getServings()));
+        ((EditText)findViewById(R.id.edit_add_custom_recipe_minutes)).setText(String.valueOf(rf.getReadyInMinutes()));
         ((EditText)findViewById(R.id.edit_add_custom_recipe_instructions)).setText(rf.getInstructions());
 
         ((CheckBox)findViewById(R.id.check_cr_diet_dairy)).setChecked(rf.isDairyFree());
         ((CheckBox)findViewById(R.id.check_cr_diet_gluten)).setChecked(rf.isGlutenFree());
         ((CheckBox)findViewById(R.id.check_cr_diet_vegan)).setChecked(rf.isVegan());
-        ((CheckBox)findViewById(R.id.check_diet_vegetarian)).setChecked(rf.isVegetarian());
+        ((CheckBox)findViewById(R.id.check_cr_diet_vegetarian)).setChecked(rf.isVegetarian());
 
         ((CheckBox)findViewById(R.id.check_cr_diet_eggs)).setChecked(false); // NOT SAVED
         ((CheckBox)findViewById(R.id.check_cr_diet_nuts)).setChecked(false); // NOT SAVED
@@ -165,13 +235,14 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
      */
     private void saveSuccessful() {
         setProgressBar(false);
-        new AlertDialog.Builder(new ContextThemeWrapper(getApplicationContext(), R.style.myDialog))
+        new AlertDialog.Builder(new ContextThemeWrapper(AddRecipeActivity.this, R.style.myDialog))
                 .setTitle("Operation Successful")
+                .setIcon(R.drawable.ic_done)
                 .setMessage(R.string.feedback_added_recipe)
                 .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finish();
+                        AddRecipeActivity.super.onBackPressed();
                     }
                 })
                 .show();
@@ -201,6 +272,31 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
     }
 
     /**
+     * Counts a success from Amazon for deleting the recipe. Just clears up the data and informs the
+     * user.
+     */
+    private void reportDeleteSuccess() {
+        successCount++;
+
+        if (successCount > 1) {
+            setProgressBar(false);
+            ActivityHelper.displaySnackBarNoAction(AddRecipeActivity.this,
+                    R.layout.activity_add_recipe, R.string.feedback_deleted_change);
+
+            // TODO: clear data from fields.
+        }
+    }
+
+    /**
+     * Reports a suspected failure from AWS for deleting. Displays a dialog asking the user what
+     * they want to do.
+     */
+    private void reportDeleteFailed() {
+        setProgressBar(false);
+        // TODO: Show a dialog with the option to keep the recipe or delete from local.
+    }
+
+    /**
      * This method performs our save by reading through the elements on screen, creating Recipe_Full
      * and Recipe_Short from that, and then calling Amazon Intent Services to upload the data.
      */
@@ -216,13 +312,7 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
             boolean vegetarian      = ((CheckBox)findViewById(R.id.check_cr_diet_vegetarian)).isChecked();
             boolean gluten          = ((CheckBox)findViewById(R.id.check_cr_diet_gluten)).isChecked();
             boolean dairyFree       = ((CheckBox)findViewById(R.id.check_cr_diet_dairy)).isChecked();
-            boolean popular         = false;
 
-            // TODO: Add support for these in XML (non-important, as subject to user opinion here):
-            boolean cheap           = false;
-            boolean healthy         = false;
-
-            // TODO: Add support for these in Recipe_Full:
             boolean eggs        = ((CheckBox)findViewById(R.id.check_cr_diet_eggs)).isChecked();
             boolean nuts        = ((CheckBox)findViewById(R.id.check_cr_diet_nuts)).isChecked();
             boolean soy         = ((CheckBox)findViewById(R.id.check_cr_diet_soy)).isChecked();
@@ -270,9 +360,9 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
 
                 /* DEBUG: */ Log.d(TAG, "ADD-RECIPE ID: " + id); /* END-DEBUG */
 
-                // Create the recipe objects:
+                // Create the recipe objects [cheap, popular,
                 Recipe_Full rf = new Recipe_Full(
-                        cheap,
+                        false,
                         dairyFree,
                         ingredients,
                         gluten,
@@ -285,8 +375,14 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
                         title,
                         vegan,
                         vegetarian,
-                        healthy,
-                        popular);
+                        false,
+                        false);
+
+                rf.setContEggs(eggs);
+                rf.setContNuts(nuts);
+                rf.setContSeafood(seafood);
+                rf.setContShellfish(shellfish);
+                rf.setContSoy(soy);
 
                 Recipe_Short rs = new Recipe_Short(
                         id,                                             // id
@@ -311,6 +407,9 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
                 s3_intent.putExtra(Constants.S3_OBJECT_KEY, String.valueOf(id));
                 s3_intent.putExtra(Constants.INTENT_S3_FILE, getImageFile());
                 this.startService(s3_intent);
+
+                LocalFileHelper helper = new LocalFileHelper(AddRecipeActivity.this);
+                helper.saveAll();
 
             } else {
                 // Display error due to previous checks & remove the progress spinner.
@@ -445,6 +544,12 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
         return new File(filename);
     }
 
+    /**
+     * Implemented due to camera usage.
+     * @param requestCode int - the request code
+     * @param resultCode int - the result code
+     * @param data Intent - the data thats come back
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -476,7 +581,7 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
     }
 
     /**
-     * Private inner class to get Broadcast responses back in to this Activity.
+     * Private inner class to get Broadcast responses for uploading back into this Activity.
      * We register this in the OnCreate but basically this just handles unpacking the intent.
      */
     private class UploadReceiver extends BroadcastReceiver {
@@ -495,6 +600,27 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
             // Check for failure (accounting for other IntentService):
             else if (successCount > 0)
                 saveFailed();
+        }
+    }
+
+    /**
+     * Private inner class to get Broadcast responses for deletion back into this Activity.
+     */
+    private class DeleteReceiver extends BroadcastReceiver {
+
+        // Prevent instantiation:
+        private DeleteReceiver() { /* DELETE RECEIVER */ }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Unpack Intent + pass to Activity:
+            boolean result = intent.getExtras().getBoolean(Constants.BC_DELETE_ID);
+
+            if (result)
+                reportDeleteSuccess();
+
+            else if (successCount > 0)
+                reportDeleteFailed();
         }
     }
 }

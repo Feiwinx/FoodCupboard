@@ -13,26 +13,17 @@ import sammobewick.pocketkitchen.data_objects.DynamoDB_Wrapper;
 import sammobewick.pocketkitchen.supporting.Constants;
 
 /**
- * DynamoDB Uploader Intent.
- * Created by Sam on 30/03/2017.
+ * DynamoDB Deletion Intent
+ * Created by Sam on 27/04/2017.
  */
-public class Dynamo_Upload_Json extends Dynamo_Master_Json {
-    private static final String TAG = "Dynamo_Uploader";
+public class Dynamo_Delete_Json extends Dynamo_Master_Json {
+    private static final String TAG = "Dynamo_Deletion";
 
     /**
      * Required empty constructor for manifest.
      */
-    public Dynamo_Upload_Json() {
+    public Dynamo_Delete_Json() {
         super(TAG);
-    }
-
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @param name Used to name the worker thread, important only for debugging.
-     */
-    public Dynamo_Upload_Json(String name) {
-        super(name);
     }
 
     @Override
@@ -60,22 +51,17 @@ public class Dynamo_Upload_Json extends Dynamo_Master_Json {
 
             try {   // Wrap our data, upload to DynamoDB with error-checking:
                 DynamoDB_Wrapper db_wrapper = new DynamoDB_Wrapper(jsonKey, jsonData);
-                mapper.save(db_wrapper);
+                mapper.delete(db_wrapper);
             } catch (AmazonServiceException ase) {
-                error = "Amazon Error: " + ase.getLocalizedMessage();
-                Log.e(TAG, error);
+                Log.e(TAG, "Dynamo_Delete Error ", ase);
             }
 
-            /*// Debug:
-            System.out.println(TAG + " error: " + error.length());
-            //*/
-
             // Broadcast the result back:
-            Intent bcIntent = new Intent(Constants.BC_UPLOAD_NAME);
+            Intent bcIntent = new Intent(Constants.BC_DELETE_NAME);
             if (error.length() == 0)
-                bcIntent.putExtra(Constants.BC_UPLOAD_ID, true);
+                bcIntent.putExtra(Constants.BC_DELETE_ID, true);
             else
-                bcIntent.putExtra(Constants.BC_UPLOAD_ID, false);
+                bcIntent.putExtra(Constants.BC_DELETE_ID, false);
 
             LocalBroadcastManager.getInstance(this).sendBroadcast(bcIntent);
         }

@@ -11,9 +11,11 @@ import sammobewick.pocketkitchen.supporting.DataListener;
 import sammobewick.pocketkitchen.supporting.MapHelper;
 
 /**
+ * Singleton class for representing the background data for PocketKitchen.
+ * Some manipulations are done here, allowing the data to be kept more consistent than just a series
+ * of getters + setters.
  * Created by Sam on 22/02/2017.
  */
-
 public final class PocketKitchenData {
 
     private static PocketKitchenData        instance;
@@ -44,8 +46,15 @@ public final class PocketKitchenData {
     //                                      CONSTRUCTOR + INSTANCE:                               //
     // ****************************************************************************************** //
 
+    /**
+     * Constructor to prevent instantiation.
+     */
     private PocketKitchenData() { /* Empty Constructor */ }
 
+    /**
+     * Gets an instance of PocketKitchenData as per singleton.
+     * @return PocketKitchenData - an instance of this class.
+     */
     public static PocketKitchenData getInstance() {
         if (instance == null) {
             instance = new PocketKitchenData();
@@ -53,6 +62,12 @@ public final class PocketKitchenData {
         return instance;
     }
 
+    /**
+     * Gets an instance of PocketKitchenData, also passing a new listener to it. This enables the
+     * DataListener to be informed later.
+     * @param listener DataListener - object to be notified (must implement DataListener).
+     * @return PocketKitchenData - an instance of this class.
+     */
     public static PocketKitchenData getInstance(DataListener listener) {
         if (instance == null) {
             instance = new PocketKitchenData();
@@ -68,6 +83,7 @@ public final class PocketKitchenData {
     // ****************************************************************************************** //
     //                                      LISTENERS:                                            //
     // ****************************************************************************************** //
+
 
     public boolean listen(DataListener listener) {
         if (listener != null) {

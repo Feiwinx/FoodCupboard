@@ -132,7 +132,7 @@ public class MyListFragment extends Fragment implements SearchView.OnQueryTextLi
      * to the activity and potentially other fragments contained in that
      * activity.
      */
-    public interface OnFragmentInteractionListener {
+    interface OnFragmentInteractionListener {
         void onShoppingFragmentInteraction(final Ingredient i);
 
         void onShoppingFragmentSelected(boolean visible);

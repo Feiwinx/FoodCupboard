@@ -1,23 +1,17 @@
 package sammobewick.pocketkitchen.aws_intents;
 
-import android.app.IntentService;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.ResultReceiver;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,34 +19,17 @@ import java.io.IOException;
 import sammobewick.pocketkitchen.supporting.Constants;
 
 /**
+ * S3 Uploader Intent.
  * Created by Sam on 30/03/2017.
  */
-
-public class S3_Download_Image extends IntentService {
-
-    private static final String TAG = "Dynamo_DownloadImage";
-
-    /**
-     * Helper class to initialise connection to AWS connection pool.
-     * @return AmazonS3 - being out S3 client to use.
-     */
-    private AmazonS3 getClient() {
-        // Initialize the Amazon Cognito credentials provider
-        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                getApplicationContext(),
-                Constants.AWS_ID_POOL,
-                Regions.EU_WEST_1
-        );
-        AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
-        s3.setRegion(Region.getRegion(Regions.EU_WEST_1));
-        return s3;
-    }
+public class S3_Download_Image extends S3_Master_Image {
+    private static final String TAG = "S3_Downloader";
 
     /**
      * Required empty constructor for manifest.
      */
     public S3_Download_Image() {
-        super("S3DownloadImageService");
+        super(TAG);
     }
 
     /**
@@ -76,7 +53,7 @@ public class S3_Download_Image extends IntentService {
         // Get key+receiver from Intent:
         String  key             = "";
 
-        Bundle extras = intent.getExtras();
+        Bundle extras = intent != null ? intent.getExtras() : null;
         if (extras != null) {
             if (extras.containsKey(Constants.S3_OBJECT_KEY)) {
                 key = extras.getString(Constants.S3_OBJECT_KEY);
@@ -84,7 +61,7 @@ public class S3_Download_Image extends IntentService {
         }
 
         // Check key exists:
-        if (key.length() > 0) {
+        if ((key != null ? key.length() : 0) > 0) {
             String error = "";
             Intent bcIntent = new Intent(Constants.BC_DOWNLOAD_NAME);
 

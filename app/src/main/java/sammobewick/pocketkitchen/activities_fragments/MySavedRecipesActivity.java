@@ -97,7 +97,7 @@ public class MySavedRecipesActivity extends AppCompatActivity implements CustomR
 
             // Set up intent filters for getting Broadcasts back from AWS intent-services:
             IntentFilter filter = new IntentFilter(Constants.BC_DOWNLOAD_NAME);
-            LocalBroadcastManager.getInstance(this).registerReceiver(new MySavedRecipesActivity.UploadReceiver(), filter);
+            LocalBroadcastManager.getInstance(this).registerReceiver(new downloadReceiver(), filter);
         }
 
         // UNIVERSAL SETUP OF ADAPTER(S):
@@ -170,16 +170,27 @@ public class MySavedRecipesActivity extends AppCompatActivity implements CustomR
      * @param recipe_short Recipe_Short - the recipe that was selected from the ListView.
      */
     private void loadRecipeFull(Recipe_Short recipe_short) {
-        last_short = recipe_short;
-        // Check network connectivity:
-        if (!ActivityHelper.isConnected(getApplicationContext())) {
-            ActivityHelper.displaySnackBarNoAction(getApplicationContext(), R.id.main_content, R.string.wifi_warning_short);
+        if (recipe_short != null) {
+            last_short = recipe_short;
+
+            Log.e(TAG, recipe_short.toString());
+            Log.e(TAG, last_short.toString());
+
+            // Check network connectivity:
+            if (!ActivityHelper.isConnected(getApplicationContext())) {
+                ActivityHelper.displaySnackBarNoAction(getApplicationContext(), R.id.main_content, R.string.wifi_warning_short);
+            } else {
+                editRequest = false;
+                // Network connectivity exists! Load either type of recipe using other method:
+                setProgressBar(true);
+                if (customOnly) {
+                    loadFromAWS(recipe_short);
+                } else {
+                    loadFromAPI(recipe_short);
+                }
+            }
         } else {
-            editRequest = false;
-            // Network connectivity exists! Load either type of recipe using other method:
-            setProgressBar(true);
-            if (customOnly) { loadFromAWS(recipe_short); }
-            else { loadFromAPI(recipe_short); }
+            Log.e(TAG, "passed recipe is null!");
         }
     }
 
@@ -188,6 +199,7 @@ public class MySavedRecipesActivity extends AppCompatActivity implements CustomR
      * @param recipe_short Recipe_Short - recipe to display.
      */
     private void loadFromAWS(final Recipe_Short recipe_short) {
+        Log.d(TAG, "Loading from AWS: " + recipe_short.getId());
         String jsonKey = String.valueOf(recipe_short.getId());
         Intent jsonDown = new Intent(MySavedRecipesActivity.this, Dynamo_Download_Json.class);
         jsonDown.putExtra(Constants.JSON_DYNAMO_KEY, jsonKey);
@@ -225,6 +237,25 @@ public class MySavedRecipesActivity extends AppCompatActivity implements CustomR
         });
     }
 
+    private void awsDownloaded(Recipe_Full rf) {
+        setProgressBar(false);
+        if (editRequest) {
+            editRecipe(last_short, rf);
+        } else {
+            viewRecipe(last_short, rf);
+        }
+    }
+
+    private void editRecipe(Recipe_Short rs, Recipe_Full rf) {
+        Intent intent = new Intent(this, AddRecipeActivity.class);
+        Log.d(TAG, rs.toString());
+        Log.d(TAG, rf.toString());
+        intent.putExtra("view_single_recipe", rf);
+        intent.putExtra("recipe_short", rs);
+        startActivity(intent);
+        finish();
+    }
+
     /**
      * This method handles the launching of the ViewSingleRecipeActivity to display the full details of a
      * selected recipe.
@@ -241,32 +272,16 @@ public class MySavedRecipesActivity extends AppCompatActivity implements CustomR
         finish();
     }
 
-    private void awsDownloaded(Recipe_Full rf) {
-        setProgressBar(false);
-        if (editRequest) {
-            editRecipe(last_short, rf);
-        } else {
-            viewRecipe(last_short, rf);
-        }
-    }
-
-    private void editRecipe(Recipe_Short rs, Recipe_Full rf) {
-        Intent intent = new Intent(this, AddRecipeActivity.class);
-        intent.putExtra("view_single_recipe", rf);
-        intent.putExtra("recipe_short", rs);
-        startActivity(intent);
-        finish();
-    }
-
     /**
      * This is passed back from the custom adapter, allowing us to prepare the edit process. The
      * selection process is handled by the ListView OnClickListener, but as the edit process is a
      * image button on the row, we need to pass it back up.
-     * @param position
+     * @param position int - being the position of the item in the list associated with the EditButton.
      */
     @Override
     public void OnEditButtonPressed(int position) {
         editRequest = true;
+        last_short = (Recipe_Short) mAdapter.getItem(position);
         loadFromAWS((Recipe_Short)mAdapter.getItem(position));
     }
 
@@ -274,24 +289,26 @@ public class MySavedRecipesActivity extends AppCompatActivity implements CustomR
      * Private inner class to get Broadcast responses back in to this Activity.
      * We register this in the OnCreate but basically this just handles unpacking the intent.
      */
-    private class UploadReceiver extends BroadcastReceiver {
+    private class downloadReceiver extends BroadcastReceiver {
 
         // Prevent instantiation:
-        private UploadReceiver() { /* UPLOAD RECEIVER */ }
+        private downloadReceiver() { /* UPLOAD RECEIVER */ }
 
         @Override
         public void onReceive(Context context, Intent intent) {
             // Unpack Intent + pass to Activity:
             boolean result          = intent.getExtras().getBoolean(Constants.BC_DOWNLOAD_ID);
 
+            Log.d(TAG, "DownloadBC: " + intent.getExtras().toString());
+
             if (result) {
                 DynamoDB_Wrapper data = (DynamoDB_Wrapper) intent.getExtras().get(Constants.BC_DOWNLOAD_DATA);
-                Recipe_Full recipe = new Recipe_Full(data.getJsonString());
+                Recipe_Full recipe = new Recipe_Full(data != null ? data.getJsonString() : null);
 
                 // Send callback:
                 awsDownloaded(recipe);
             } else {
-                ActivityHelper.displayUnknownError(context, getString(R.string.feedback_unknown_problem));
+                ActivityHelper.displayUnknownError(MySavedRecipesActivity.this, getString(R.string.feedback_unknown_problem));
             }
         }
     }

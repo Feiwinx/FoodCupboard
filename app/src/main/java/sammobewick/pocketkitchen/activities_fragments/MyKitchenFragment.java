@@ -23,18 +23,16 @@ import sammobewick.pocketkitchen.data_objects.Ingredient;
  * create an instance of this fragment.
  */
 public class MyKitchenFragment extends Fragment implements SearchView.OnQueryTextListener {
-    //********************************************************************************************//
-    //  VARIABLES / HANDLERS FOR THIS FRAGMENT:                                                   //
-    //********************************************************************************************//
-    private AbsListView mListView;
     private MyKitchenAdapter mAdapter;
-    private SearchView mSearchView;
     private OnFragmentInteractionListener mListener;
 
     // ****************************************************************************************** //
     //                                 CONSTRUCTORS + SET-UP:                                     //
     // ****************************************************************************************** //
 
+    /**
+     * Empty constructor.
+     */
     public MyKitchenFragment() { /* Empty constructor */ }
 
     /**
@@ -47,6 +45,10 @@ public class MyKitchenFragment extends Fragment implements SearchView.OnQueryTex
         return new MyKitchenFragment();
     }
 
+    /**
+     * OnCreate. Creates our adapter and gets extra information from the activities.
+     * @param savedInstanceState Bundle - saved state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +65,14 @@ public class MyKitchenFragment extends Fragment implements SearchView.OnQueryTex
         mAdapter = new MyKitchenAdapter(urlStart);
     }
 
+    /**
+     * OnCreateView. Inflates the layout file, sets up the listview with the adapter, and prepares
+     * the searchview listener.
+     * @param inflater LayoutInflater - used to inflate the view
+     * @param container ViewGroup - container
+     * @param savedInstanceState Bundle - saved state.
+     * @return View - the created view.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -70,7 +80,7 @@ public class MyKitchenFragment extends Fragment implements SearchView.OnQueryTex
         View view = inflater.inflate(R.layout.fragment_my_kitchen, container, false);
 
         // Prepare our ListView:
-        mListView = (AbsListView) view.findViewById(R.id.kitchen_list);
+        AbsListView mListView = (AbsListView) view.findViewById(R.id.kitchen_list);
         mListView.setAdapter(mAdapter);
         mListView.setEmptyView(view.findViewById(R.id.empty_kitchen));
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -82,7 +92,7 @@ public class MyKitchenFragment extends Fragment implements SearchView.OnQueryTex
         );
 
         // Prepare our SearchView:
-        mSearchView = (SearchView) view.findViewById(R.id.kitchen_search);
+        SearchView mSearchView = (SearchView) view.findViewById(R.id.kitchen_search);
         mSearchView.setOnQueryTextListener(this);
 
         return view;
@@ -132,7 +142,7 @@ public class MyKitchenFragment extends Fragment implements SearchView.OnQueryTex
      * to the activity and potentially other fragments contained in that
      * activity.
      */
-    public interface OnFragmentInteractionListener {
+    interface OnFragmentInteractionListener {
         void onKitchenFragmentInteraction(final Ingredient i);
 
         void onKitchenFragmentSelected(boolean visible);

@@ -227,8 +227,8 @@ public class ViewSingleRecipeActivity extends AppCompatActivity {
 
     /**
      * Standard method to create our options menu.
-     * @param menu
-     * @return
+     * @param menu Menu - being the menu.
+     * @return boolean - being the result.
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -346,8 +346,8 @@ public class ViewSingleRecipeActivity extends AppCompatActivity {
      * Simple method to save space above. Loops through the ingredients and generates a
      * String to represent all ingredients.
      *
-     * @param ingredientList
-     * @return
+     * @param ingredientList List<Ingredient> - being the list of ingredients.
+     * @return String - representing all of the data in the ingredients.
      */
     private String readIngredients(List<Ingredient> ingredientList) {
         String result = "";

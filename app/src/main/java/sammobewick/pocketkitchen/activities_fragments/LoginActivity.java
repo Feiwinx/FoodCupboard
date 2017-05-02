@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -55,15 +54,12 @@ public class LoginActivity extends AppCompatActivity implements
     /**
      * OnCreate method. Sets up our default values (i.e. UI, signedIn), and creates our sign-in client.
      * Also sets up our listeners for the buttons.
-     * @param savedInstanceState
+     * @param savedInstanceState Bundle - saved state.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        // Grab the shared preferences:
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get the bundled extras. These only exist when returning to this activity.
         Bundle extras = getIntent().getExtras();
@@ -71,9 +67,8 @@ public class LoginActivity extends AppCompatActivity implements
             if (extras.containsKey("signedIn")) {
                 signedIn = extras.getBoolean("signedIn", false);
 
-                //if (sharedPreferences.contains("user_name")) {
-                    setWelcomeMessage(sharedPreferences.getString("user_name", "Guest"));
-                //}
+                sharedPreferences = getSharedPreferences(ActivityHelper.getPREF_SET(), MODE_PRIVATE);
+                setWelcomeMessage(sharedPreferences.getString("user_name", "Guest"));
             }
         } else { signedIn = false; }
 
@@ -118,9 +113,9 @@ public class LoginActivity extends AppCompatActivity implements
     /**
      * Method required when launching an Activity for result. We use it here to deal with the
      * Google Sign In.
-     * @param requestCode
-     * @param resultCode
-     * @param data
+     * @param requestCode int - the request code.
+     * @param resultCode int - the result code.
+     * @param data Intent - being the ActivityResult data.
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -190,12 +185,6 @@ public class LoginActivity extends AppCompatActivity implements
                         // Set up the UI for signed out and action complete:
                         updateUI(false);
                         hideProgressDialog();
-
-                        // TODO: something here
-                        //LocalFileHelper helper = new LocalFileHelper(LoginActivity.this);
-                        //helper.deleteAll(true);
-                        //PocketKitchenData pkData = PocketKitchenData.getInstance();
-                        //pkData.setRecipesDisplayed(null);
                     }
                 }
         );
@@ -278,8 +267,14 @@ public class LoginActivity extends AppCompatActivity implements
             // We will want to reference their name/ID later so save them to the application:
             GoogleSignInAccount acct = result.getSignInAccount();
 
-            setWelcomeMessage(acct != null ? acct.getDisplayName() : "Guest");
+            String acct_name = "GUEST";
+            if (acct != null) {
+                acct_name = acct.getDisplayName();
+                ActivityHelper.setPREF_SET(acct_name);
+            }
+            setWelcomeMessage(acct_name);
 
+            sharedPreferences = getSharedPreferences(ActivityHelper.getPREF_SET(), MODE_PRIVATE);
             sharedPreferences.edit()
                     .putString("user_id", acct != null ? acct.getId() : null)
                     .putString("user_name", acct != null ? acct.getDisplayName() : null)
@@ -287,10 +282,6 @@ public class LoginActivity extends AppCompatActivity implements
 
             // Update UI:
             updateUI(true);
-
-            // Load local files:
-            //LocalFileHelper helper = new LocalFileHelper(this);
-            //helper.loadAll();
 
             // Automatically continue when signing in, but not when returning to this activity:
             if (!signedIn & connected) { this.proceed(); }
@@ -344,6 +335,10 @@ public class LoginActivity extends AppCompatActivity implements
         findViewById(R.id.login_progress).setVisibility(View.GONE);
     }
 
+    /**
+     * Connection failed. Shouldn't occur, Google describes this as unknown cause.
+     * @param connectionResult ConnectionResult - being the failed connection information.
+     */
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // An unresolvable error has occurred and Google APIs (including Sign-In) will not
@@ -352,6 +347,10 @@ public class LoginActivity extends AppCompatActivity implements
         ActivityHelper.displayUnknownError(getApplicationContext(), connectionResult.getErrorMessage());
     }
 
+    /**
+     * Allows us to attempt silent sign in, or use an existing sign in to go straight through into
+     * the main Pocket Kitchen screen.
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -380,13 +379,15 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Allows us to ensure network connectivity.
+     */
     @Override
     protected void onPostResume() {
         super.onPostResume();
         connected = ActivityHelper.isConnected(LoginActivity.this);
         if (!connected) {
             ActivityHelper.displayNetworkWarning(LoginActivity.this);
-            Log.i(TAG, "No connection onPostResume!");
         }
     }
 }
